@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>デフォルト</item>
+        <item>リスト</item>
+        <item>グリッド</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>中</item>
+	    <item>大</item>
+	    <item>特大</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>非表示</item>
+	    <item>極小</item>
+	    <item>小</item>
+	    <item>中</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>白基調</item>
+	    <item>黒基調</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>既定</item>
+		<item>白基調</item>
+	    <item>黒基調</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>中央</item>
+	    <item>下</item>
+	    <item>右下</item>
+	    <item>右</item>
+	    <item>右上</item>	    	    	    
+		<item>上</item>
+	    <item>左上</item>
+	    <item>左</item>
+	    <item>左下</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>スパナボタン</item>
+	    <item>タイトルの長押し</item>
+	</string-array>
+</resources>

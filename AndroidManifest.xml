@@ -1,0 +1,41 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="hk.valenta.completeactionplus"
+    android:versionCode="47"
+    android:versionName="1.8.3" >
+
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="19" />
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+        <activity android:name=".MainPagerActivity" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ManageListActivity" android:label="@string/activity_main_manage_list">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT"/>
+                <data android:mimeType="complete/action"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT"/>
+                <data android:mimeType="complete/action"/>
+                <category android:name="android.intent.category.BROWSABLE"/>                
+            </intent-filter>
+        </activity>
+        
+        <meta-data android:name="xposedmodule" android:value="true" />
+        <meta-data android:name="xposedminversion" android:value="2.0*"/>
+        <meta-data android:name="xposeddescription" android:value="Tweaks 'Complete action using' android dialog."/>
+        
+    </application>
+
+</manifest>

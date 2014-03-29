@@ -1,0 +1,58 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>Varsayılan  </item>
+        <item>Liste</item>
+        <item>Cuadrícula</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>Normal</item>
+	    <item>Grande</item>
+	    <item>Extra Grande</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>Oculto</item>
+	    <item>Diminuto</item>
+	    <item>Pequeño</item>
+	    <item>Normal</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>Claro</item>
+	    <item>Oscuro</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>Default</item>
+		<item>Claro</item>
+	    <item>Oscuro</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>Merkez</item>
+	    <item>Alt</item>
+	    <item>Sağ Alt</item>
+	    <item>Sağ</item>
+	    <item>Sağ Üst</item>	    	    	    
+		<item>Üst</item>
+	    <item>Sol Üst</item>
+	    <item>Sol
+</item>
+	    <item>Sol Alt</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>İngiliz anahtarı Butonu</item>
+	    <item>Uzun Başlığa tıklayın </item>
+	</string-array>
+</resources>

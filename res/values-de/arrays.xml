@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>Standard</item>
+        <item>Liste</item>
+        <item>Tabelle</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>Normal</item>
+	    <item>Groß</item>
+	    <item>Sehr groß</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>Versteckt</item>
+	    <item>Winzig</item>
+	    <item>Klein</item>
+	    <item>Normal</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>Hell</item>
+	    <item>Dunkel</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>Default</item>
+		<item>Hell</item>
+	    <item>Dunkel</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>Mitte</item>
+	    <item>Unten</item>
+	    <item>Unten Rechts</item>
+	    <item>Rechts</item>
+	    <item>Top Right</item>	    	    	    
+		<item>Oben</item>
+	    <item>Oben Links</item>
+	    <item>Links</item>
+	    <item>Unten Links</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>Einstellungs-Button</item>
+	    <item>Titel bei Lang-Klick</item>
+	</string-array>
+</resources>

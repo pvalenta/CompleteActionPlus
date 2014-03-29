@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>إفتراضي</item>
+        <item>قائمة</item>
+        <item>شبكة</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>عادي</item>
+	    <item>كبير</item>
+	    <item>كبير جداً</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>مخفي</item>
+	    <item>صغير جداً</item>
+	    <item>صغير</item>
+	    <item>عادي</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>أبيض</item>
+	    <item>أسود</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>إفتراضي</item>
+		<item>أبيض</item>
+	    <item>أسود</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>المنتصف</item>
+	    <item>الأسفل</item>
+	    <item>أسفل يمين</item>
+	    <item>اليمين</item>
+	    <item>أعلى يمين</item>	    	    	    
+		<item>الأعلى</item>
+	    <item>أعلى يسار</item>
+	    <item>اليسار</item>
+	    <item>أسفل يسار</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>أيقونة مفتاح ربط</item>
+	    <item>الضغط المطول على العنوان</item>
+	</string-array>
+</resources>

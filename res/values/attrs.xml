@@ -1,0 +1,5 @@
+<resources>
+    <attr name="listPreferredItemHeight" format="dimension" />    
+    <attr name="textAppearanceListItemSmall" format="reference" />
+    <attr name="textAppearanceSmall" format="reference" />
+</resources>

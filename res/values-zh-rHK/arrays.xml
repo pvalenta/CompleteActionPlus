@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>Default</item>
+        <item>List</item>
+        <item>格框</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>中</item>
+	    <item>大</item>
+	    <item>加大</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>隱藏</item>
+	    <item>加細</item>
+	    <item>細</item>
+	    <item>中</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>白色背景</item>
+	    <item>黑色背景</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>預設</item>
+		<item>白色背景</item>
+	    <item>黑色背景</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>Center</item>
+	    <item>Bottom</item>
+	    <item>Bottom Right</item>
+	    <item>Right</item>
+	    <item>Top Right</item>	    	    	    
+		<item>Top</item>
+	    <item>Top Left</item>
+	    <item>Left</item>
+	    <item>Bottom Left</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>Wrench Button</item>
+	    <item>Long Click Title</item>
+	</string-array>
+</resources>

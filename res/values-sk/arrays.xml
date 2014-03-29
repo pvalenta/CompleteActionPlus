@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>Predvolený</item>
+        <item>Zoznam</item>
+        <item>Mriežka</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>Obyčajné</item>
+	    <item>Veľké</item>
+	    <item>Veľmi veľké</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>Skryté</item>
+	    <item>Maličké</item>
+	    <item>Malé</item>
+	    <item>Obyčajné</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>Svetlá</item>
+	    <item>Tmavá</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>Základné</item>
+		<item>Svetlé</item>
+	    <item>Tmavé</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>Stred</item>
+	    <item>Dole</item>
+	    <item>Dole vpravo</item>
+	    <item>Vpravo</item>
+	    <item>Hore vpravo</item>	    	    	    
+		<item>Hore</item>
+	    <item>Hore vľavo</item>
+	    <item>Vľavo</item>
+	    <item>Dole vľavo</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>Tlačidlo kľúča</item>
+	    <item>Dlhé stlačenie názvu</item>
+	</string-array>
+</resources>

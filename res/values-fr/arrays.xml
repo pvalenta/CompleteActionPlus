@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>Défaut</item>
+        <item>Liste</item>
+        <item>Grille</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>Normal</item>
+	    <item>Grand</item>
+	    <item>Très grand</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>Masquer</item>
+	    <item>Minuscule</item>
+	    <item>Petit</item>
+	    <item>Normal</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>Clair</item>
+	    <item>Sombre</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>Défaut</item>
+		<item>Clair</item>
+	    <item>Sombre</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>Centre</item>
+	    <item>Bas</item>
+	    <item>En bas à droite</item>
+	    <item>Droite</item>
+	    <item>En haut à droite</item>	    	    	    
+		<item>Haut</item>
+	    <item>En haut à gauche</item>
+	    <item>Gauche</item>
+	    <item>En bas à gauche</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>Wrench Button</item>
+	    <item>Appui long sur le titre</item>
+	</string-array>
+</resources>

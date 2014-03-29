@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>Подразумевано</item>
+        <item>Листа</item>
+        <item>Иконе</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>Нормална</item>
+	    <item>Велика</item>
+	    <item>Екстра велика</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>Сакривен</item>
+	    <item>Малецки</item>
+	    <item>Мали</item>
+	    <item>Нормална</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>Светло</item>
+	    <item>Тамно</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>подразумевани</item>
+		<item>Светло</item>
+	    <item>Тамно</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>Центар</item>
+	    <item>Дно</item>
+	    <item>Дно десно</item>
+	    <item>Десно</item>
+	    <item>Врх десно</item>	    	    	    
+		<item>Врх</item>
+	    <item>Врх лево</item>
+	    <item>Лево</item>
+	    <item>Дно лево</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>Обртно дугме</item>
+	    <item>Дуги клик наслова</item>
+	</string-array>
+</resources>

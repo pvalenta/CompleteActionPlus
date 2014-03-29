@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>По умолчанию</item>
+        <item>Список</item>
+        <item>Таблица</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>Обычный</item>
+	    <item>Большой</item>
+	    <item>Огромный</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>Нет</item>
+	    <item>Мини</item>
+	    <item>Мелкий</item>
+	    <item>Обычный</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>Светлая</item>
+	    <item>Темная</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>Стандарт</item>
+		<item>Светлая</item>
+	    <item>Темная</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>По центру</item>
+	    <item>Снизу</item>
+	    <item>Снизу справа</item>
+	    <item>Справа</item>
+	    <item>Сверху справа</item>	    	    	    
+		<item>Сверху</item>
+	    <item>Сверху слева</item>
+	    <item>Слева</item>
+	    <item>Снизу слева</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>Wrench кнопка</item>
+	    <item>Долгое нажатие га заголовок</item>
+	</string-array>
+</resources>

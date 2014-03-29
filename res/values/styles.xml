@@ -1,0 +1,53 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <!-- Dropdown  -->
+    <style name="DropDown">
+        <item name="android:minWidth">80dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+    
+    <!-- Checkbox -->
+    <style name="Checkbox">
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>        
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+   
+    <!-- LabelTextView -->
+    <style name="LabelTextView">
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+    <style name="LabelDropDown" parent="LabelTextView">
+        <item name="android:layout_marginRight">90dp</item>
+    </style>
+    <style name="LabelColor" parent="LabelTextView">
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginRight">90dp</item>
+    </style>    
+    
+</resources>

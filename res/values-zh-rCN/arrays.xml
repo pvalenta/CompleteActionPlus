@@ -1,0 +1,57 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>默认</item>
+        <item>列表</item>
+        <item>网格</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>中</item>
+	    <item>大</item>
+	    <item>特大</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>隐藏</item>
+	    <item>非常小</item>
+	    <item>小</item>
+	    <item>中</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>白色背景</item>
+	    <item>黑色背景</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>默认</item>
+		<item>简白</item>
+	    <item>黑暗</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>居中</item>
+	    <item>底部</item>
+	    <item>右下角</item>
+	    <item>右侧</item>
+	    <item>右上角</item>	    	    	    
+		<item>顶部</item>
+	    <item>左上角</item>
+	    <item>左侧</item>
+	    <item>左下角</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>设置按钮</item>
+	    <item>长按标题打开</item>
+	</string-array>
+</resources>
