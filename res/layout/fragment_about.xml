@@ -32,7 +32,7 @@
         
 	   <Button android:id="@+id/fragment_about_manager"
 	       style="@android:style/Widget.Button.Small"
-	       android:text="@string/show_configuration_manager"
+	       android:text="@string/show_rule_manager"
 	       android:layout_centerInParent="true"
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"/>

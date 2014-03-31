@@ -39,5 +39,10 @@
     <string name="xposed_not_installed">Xposed Framework is not installed.\nContinue to Xposed Framework thread?</string>
     <string name="mod_not_activated">This mod is not activated or device didn\'t restart yet.</string>
     <string name="not_yet_restarted">Please restart first.</string>
-    <string name="show_configuration_manager">Show configuration manager</string>
+    <string name="show_rule_manager">Show rule manager</string>
+    <string name="activity_manager_title">Rule Manager</string>
+    <string name="fragment_hidden">Hidden</string>
+    <string name="fragment_favorite">Favorite</string>
+    <string name="manager_rule_delete">Delete rule</string>
+    <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
 </resources>

@@ -23,6 +23,7 @@ public class LayoutFragment extends Fragment {
 	RelativeLayout listGroup;
 	RelativeLayout gridGroup;	
 	
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

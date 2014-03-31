@@ -32,6 +32,7 @@ public class DialogFragment extends Fragment {
 	private int textColor;
 	private int backgroundColor;
 	
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -261,6 +262,7 @@ public class DialogFragment extends Fragment {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	private void showColorBlock(int layoutThemeIndex, boolean defaultColors) {
 		SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);

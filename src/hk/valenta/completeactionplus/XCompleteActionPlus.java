@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import com.android.internal.app.AlertController;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -73,8 +72,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("1.8.1");
-					return "1.8.1";
+					param.setResult("1.9.0");
+					return "1.9.0";
 				}
 			});
 		}
@@ -1060,7 +1059,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// move one level up
 			Class<?> alertActivity = resolverActivity.getSuperclass();
 			Field mAlert = alertActivity.getDeclaredField("mAlert");
-			AlertController aControl = (AlertController)mAlert.get(param.thisObject);
+			Object aControl = mAlert.get(param.thisObject);
 
 			// get title view
 			Field mTitleView = aControl.getClass().getDeclaredField("mTitleView");
@@ -1188,7 +1187,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// move one level up
 			Class<?> alertActivity = resolverActivity.getSuperclass();
 			Field mAlert = alertActivity.getDeclaredField("mAlert");
-			AlertController aControl = (AlertController)mAlert.get(param.thisObject);
+			Object aControl = mAlert.get(param.thisObject);
 			
 			// get title view
 			Field mTitleView = aControl.getClass().getDeclaredField("mTitleView");

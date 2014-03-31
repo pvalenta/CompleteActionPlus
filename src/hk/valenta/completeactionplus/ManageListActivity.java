@@ -40,6 +40,7 @@ public class ManageListActivity extends Activity {
 	private PackageManager pManager;
 	private int remain;
 	
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -241,6 +242,7 @@ public class ManageListActivity extends Activity {
 			// on clicks
 			button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				
+				@SuppressWarnings("deprecation")
 				@SuppressLint("WorldReadableFiles")
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -304,6 +306,7 @@ public class ManageListActivity extends Activity {
 			});
 			favButton.setOnClickListener(new OnClickListener() {
 				
+				@SuppressWarnings("deprecation")
 				@SuppressLint("WorldReadableFiles")
 				@Override
 				public void onClick(View view) {

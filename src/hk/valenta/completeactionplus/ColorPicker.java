@@ -50,6 +50,7 @@ public class ColorPicker {
 	final EditText hexEdit;
 	
 	// constructor
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	public ColorPicker(final Context context, int color, OnResultListener listener) {
 		// setup properties
@@ -219,7 +220,7 @@ public class ColorPicker {
 				// Initialise cursors
 				moveHueCursor(currentColorHsv[0] * hueView.getMeasuredWidth() / 360.0f);
 				moveSatCursor(currentColorHsv[1] * satView.getMeasuredWidth() / 1.0f, (1.0f - currentColorHsv[2]) * satView.getMeasuredHeight() / 1.0f);
-				layer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+				layer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 			}
 		});
 	}

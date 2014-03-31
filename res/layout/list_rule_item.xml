@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical" 
+    android:orientation="vertical" 
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content">
+
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+	    <TextView android:text="@string/manage_list_action"
+	        android:textStyle="bold"
+	        android:textSize="16sp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
+	    
+	    <TextView android:id="@+id/rule_item_action"
+	        android:textSize="16sp"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginStart="5dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
+	
+	    <TextView android:text="@string/manage_list_type"
+	        android:textStyle="bold"
+	        android:textSize="16sp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginStart="10dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
+	    
+	    <TextView android:id="@+id/rule_item_type"
+	        android:textSize="16sp"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginStart="5dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
+	    
+	    <TextView android:text="@string/manage_list_scheme"
+	        android:textStyle="bold"
+	        android:textSize="16sp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginStart="10dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
+	    
+	    <TextView android:id="@+id/rule_item_scheme"
+	        android:textSize="16sp"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginStart="5dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>        
+        
+    </LinearLayout>
+    
+    <RelativeLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+	    <HorizontalScrollView android:layout_alignParentLeft="true"
+	        android:layout_alignParentStart="true"
+	        android:paddingRight="60dp"
+	        android:paddingEnd="60dp" 	        
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content">
+	        
+	        <LinearLayout android:id="@+id/rule_item_apps"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:orientation="horizontal"/>
+	        
+	    </HorizontalScrollView>
+        
+	    <ImageButton android:id="@+id/rule_item_delete_button"
+	       	style="@android:style/Widget.Button.Small"	
+	       	android:src="@android:drawable/ic_menu_delete"       
+	       	android:layout_alignParentRight="true"
+	       	android:layout_alignParentEnd="true"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
+        
+    </RelativeLayout>
+
+</LinearLayout>

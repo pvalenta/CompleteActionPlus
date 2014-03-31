@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="0dip"
+    android:paddingRight="0dip"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ManagerPagerActivity" >
+  
+    <ImageView android:id="@+id/manager_pager_logo"
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/activity_main_logo"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+    <TextView android:text="@string/activity_manager_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        android:layout_alignBottom="@id/manager_pager_logo"
+        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>    
+    
+    <android.support.v4.view.ViewPager android:id="@+id/manager_pager_viewPager"
+        android:layout_below="@id/manager_pager_logo"
+        android:paddingTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+	    <android.support.v4.view.PagerTitleStrip
+	        android:id="@+id/manager_pager_title_strip"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="top"
+	        android:background="#4BAAC8"
+	        android:textColor="#fff"
+	        android:textSize="20sp"
+	        android:paddingTop="4dp"
+	        android:paddingBottom="4dp" />        
+        
+    </android.support.v4.view.ViewPager>    
+       
+</RelativeLayout>

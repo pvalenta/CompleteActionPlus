@@ -2,6 +2,7 @@ package hk.valenta.completeactionplus;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AboutFragment extends Fragment {
 
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,7 +60,7 @@ public class AboutFragment extends Fragment {
 			@Override
 			public void onClick(View view) {
 				// start manager activity
-				
+				startActivity(new Intent(getActivity(), ManagerPagerActivity.class));
 			}
 		});
 		

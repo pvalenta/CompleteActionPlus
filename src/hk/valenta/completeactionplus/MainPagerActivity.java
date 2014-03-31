@@ -26,6 +26,7 @@ public class MainPagerActivity extends FragmentActivity {
 	SettingPageAdapter pageAdapter;
 	ViewPager viewPager;
 	
+	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,7 @@ public class MainPagerActivity extends FragmentActivity {
 		}
 		
 		// correct version?
-		if (version != null && !version.equals("1.8.1")) {
+		if (version != null && !version.equals("1.9.0")) {
 			// show message
 			AlertDialog alertActivate = new AlertDialog.Builder(this)
 				.setMessage(R.string.not_yet_restarted)
