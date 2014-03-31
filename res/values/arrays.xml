@@ -41,7 +41,7 @@
 	</string-array>
 	<string-array name="dialog_gravity">
 	    <item>Center</item>
-	    <item>Bottom</item>
+	    <item>Bottom Bottom</item>
 	    <item>Bottom Right</item>
 	    <item>Right</item>
 	    <item>Top Right</item>	    	    	    

@@ -68,7 +68,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		// hook own configuration method		
 		if (lpparam.packageName.equals("hk.valenta.completeactionplus")) {
 			XposedHelpers.findAndHookMethod("hk.valenta.completeactionplus.MainPagerActivity", lpparam.classLoader, "modVersion", new XC_MethodReplacement() {
-				
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
@@ -100,39 +99,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					rObject = rObject.getSuperclass();
 				}
 				
-//				// let's find our resolver
-//				Field[] fields = rObject.getDeclaredFields();
-//				Field resolver = null;
-//				for (Field f : fields) {
-//					String name = f.getName();
-//					if (name.equals("mGrid") || name.equals("mListView")) {
-//						resolver = f;
-//						break;
-//					}
-//				}
-//				if (resolver == null) {
-//					XposedBridge.log("Resolver field not found.");
-//					return null;
-//				}
-
-//				// move up
-//				AbsListView rControl = (AbsListView)resolver.get(param.thisObject);
-//				if (rControl == null) {
-//					XposedBridge.log("Resolver field found, but it's null.");
-//					return null;
-//				}
-				
-//				// get adapter
-//				Field mAdapter = rObject.getDeclaredField("mAdapter");
-//				BaseAdapter adapter = (BaseAdapter)mAdapter.get(param.thisObject);
-				
-//				// check for valid
-//				if (rControl.getCount() == 0 || position > rControl.getCount() || rControl.getItemAtPosition(position) == null ||
-//						adapter.isEmpty() || position > adapter.getCount() || adapter.getItem(position) == null) {
-//					// invalid call
-//					return null;
-//				}
-				
 				// get method
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				boolean showAlways = pref.getBoolean("ShowAlways", false);
@@ -140,51 +106,53 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					// get view
 					boolean always = isAlwaysChecked((View)param.args[0]);
 					boolean manageList = pref.getBoolean("ManageList", false);
+					if (always) {
+						// set always property
+						XposedHelpers.setBooleanField(param.thisObject, "mAlwaysUseOption", true);
+					}					
 					if (always && manageList) {
 						// get adapter
-						Field mAdapter = rObject.getDeclaredField("mAdapter");
-						Object adapter = mAdapter.get(param.thisObject);
+						Object mAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
 						Field mCurrentResolveList = null;
 						try {
-							mCurrentResolveList = adapter.getClass().getDeclaredField("mCurrentResolveList");
+							mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
 							XposedBridge.log("Android 4.2 mCurrentResolveList");
 						} catch (Exception ex) { }
 						if (mCurrentResolveList == null) {
 							try {
-								mCurrentResolveList = adapter.getClass().getDeclaredField("mOrigResolveList");
+								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
 								XposedBridge.log("Android 4.4 mOrigResolveList");
 							} catch (Exception ex) { }
 						}
 						if (mCurrentResolveList == null) {
 							try {
-								mCurrentResolveList = adapter.getClass().getDeclaredField("mBaseResolveList");
+								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
 								XposedBridge.log("Android 4.3 mBaseResolveList");
 							} catch (Exception ex) { }
 						}
 						List<ResolveInfo> mCurrent = null;
 						if (mCurrentResolveList != null) {
-							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(adapter); 
+							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
 						}						
 						if (mCurrent == null) {
 							XposedBridge.log("Original list is NULL.");
 						} else {
-							Field mList = adapter.getClass().getDeclaredField("mList");
-							List<Object> mL = (List<Object>)mList.get(adapter);
+							List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
 							XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
-							if (mCurrent.size() != mL.size()) {
+							if (mCurrent.size() != mList.size()) {
 								// get DisplayResolveInfo class
-								Class<?> DisplayResolveInfo = mL.get(0).getClass();
+								Class<?> DisplayResolveInfo = mList.get(0).getClass();
 								Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
 								driCon.setAccessible(true);
 								
 								// add missing one back
 								for (ResolveInfo r : mCurrent) {
 									boolean missing = true;
-									for (Object l : mL) {
+									for (Object l : mList) {
 										// get resolve info
-										Field ri = l.getClass().getDeclaredField("ri");
-										ResolveInfo info = (ResolveInfo)ri.get(l);
-										if (info.activityInfo.packageName.equals(r.activityInfo.packageName)) {
+										ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(l, "ri");
+										if (info.activityInfo.packageName.equals(r.activityInfo.packageName) &&
+											info.activityInfo.name.equals(r.activityInfo.name)) {
 											missing = false;
 											break;
 										}
@@ -192,7 +160,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 									if (missing) {
 										// let's add back
 										Object n = driCon.newInstance(param.thisObject, r, "", "", null);
-										mL.add(n);
+										mList.add(n);
 									}
 								}
 							}
@@ -431,7 +399,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					Field mList = param.thisObject.getClass().getDeclaredField("mList");
 					List<Object> items = (List<Object>)mList.get(param.thisObject);
 					
-					// get original list to solve KitKat issue
+					// get original list to solve 4.3 issue
 					List<ResolveInfo> baseList = null;
 					try {
 						Field mBaseResolveList = param.thisObject.getClass().getDeclaredField("mBaseResolveList");

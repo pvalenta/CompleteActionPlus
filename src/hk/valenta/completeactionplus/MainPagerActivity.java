@@ -25,6 +25,7 @@ public class MainPagerActivity extends FragmentActivity {
 
 	SettingPageAdapter pageAdapter;
 	ViewPager viewPager;
+	int xposedVersion = 0;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -114,10 +115,16 @@ public class MainPagerActivity extends FragmentActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// continue to activation
-						Intent modules = new Intent(Intent.ACTION_MAIN);
-						modules.setComponent(ComponentName.unflattenFromString("de.robv.android.xposed.installer/de.robv.android.xposed.installer.XposedInstallerActivity"));
-						modules.putExtra("opentab", 1);
-						startActivity(modules);
+						if (xposedVersion == 1) {
+							Intent modules = new Intent(Intent.ACTION_MAIN);
+							modules.setComponent(ComponentName.unflattenFromString("de.robv.android.xposed.installer/de.robv.android.xposed.installer.XposedInstallerActivity"));
+							modules.putExtra("opentab", 1);
+							startActivity(modules);
+						} else if (xposedVersion == 2) {
+							Intent modules = new Intent(Intent.ACTION_MAIN);
+							modules.setComponent(ComponentName.unflattenFromString("pro.burgerz.wsm.manager/pro.burgerz.wsm.manager.ModuleSettingActivity"));
+							startActivity(modules);
+						}
 						finish();
 					}
 				}).create();
@@ -134,9 +141,15 @@ public class MainPagerActivity extends FragmentActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// continue to activation
-						Intent modules = new Intent(Intent.ACTION_MAIN);
-						modules.setComponent(ComponentName.unflattenFromString("de.robv.android.xposed.installer/de.robv.android.xposed.installer.XposedInstallerActivity"));
-						startActivity(modules);
+						if (xposedVersion == 1) {
+							Intent modules = new Intent(Intent.ACTION_MAIN);
+							modules.setComponent(ComponentName.unflattenFromString("de.robv.android.xposed.installer/de.robv.android.xposed.installer.XposedInstallerActivity"));
+							startActivity(modules);
+						} else if (xposedVersion == 2) {
+							Intent modules = new Intent(Intent.ACTION_MAIN);
+							modules.setComponent(ComponentName.unflattenFromString("pro.burgerz.wsm.manager/pro.burgerz.wsm.manager.InstallerActivity"));
+							startActivity(modules);
+						}
 						finish();
 					}
 				}).create();
@@ -147,6 +160,15 @@ public class MainPagerActivity extends FragmentActivity {
 	private boolean existXposed() {
 		try {
 			if (getPackageManager().getPackageInfo("de.robv.android.xposed.installer", PackageManager.GET_META_DATA) != null) {
+				xposedVersion = 1;
+				return true;
+			}
+		} catch (NameNotFoundException e1) {
+			// not found package
+		}
+		try {
+			if (getPackageManager().getPackageInfo("pro.burgerz.wsm.manager", PackageManager.GET_META_DATA) != null) {
+				xposedVersion = 2;
 				return true;
 			}
 		} catch (NameNotFoundException e1) {

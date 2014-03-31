@@ -2,102 +2,117 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    tools:context=".LayoutFragment">
-    
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="15dp"
-    android:paddingStart="15dp"
-    android:paddingRight="15dp"
-    android:paddingEnd="15dp"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical">
-  
-    <RelativeLayout android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+    tools:context=".LayoutFragment" >
 
-	    <Spinner android:id="@+id/fragment_layout_spinner"
-	        style="@style/DropDown"
-        	android:layout_alignParentEnd="true"/>
-	    
-	    <TextView style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_marginEnd="90dp"
-	        android:layout_alignTop="@id/fragment_layout_spinner"
-	        android:text="@string/activity_main_layout_choice"/>	    
-    </RelativeLayout>
-	    
-    <RelativeLayout android:id="@+id/fragment_layout_listLayout_group"
-        android:visibility="gone"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-	    <Spinner android:id="@+id/fragment_layout_listTextSize_spinner"
-	        style="@style/DropDown"
-       		android:layout_alignParentEnd="true"/>
-	    
-	    <TextView style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_marginEnd="90dp"
-	        android:layout_alignTop="@id/fragment_layout_listTextSize_spinner"
-	        android:text="@string/activity_main_list_textSize"/>	        
-        
-    </RelativeLayout>
-	    
-    <RelativeLayout android:id="@+id/fragment_layout_gridLayout_group"
-        android:visibility="gone"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingEnd="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingStart="15dp"
+        android:paddingTop="@dimen/activity_vertical_margin" >
 
-	    <Spinner android:id="@+id/fragment_layout_gridColumns_spinner"
-	        style="@style/DropDown"
-       		android:layout_alignParentEnd="true"/>
-	
-	    <TextView android:id="@+id/fragment_layout_gridColumns_label" 
-	        style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_layout_gridColumns_spinner"
-	        android:layout_marginEnd="90dp"
-	        android:text="@string/activity_main_grid_columns"/>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
 
-	    <Spinner android:id="@+id/fragment_layout_gridColumnsLandscape_spinner"
-	        android:layout_below="@id/fragment_layout_gridColumns_spinner"
-	        style="@style/DropDown"
-       		android:layout_alignParentEnd="true"/>
-	
-	    <TextView android:id="@+id/fragment_layout_gridColumnsLandscape_label" 
-	        style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_layout_gridColumnsLandscape_spinner"
-	        android:layout_marginEnd="90dp"
-	        android:text="@string/activity_main_grid_columns"/>				    				   
-	    				    
-	    <Spinner android:id="@+id/fragment_layout_gridTextSize_spinner"
-	        android:layout_below="@id/fragment_layout_gridColumnsLandscape_spinner"
-	        style="@style/DropDown"
-       		android:layout_alignParentEnd="true"/>
-	    
-	    <TextView style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_marginEnd="90dp"
-	        android:layout_alignTop="@id/fragment_layout_gridTextSize_spinner"
-	        android:text="@string/activity_main_grid_textSize"/>   
-	        
-	    <CheckBox android:id="@+id/fragment_layout_reduce_columns_checkbox"
-	        style="@style/Checkbox"
-	        android:layout_marginTop="5dp"
-	        android:layout_below="@id/fragment_layout_gridTextSize_spinner"
-	        android:layout_alignParentEnd="true"/>
-	    
-	    <TextView android:text="@string/grid_dont_reduce_columns"
-	        style="@style/LabelTextView"
-	        android:layout_alignParentStart="true"
-	        android:layout_marginEnd="90dp"
-	        android:layout_alignTop="@id/fragment_layout_reduce_columns_checkbox"/>	    	    	       
-        	        
-    </RelativeLayout>
-		        
-</LinearLayout>
+            <Spinner
+                android:id="@+id/fragment_layout_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_layout_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_layout_choice" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fragment_layout_listLayout_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" >
+
+            <Spinner
+                android:id="@+id/fragment_layout_listTextSize_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_layout_listTextSize_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_list_textSize" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fragment_layout_gridLayout_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" >
+
+            <Spinner
+                android:id="@+id/fragment_layout_gridColumns_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/fragment_layout_gridColumns_label"
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_layout_gridColumns_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_grid_columns" />
+
+            <Spinner
+                android:id="@+id/fragment_layout_gridColumnsLandscape_spinner"
+                style="@style/DropDown"
+                android:layout_below="@id/fragment_layout_gridColumns_spinner"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/fragment_layout_gridColumnsLandscape_label"
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_layout_gridColumnsLandscape_spinner"
+                android:layout_toLeftOf="@id/fragment_layout_gridColumnsLandscape_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_grid_columns" />
+
+            <Spinner
+                android:id="@+id/fragment_layout_gridTextSize_spinner"
+                style="@style/DropDown"
+                android:layout_below="@id/fragment_layout_gridColumnsLandscape_spinner"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_layout_gridTextSize_spinner"
+                android:layout_toLeftOf="@id/fragment_layout_gridTextSize_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_grid_textSize" />
+
+            <CheckBox
+                android:id="@+id/fragment_layout_reduce_columns_checkbox"
+                style="@style/Checkbox"
+                android:layout_below="@id/fragment_layout_gridTextSize_spinner"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_layout_reduce_columns_checkbox"
+                android:layout_toLeftOf="@id/fragment_layout_reduce_columns_checkbox"
+                android:gravity="center_vertical"
+                android:text="@string/grid_dont_reduce_columns" />
+        </RelativeLayout>
+    </LinearLayout>
 
 </ScrollView>

@@ -72,6 +72,7 @@
 	    </HorizontalScrollView>
         
 	    <ImageButton android:id="@+id/rule_item_delete_button"
+	        android:contentDescription="@string/manager_rule_delete"
 	       	style="@android:style/Widget.Button.Small"	
 	       	android:src="@android:drawable/ic_menu_delete"       
 	       	android:layout_alignParentRight="true"

@@ -1,161 +1,190 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="15dp"
-    android:paddingStart="15dp"
-    android:paddingRight="15dp"
     android:paddingEnd="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingStart="15dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-    tools:context=".DialogFragment">
-  
-    <RelativeLayout android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-              	     
-	    <Spinner android:id="@+id/fragment_dialog_theme_spinner"
-	        style="@style/DropDown"			        
-        	android:layout_alignParentEnd="true"/>
-	    
-	    <TextView style="@style/LabelDropDown"
-	        android:layout_alignTop="@id/fragment_dialog_theme_spinner"
-	        android:layout_alignParentStart="true"
-	        android:layout_marginEnd="90dp"
-	        android:text="@string/activity_main_layout_theme"/>
-	
-	</RelativeLayout>
-	
-    <RelativeLayout android:id="@+id/fragment_dialog_color_block" 
-		android:layout_marginBottom="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-    
-        <RelativeLayout android:id="@+id/fragment_dialog_color_text_border"
-            android:background="@android:color/black"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" 
-            android:padding="1dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            
-            <View android:id="@+id/fragment_dialog_color_text"
-                android:layout_width="60dp"
-                android:layout_height="25dp"/>
-            
-        </RelativeLayout>
-        
-        <TextView style="@style/LabelDropDown"
-            android:layout_alignTop="@id/fragment_dialog_color_text_border"
-	        android:layout_alignParentStart="true"
-	        android:layout_marginEnd="90dp"
-            android:text="@string/text_color"/>
+    tools:context=".DialogFragment" >
 
-        <RelativeLayout android:id="@+id/fragment_dialog_color_background_border"
-            android:layout_below="@id/fragment_dialog_color_text_border"
-            android:background="@android:color/black"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" 
-            android:padding="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            
-            <View android:id="@+id/fragment_dialog_color_background"
-                android:layout_width="60dp"
-                android:layout_height="25dp"/>
-            
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:id="@+id/fragment_dialog_theme_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/fragment_dialog_theme_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_layout_theme" />
         </RelativeLayout>
-        
-        <TextView style="@style/LabelDropDown"
-            android:layout_alignTop="@id/fragment_dialog_color_background_border"
-	        android:layout_alignParentStart="true"
-	        android:layout_marginEnd="90dp"
-            android:text="@string/background_color"/>
-        
-	</RelativeLayout>
-	    
-	<RelativeLayout android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-	    <Spinner android:id="@+id/fragment_dialog_position_portrait_spinner"
-	        style="@style/DropDown"			        
-        	android:layout_alignParentEnd="true"/>
-	    
-	    <TextView android:id="@+id/fragment_dialog_position_portrait_label" 
-	        style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_dialog_position_portrait_spinner"
-	        android:layout_marginRight="110dp"
-	        android:layout_marginEnd="110dp"
-	        android:text="@string/dialog_gravity"/>		        	               
-	    
-	    <Spinner android:id="@+id/fragment_dialog_position_landscape_spinner"
-	        style="@style/DropDown"	
-	        android:layout_below="@id/fragment_dialog_position_portrait_spinner"		        
-        	android:layout_alignParentEnd="true"/>
-	    
-	    <TextView android:id="@+id/fragment_dialog_position_landscape_label" 
-	        style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_dialog_position_landscape_spinner"
-	        android:layout_marginRight="110dp"
-	        android:layout_marginEnd="110dp"
-	        android:text="@string/dialog_gravity"/>		        	               	    	    	   
-	    
-	    <CheckBox android:id="@+id/fragment_dialog_display_always_checkbox"
-	        style="@style/Checkbox"
-	        android:layout_marginTop="5dp"
-	        android:layout_below="@id/fragment_dialog_position_landscape_spinner"
-	        android:layout_alignParentEnd="true"/>
-	    
-	    <TextView android:text="@string/activity_main_display_always"
-	        style="@style/LabelTextView"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_dialog_display_always_checkbox"/>
-              
-	    <CheckBox android:id="@+id/fragment_dialog_manage_list_checkbox"
-	        style="@style/Checkbox"
-	        android:layout_below="@id/fragment_dialog_display_always_checkbox"
-	        android:layout_alignParentEnd="true"/>
-	    
-	    <TextView android:text="@string/activity_main_manage_list"
-	        style="@style/LabelTextView"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_dialog_manage_list_checkbox"/>
-	    
-    </RelativeLayout>     
-    
-    <RelativeLayout android:id="@+id/fragment_dialog_manage_block"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-	    <Spinner android:id="@+id/fragment_dialog_manage_style_spinner"
-	        style="@style/DropDown"			        
-        	android:layout_alignParentEnd="true"/>
-	    
-	    <TextView style="@style/LabelDropDown"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_dialog_manage_style_spinner"
-	        android:layout_marginRight="120dp"
-	        android:layout_marginEnd="120dp"
-	        android:text="@string/manage_trigger_style"/>		        	               
-        
-    </RelativeLayout>
-    
-    <RelativeLayout android:id="@+id/fragment_dialog_xhalo_block" 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        
-	    <CheckBox android:id="@+id/fragment_dialog_xhalo_checkbox"
-	        style="@style/Checkbox"
-	        android:layout_alignParentEnd="true"/>
-	    
-	    <TextView android:text="@string/activity_main_xhalo"
-	        style="@style/LabelTextView"
-	        android:layout_alignParentStart="true"
-	        android:layout_alignTop="@id/fragment_dialog_xhalo_checkbox"/>		    		    		        		       
-        
-    </RelativeLayout>
-		                
-</LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/fragment_dialog_color_block"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2" >
+
+            <RelativeLayout
+                android:id="@+id/fragment_dialog_color_text_border"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/black"
+                android:padding="1dp" >
+
+                <View
+                    android:id="@+id/fragment_dialog_color_text"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp" />
+            </RelativeLayout>
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_dialog_color_text_border"
+                android:gravity="center_vertical"
+                android:text="@string/text_color" />
+
+            <RelativeLayout
+                android:id="@+id/fragment_dialog_color_background_border"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_dialog_color_text_border"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/black"
+                android:padding="1dp" >
+
+                <View
+                    android:id="@+id/fragment_dialog_color_background"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp" />
+            </RelativeLayout>
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_dialog_color_background_border"
+                android:layout_toLeftOf="@id/fragment_dialog_color_background_border"
+                android:gravity="center_vertical"
+                android:text="@string/background_color" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:id="@+id/fragment_dialog_position_portrait_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/fragment_dialog_position_portrait_label"
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_dialog_position_portrait_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/dialog_gravity" />
+
+            <Spinner
+                android:id="@+id/fragment_dialog_position_landscape_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_dialog_position_portrait_spinner" />
+
+            <TextView
+                android:id="@+id/fragment_dialog_position_landscape_label"
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_dialog_position_landscape_spinner"
+                android:layout_toLeftOf="@id/fragment_dialog_position_landscape_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/dialog_gravity" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <CheckBox
+                android:id="@+id/fragment_dialog_display_always_checkbox"
+                style="@style/Checkbox"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_dialog_display_always_checkbox"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_display_always" />
+
+            <CheckBox
+                android:id="@+id/fragment_dialog_manage_list_checkbox"
+                style="@style/Checkbox"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_dialog_display_always_checkbox" />
+
+            <TextView
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_dialog_manage_list_checkbox"
+                android:layout_toLeftOf="@id/fragment_dialog_manage_list_checkbox"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_manage_list" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fragment_dialog_manage_block"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:id="@+id/fragment_dialog_manage_style_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_dialog_manage_style_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/manage_trigger_style" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fragment_dialog_xhalo_block"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <CheckBox
+                android:id="@+id/fragment_dialog_xhalo_checkbox"
+                style="@style/Checkbox"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_dialog_xhalo_checkbox"
+                android:gravity="center_vertical"
+                android:text="@string/activity_main_xhalo" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

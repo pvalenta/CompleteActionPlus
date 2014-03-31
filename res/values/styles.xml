@@ -20,15 +20,14 @@
     
     <!-- Dropdown  -->
     <style name="DropDown">
-        <item name="android:minWidth">80dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentRight">true</item>
+        <item name="android:minWidth">80dp</item>
     </style>
     
     <!-- Checkbox -->
     <style name="Checkbox">
-        <item name="android:paddingTop">20dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>        
         <item name="android:layout_alignParentRight">true</item>
@@ -37,13 +36,12 @@
     <!-- LabelTextView -->
     <style name="LabelTextView">
         <item name="android:textSize">15sp</item>
-        <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:lines">2</item>
     </style>
     <style name="LabelDropDown" parent="LabelTextView">
-        <item name="android:layout_marginRight">90dp</item>
     </style>
     <style name="LabelColor" parent="LabelTextView">
         <item name="android:layout_marginTop">2dp</item>

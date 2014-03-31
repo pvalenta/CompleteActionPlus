@@ -36,7 +36,13 @@
     <string name="manage_trigger_style">Afficher les options</string>
     <string name="text_color">Couleur du texte</string>
     <string name="background_color">Couleur de l\'arrière-plan</string>
-    <string name="xposed_not_installed">Xposed Framework is not installed.\nContinue to Xposed Framework thread?</string>
-    <string name="mod_not_activated">This mod is not activated or device didn\'t restart yet.</string>
-    <string name="not_yet_restarted">Please restart first.</string>
+    <string name="xposed_not_installed">Le Framework Xposed n\'est pas installé.\nAfficher le topic Xposed Framework ?</string>
+    <string name="mod_not_activated">Ce mod n\'est pas activé ou l\'appareil n\'a pas redémarré.</string>
+    <string name="not_yet_restarted">Veuillez redémarrez l\'appareil.</string>
+    <string name="show_rule_manager">Show rule manager</string>
+    <string name="activity_manager_title">Rule Manager</string>
+    <string name="fragment_hidden">Masquer</string>
+    <string name="fragment_favorite">Favorite</string>
+    <string name="manager_rule_delete">Delete rule</string>
+    <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
 </resources>

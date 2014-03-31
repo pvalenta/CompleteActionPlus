@@ -51,7 +51,7 @@
 	    <item>En bas à gauche</item>
 	</string-array>
 	<string-array name="manageTrigger">
-	    <item>Wrench Button</item>
+	    <item>Bouton \'Outil\'</item>
 	    <item>Appui long sur le titre</item>
 	</string-array>
 </resources>

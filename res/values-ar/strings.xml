@@ -39,4 +39,10 @@
     <string name="xposed_not_installed">برنامج Xposed framework لم يتم تنصيبة،  الذهاب إلى صفحة البرنامج؟</string>
     <string name="mod_not_activated">لم يتم تفعيل البرنامج أو لم يتم إعادة تشغيل الجهاز</string>
     <string name="not_yet_restarted">الرجاء إعادة التشغيل أولاً</string>
+    <string name="show_rule_manager">Show rule manager</string>
+    <string name="activity_manager_title">Rule Manager</string>
+    <string name="fragment_hidden">مخفي</string>
+    <string name="fragment_favorite">Favorite</string>
+    <string name="manager_rule_delete">Delete rule</string>
+    <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
 </resources>
