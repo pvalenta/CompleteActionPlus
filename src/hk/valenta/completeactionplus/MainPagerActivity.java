@@ -132,7 +132,7 @@ public class MainPagerActivity extends FragmentActivity {
 		}
 		
 		// correct version?
-		if (version != null && !version.equals("1.9.0")) {
+		if (version != null && !version.equals("1.9.3")) {
 			// show message
 			AlertDialog alertActivate = new AlertDialog.Builder(this)
 				.setMessage(R.string.not_yet_restarted)
@@ -197,6 +197,8 @@ public class MainPagerActivity extends FragmentActivity {
 				return getString(R.string.fragment_dialog);
 			} else if (position == 2) {
 				return getString(R.string.fragment_layout);
+			} else if (position == 3) {
+				return getString(R.string.activity_main_advanced);
 			} else {
 				return null;
 			}
@@ -211,6 +213,8 @@ public class MainPagerActivity extends FragmentActivity {
 				return new DialogFragment();
 			} else if (position == 2) {
 				return new LayoutFragment();
+			} else if (position == 3) {
+				return new AdvancedFragment();
 			} else {
 				return null;
 			}
@@ -219,7 +223,7 @@ public class MainPagerActivity extends FragmentActivity {
 		@Override
 		public int getCount() {
 			// number of pages
-			return 3;
+			return 4;
 		}		
 	}
 }

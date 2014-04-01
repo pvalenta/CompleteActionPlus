@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.valenta.completeactionplus"
-    android:versionCode="49"
-    android:versionName="1.9.2" >
+    android:versionCode="50"
+    android:versionName="1.9.3" >
 
     <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="19" />
 

@@ -71,8 +71,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("1.9.0");
-					return "1.9.0";
+					param.setResult("1.9.3");
+					return "1.9.3";
 				}
 			});
 		}
@@ -383,7 +383,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// let's get intent
 				Field mIntent = param.thisObject.getClass().getDeclaredField("mIntent");
 				Intent myIntent = (Intent)mIntent.get(param.thisObject);
-				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), myIntent.getScheme());
+				String scheme = myIntent.getScheme();
+				if (pref.getBoolean("RulePerWebDomain", false) && (scheme.equals("http") || scheme.equals("https"))) {
+					// add domain
+					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
+				} 
+				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), scheme);
 				String cHidden = pref.getString(intentId, null);
 				if (cHidden != null && cHidden.length() > 0) {
 					// split by ;
@@ -1073,7 +1078,13 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			manage.putExtra("action", myIntent.getAction());
 			manage.putExtra("type", myIntent.getType());
 			manage.setType("complete/action");
-			manage.putExtra("scheme", myIntent.getScheme());
+			String scheme = myIntent.getScheme();
+			if (pref.getBoolean("RulePerWebDomain", false) && (scheme.equals("http") || scheme.equals("https"))) {
+				// add domain
+				manage.putExtra("scheme", String.format("%s_%s", scheme ,myIntent.getData().getAuthority()));
+			} else {
+				manage.putExtra("scheme", scheme);
+			}
 			String[] aItems = new String[items.size()];
 			manage.putExtra("items", items.toArray(aItems));
 			

@@ -39,6 +39,7 @@ public class ManageListActivity extends Activity {
 	private ArrayList<String> favouriteItems;
 	private PackageManager pManager;
 	private int remain;
+	private int minLimit = 2;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -60,6 +61,13 @@ public class ManageListActivity extends Activity {
 		if (theme.equals("Dark")) {
 			TextView warning = (TextView)findViewById(R.id.manage_list_warning);
 			warning.setBackgroundColor(Color.parseColor("#303030"));
+		}
+		
+		// only one
+		if (pref.getBoolean("OnlyOneRule", false)) {
+			minLimit = 1;
+			TextView warning = (TextView)findViewById(R.id.manage_list_warning);
+			warning.setText(R.string.manage_list_warning_one);
 		}
 		
 		// get intent
@@ -254,9 +262,13 @@ public class ManageListActivity extends Activity {
 					ImageButton favButton = (ImageButton)parent.getChildAt(2);
 					SharedPreferences pref = buttonView.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
 					
-					if (!buttonView.isChecked() && remain < 3) {
+					if (!buttonView.isChecked() && remain <= minLimit) {
 						buttonView.setChecked(true);
-						Toast.makeText(buttonView.getContext(), getString(R.string.manage_list_warning),  Toast.LENGTH_LONG).show();
+						if (minLimit == 1) {
+							Toast.makeText(buttonView.getContext(), getString(R.string.manage_list_warning_one),  Toast.LENGTH_LONG).show();
+						} else {
+							Toast.makeText(buttonView.getContext(), getString(R.string.manage_list_warning),  Toast.LENGTH_LONG).show();
+						}
 						return;
 					} 
 					hidden[position] = !buttonView.isChecked();

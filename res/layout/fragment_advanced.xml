@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingEnd="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingStart="15dp"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".AdvancedFragment" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <CheckBox
+            android:id="@+id/fragment_advanced_allow_one_checkbox"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/fragment_advanced_allow_one_checkbox"
+            android:gravity="center_vertical"
+            android:text="@string/advanced_allow_one_item" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <CheckBox
+            android:id="@+id/fragment_advanced_web_domain_checkbox"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/fragment_advanced_web_domain_checkbox"
+            android:gravity="center_vertical"
+            android:text="@string/advanced_rule_per_domain" />
+    </RelativeLayout>
+        
+</LinearLayout>

@@ -39,10 +39,13 @@
     <string name="xposed_not_installed">Xposed Framework nie je nainštalovaný.\nPokračovať do témy o Xposed Frameworku?</string>
     <string name="mod_not_activated">Tento modul nie je aktívny alebo zariadenie zatiaľ nebolo reštartované.</string>
     <string name="not_yet_restarted">Prosím, reštartujte najprv</string>
-    <string name="show_rule_manager">Show rule manager</string>
-    <string name="activity_manager_title">Rule Manager</string>
+    <string name="show_rule_manager">Zobraziť správcu pravidiel</string>
+    <string name="activity_manager_title">Správca pravidiel</string>
     <string name="fragment_hidden">Skryté</string>
-    <string name="fragment_favorite">Favorite</string>
-    <string name="manager_rule_delete">Delete rule</string>
-    <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
+    <string name="fragment_favorite">Obľúbené</string>
+    <string name="manager_rule_delete">Vymazať pravidlo</string>
+    <string name="manager_rule_delete_confirm">Vymazať toto pravidlo?</string>
+    <string name="advanced_allow_one_item">Allow to keep only one item remain</string>
+    <string name="manage_list_warning_one">Please keep at least one item active in the list.</string>
+    <string name="advanced_rule_per_domain">Rules per every website domain</string>
 </resources>
