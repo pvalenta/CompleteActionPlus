@@ -39,10 +39,10 @@
     <string name="xposed_not_installed">Xposed Framework није инсталиран \nНаставити ка влакну Xposed Framework-а?</string>
     <string name="mod_not_activated">Ова модификација није активирана или уређај није рестартован.</string>
     <string name="not_yet_restarted">Прво рестартујте, молим.</string>
-    <string name="show_rule_manager">Show rule manager</string>
-    <string name="activity_manager_title">Rule Manager</string>
+    <string name="show_rule_manager">Прикажи менаџера правила</string>
+    <string name="activity_manager_title">Менаџер правила</string>
     <string name="fragment_hidden">Сакривен</string>
-    <string name="fragment_favorite">Favorite</string>
-    <string name="manager_rule_delete">Delete rule</string>
-    <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
+    <string name="fragment_favorite">Омиљени</string>
+    <string name="manager_rule_delete">Избриши правило</string>
+    <string name="manager_rule_delete_confirm">Сигурно избрисати правило?</string>
 </resources>

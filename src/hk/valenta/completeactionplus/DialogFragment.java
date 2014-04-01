@@ -50,8 +50,10 @@ public class DialogFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("LayoutTheme", EnumConvert.layoutThemeName(pos)).commit();
-				showColorBlock(pos, true);
+				int layoutThemeIndex = EnumConvert.layouThemeIndex(pref.getString("LayoutTheme", "Default"));
+				boolean defaultColors = layoutThemeIndex != pos;
+				pref.edit().putString("LayoutTheme", EnumConvert.layoutThemeName(pos)).commit();				
+				showColorBlock(pos, defaultColors);
 			}
 
 			@Override

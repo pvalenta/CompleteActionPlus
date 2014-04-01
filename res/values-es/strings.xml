@@ -39,10 +39,10 @@
     <string name="xposed_not_installed">Xposed Framework yüklü değil. \Xposed Framework modülüne devam edilsin mi?</string>
     <string name="mod_not_activated">Bu mod aktif değil veya cihaz henüz başlatılamadı.</string>
     <string name="not_yet_restarted">Önce yeniden başlatın.</string>
-    <string name="show_rule_manager">Show rule manager</string>
-    <string name="activity_manager_title">Rule Manager</string>
+    <string name="show_rule_manager">Mostrar Adm. de Reglas</string>
+    <string name="activity_manager_title">Administrador de reglas</string>
     <string name="fragment_hidden">Oculto</string>
-    <string name="fragment_favorite">Favorite</string>
-    <string name="manager_rule_delete">Delete rule</string>
-    <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
+    <string name="fragment_favorite">Favorito</string>
+    <string name="manager_rule_delete">Eliminar regla</string>
+    <string name="manager_rule_delete_confirm">¿Desea eliminar esta regla?</string>
 </resources>

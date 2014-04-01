@@ -39,10 +39,10 @@
     <string name="xposed_not_installed">Xposedフレームワークがインストールされていません。\nXposedフレームワークのDLページを開きますか?</string>
     <string name="mod_not_activated">このモジュールが有効にされていないかまだ再起動されていません。</string>
     <string name="not_yet_restarted">まず再起動してください。</string>
-    <string name="show_rule_manager">Show rule manager</string>
-    <string name="activity_manager_title">Rule Manager</string>
+    <string name="show_rule_manager">ルール管理の表示</string>
+    <string name="activity_manager_title">ルール管理</string>
     <string name="fragment_hidden">非表示</string>
-    <string name="fragment_favorite">Favorite</string>
-    <string name="manager_rule_delete">Delete rule</string>
-    <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
+    <string name="fragment_favorite">お気に入り</string>
+    <string name="manager_rule_delete">ルールの削除</string>
+    <string name="manager_rule_delete_confirm">このルールを削除しますか?</string>
 </resources>
