@@ -1,7 +1,7 @@
 <resources>
     <string-array name="change_layout_styles">
-        <item>Varsayılan  </item>
-        <item>Liste</item>
+        <item>Por defecto</item>
+        <item>Lista</item>
         <item>Cuadrícula</item>
     </string-array>
     <string-array name="grid_layout_columns">
@@ -40,19 +40,18 @@
 	    <item>Oscuro</item>
 	</string-array>
 	<string-array name="dialog_gravity">
-	    <item>Merkez</item>
-	    <item>Alt</item>
-	    <item>Sağ Alt</item>
-	    <item>Sağ</item>
-	    <item>Sağ Üst</item>	    	    	    
-		<item>Üst</item>
-	    <item>Sol Üst</item>
-	    <item>Sol
-</item>
-	    <item>Sol Alt</item>
+	    <item>Centro</item>
+	    <item>Abajo</item>
+	    <item>Esq. Inf. Derecha</item>
+	    <item>Derecha</item>
+	    <item>Esq. Sup. Derecha</item>	    	    	    
+		<item>Arriba</item>
+	    <item>Esq. Sup. Izquierda</item>
+	    <item>Izquierda</item>
+	    <item>Esq. Inf. Izquierda</item>
 	</string-array>
 	<string-array name="manageTrigger">
-	    <item>İngiliz anahtarı Butonu</item>
-	    <item>Uzun Başlığa tıklayın </item>
+	    <item>Llave Inglesa</item>
+	    <item>Pulsación larga (título)</item>
 	</string-array>
 </resources>

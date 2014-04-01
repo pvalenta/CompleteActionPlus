@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
@@ -30,6 +31,7 @@ public class RuleItemHelper {
 			
 			// setup icon
 			ImageView img = new ImageView(activity);
+			img.setScaleType(ScaleType.FIT_XY);
 			try {
 				img.setImageDrawable(info.applicationInfo.loadIcon(pm));
 			} catch (Exception e) {
@@ -37,8 +39,8 @@ public class RuleItemHelper {
 			}
 			layout.addView(img);
 			params = (LayoutParams)img.getLayoutParams();
-			params.width = LayoutParams.WRAP_CONTENT;
-			params.height = LayoutParams.WRAP_CONTENT;
+			params.width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics);
+			params.height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics);
 			params.gravity = Gravity.CENTER_HORIZONTAL;
 			
 			// setup text
