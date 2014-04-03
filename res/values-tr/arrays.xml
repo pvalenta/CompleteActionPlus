@@ -51,7 +51,7 @@
 	    <item>Sol Alt</item>
 	</string-array>
 	<string-array name="manageTrigger">
-	    <item>Wrench Button</item>
-	    <item>Long Click Title</item>
+	    <item>İngiliz anahtarı Butonu</item>
+	    <item>Uzun Başlığa tıklayın</item>
 	</string-array>
 </resources>

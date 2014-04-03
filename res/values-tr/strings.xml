@@ -33,12 +33,12 @@
     <string name="app_version">Sürüm</string>
     <string name="grid_dont_reduce_columns">Az öğeler için sütun azaltılmaz</string>
     <string name="dialog_gravity">İletişim pozisyonu (%s)</string>
-    <string name="manage_trigger_style">Manage trigger style</string>
+    <string name="manage_trigger_style">Tetik stilini yönetin</string>
     <string name="text_color">Text color</string>
     <string name="background_color">Background color</string>
-    <string name="xposed_not_installed">Xposed Framework is not installed.\nContinue to Xposed Framework thread?</string>
-    <string name="mod_not_activated">This mod is not activated or device didn\'t restart yet.</string>
-    <string name="not_yet_restarted">Please restart first.</string>
+    <string name="xposed_not_installed">Xposed Framework yüklü değil.\nXposed Framework modülüne devam edilsin mi?</string>
+    <string name="mod_not_activated">Bu mod aktif değil veya cihaz henüz başlatılamadı.</string>
+    <string name="not_yet_restarted">Önce yeniden başlatın.</string>
     <string name="show_rule_manager">Show rule manager</string>
     <string name="activity_manager_title">Rule Manager</string>
     <string name="fragment_hidden">Gizlenmiş</string>
@@ -48,4 +48,15 @@
     <string name="advanced_allow_one_item">Allow to keep only one item remain</string>
     <string name="manage_list_warning_one">Please keep at least one item active in the list.</string>
     <string name="advanced_rule_per_domain">Rules per every website domain</string>
+    <string name="manager_backup_rules">Backup Rules</string>
+    <string name="manager_restore_rules">Restore Rules</string>
+    <string name="manager_backup_failed">Backup failed.</string>
+    <string name="manager_backup_success">Backup done.</string>
+    <string name="manager_backup_send">Do you want to send out this backup?</string>
+    <string name="manager_no_backup">There is no backup found.</string>
+    <string name="manager_choose_backup">Choose backup to restore</string>
+    <string name="manager_invalid_backup">Invalid backup</string>
+    <string name="manager_restore_failed">Restore failed.</string>
+    <string name="manager_restore_success">Restore success.</string>
+    <string name="manager_restore_intent">Do you want to restore rules from %s ?</string>
 </resources>

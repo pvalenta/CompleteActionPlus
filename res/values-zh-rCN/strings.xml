@@ -45,7 +45,18 @@
     <string name="fragment_favorite">收藏夹</string>
     <string name="manager_rule_delete">删除分配</string>
     <string name="manager_rule_delete_confirm">你确定删除吗？</string>
-    <string name="advanced_allow_one_item">Allow to keep only one item remain</string>
-    <string name="manage_list_warning_one">Please keep at least one item active in the list.</string>
+    <string name="advanced_allow_one_item">允许只保留一个程序项目</string>
+    <string name="manage_list_warning_one">请在列表中保持至少一个可执行此操作的程序项目。</string>
     <string name="advanced_rule_per_domain">Rules per every website domain</string>
+    <string name="manager_backup_rules">Backup Rules</string>
+    <string name="manager_restore_rules">Restore Rules</string>
+    <string name="manager_backup_failed">Backup failed.</string>
+    <string name="manager_backup_success">Backup done.</string>
+    <string name="manager_backup_send">Do you want to send out this backup?</string>
+    <string name="manager_no_backup">There is no backup found.</string>
+    <string name="manager_choose_backup">Choose backup to restore</string>
+    <string name="manager_invalid_backup">Invalid backup</string>
+    <string name="manager_restore_failed">Restore failed.</string>
+    <string name="manager_restore_success">Restore success.</string>
+    <string name="manager_restore_intent">Do you want to restore rules from %s ?</string>
 </resources>
