@@ -51,7 +51,7 @@
 	    <item>Снизу слева</item>
 	</string-array>
 	<string-array name="manageTrigger">
-	    <item>Wrench кнопка</item>
-	    <item>Долгое нажатие га заголовок</item>
+	    <item>Кнопка настроек</item>
+	    <item>Долгое нажатие на заголовок</item>
 	</string-array>
 </resources>

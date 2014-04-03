@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.R.anim;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -71,8 +73,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("1.9.3");
-					return "1.9.3";
+					param.setResult("1.9.5");
+					return "1.9.5";
 				}
 			});
 		}
@@ -279,9 +281,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				String layoutStyle = pref.getString("LayoutStyle", "Default");
 				String theme = pref.getString("LayoutTheme", "Default");
 				if (manageList) {
-					makeManageListButton(param, rObject, myIntent, !layoutStyle.equals("Default"), theme, pref);
+					makeManageListButton(param, rObject, myIntent, !theme.equals("Default"), theme, pref);
 				} else {
-					themeTitleView(param, rObject, !layoutStyle.equals("Default"), theme, pref);
+					themeTitleView(param, rObject, !theme.equals("Default"), theme, pref);
 				}
 				
 				// dialog gravity
@@ -604,11 +606,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 		}
 		
+		// get element
+		View resolver_grid = liparam.view.findViewById(liparam.res.getIdentifier(listName, "id", framework));		
+		
 		// change layout?
 		String layoutStyle = pref.getString("LayoutStyle", "Default");
 		if (!layoutStyle.equals("Default")) {
-			// get element
-			View resolver_grid = liparam.view.findViewById(liparam.res.getIdentifier(listName, "id", framework));
 			if (resolver_grid.getClass().equals(GridView.class) && layoutStyle.equals("List")) {
 				hideElement(resolver_grid);
 				// create list
@@ -634,6 +637,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
 				}		
 			}
+		} else {
+			if (theme.equals("Light")) {
+				resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+			} else if (theme.equals("Dark")) {
+				resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+			}		
 		}
 	}
 	
@@ -853,13 +862,28 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		// get current configuration
 		XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 		String layoutStyle = pref.getString("LayoutStyle", "Default");
-		if (layoutStyle.equals("Default")) return;
-
-		// what layout
 		String theme = pref.getString("LayoutTheme", "Default");
-		if (layoutStyle.equals("List")) {
+		if (layoutStyle.equals("Default") && theme.equals("Default")) return;
+		else if (layoutStyle.equals("Default"))
+		{
+			// keep same style, but change color
+			TextView text1 = (TextView)liparam.view.findViewById(android.R.id.text1);
+			if (theme.equals("Light")) {
+				text1.setTextColor(pref.getInt("TextColor", Color.BLACK));
+			} else if (theme.equals("Dark")) {
+				text1.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+			}		
+			TextView text2 = (TextView)liparam.view.findViewById(android.R.id.text2);
+			if (theme.equals("Light")) {
+				text2.setTextColor(pref.getInt("TextColor", Color.BLACK));
+			} else if (theme.equals("Dark")) {
+				text2.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+			}		
+		} else if (layoutStyle.equals("List")) {
+			// convert to list
 			convertToAOSPListItem(liparam, (LinearLayout)liparam.view, pref.getString("ListTextSize", "Regular"), theme, framework, pref);
 		} else if (layoutStyle.equals("Grid")) {
+			// convert to grid
 			convertToGridItem(liparam, (LinearLayout)liparam.view, pref.getString("GridTextSize", "Regular"), theme, framework, pref);
 		} 
 		

@@ -48,15 +48,15 @@
     <string name="advanced_allow_one_item">Umožnit ponechat jedinou položku aktivní</string>
     <string name="manage_list_warning_one">Nechte alespoň 2 položky aktivní.</string>
     <string name="advanced_rule_per_domain">Pravidla pro každou web doménu</string>
-    <string name="manager_backup_rules">Backup Rules</string>
-    <string name="manager_restore_rules">Restore Rules</string>
-    <string name="manager_backup_failed">Backup failed.</string>
-    <string name="manager_backup_success">Backup done.</string>
-    <string name="manager_backup_send">Do you want to send out this backup?</string>
-    <string name="manager_no_backup">There is no backup found.</string>
-    <string name="manager_choose_backup">Choose backup to restore</string>
-    <string name="manager_invalid_backup">Invalid backup</string>
-    <string name="manager_restore_failed">Restore failed.</string>
-    <string name="manager_restore_success">Restore success.</string>
-    <string name="manager_restore_intent">Do you want to restore rules from %s ?</string>
+    <string name="manager_backup_rules">Zálohovat pravidla</string>
+    <string name="manager_restore_rules">Obnovit pravidla</string>
+    <string name="manager_backup_failed">Záloha se nezdařila.</string>
+    <string name="manager_backup_success">Záloha uložena.</string>
+    <string name="manager_backup_send">Chcete odeslat tuto zálohu?</string>
+    <string name="manager_no_backup">Záloha nenalezena.</string>
+    <string name="manager_choose_backup">Vyberte zálohu pro obnovu</string>
+    <string name="manager_invalid_backup">Neplatná záloha</string>
+    <string name="manager_restore_failed">Obnovení se nezdařilo.</string>
+    <string name="manager_restore_success">Obnovení provedeno.</string>
+    <string name="manager_restore_intent">Chcete obnovit pravidla z %s ?</string>
 </resources>
