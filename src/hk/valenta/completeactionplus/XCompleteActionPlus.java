@@ -73,8 +73,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("1.9.5");
-					return "1.9.5";
+					param.setResult("1.9.6");
+					return "1.9.6";
 				}
 			});
 		}
@@ -1103,7 +1103,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			manage.putExtra("type", myIntent.getType());
 			manage.setType("complete/action");
 			String scheme = myIntent.getScheme();
-			if (pref.getBoolean("RulePerWebDomain", false) && (scheme.equals("http") || scheme.equals("https"))) {
+			if (pref.getBoolean("RulePerWebDomain", false) && scheme != null && (scheme.equals("http") || scheme.equals("https"))) {
 				// add domain
 				manage.putExtra("scheme", String.format("%s_%s", scheme ,myIntent.getData().getAuthority()));
 			} else {
