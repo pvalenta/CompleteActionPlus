@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.anim;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -73,8 +72,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("1.9.6");
-					return "1.9.6";
+					param.setResult("1.9.7");
+					return "1.9.7";
 				}
 			});
 		}
@@ -386,7 +385,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				Field mIntent = param.thisObject.getClass().getDeclaredField("mIntent");
 				Intent myIntent = (Intent)mIntent.get(param.thisObject);
 				String scheme = myIntent.getScheme();
-				if (pref.getBoolean("RulePerWebDomain", false) && (scheme.equals("http") || scheme.equals("https"))) {
+				if (pref.getBoolean("RulePerWebDomain", false) && scheme != null && (scheme.equals("http") || scheme.equals("https"))) {
 					// add domain
 					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
 				} 
