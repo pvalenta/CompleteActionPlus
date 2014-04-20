@@ -59,4 +59,5 @@
     <string name="manager_restore_failed">Obnova zlyhala.</string>
     <string name="manager_restore_success">Obnova dokončená.</string>
     <string name="manager_restore_intent">Chcete obnoviť pravidlá z %s ?</string>
+    <string name="advanced_share_set">Set</string>
 </resources>

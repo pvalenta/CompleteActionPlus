@@ -59,4 +59,5 @@
     <string name="manager_restore_failed">Обнова неуспешна.</string>
     <string name="manager_restore_success">Обнова успешна.</string>
     <string name="manager_restore_intent">Обновити правила из %s ?</string>
+    <string name="advanced_share_set">Set</string>
 </resources>

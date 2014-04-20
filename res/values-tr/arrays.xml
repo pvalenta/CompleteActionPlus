@@ -52,6 +52,11 @@
 	</string-array>
 	<string-array name="manageTrigger">
 	    <item>İngiliz anahtarı Butonu</item>
-	    <item>Uzun Başlığa tıklayın</item>
+	    <item>Uzun Başlığa Tıklayın</item>
+	</string-array>
+	<string-array name="appShare">
+	    <item>Gallery Single Photo Share</item>
+	    <item>Gallery Multiple Photos Share</item>
+	    <item>QuickPic Multiple Photos Share</item>
 	</string-array>
 </resources>

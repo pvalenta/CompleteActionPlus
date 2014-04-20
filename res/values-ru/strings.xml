@@ -59,4 +59,5 @@
     <string name="manager_restore_failed">Восстановление не удалось</string>
     <string name="manager_restore_success">Успешно восстановлено</string>
     <string name="manager_restore_intent">Вы желаете восстановить правила из %s?</string>
+    <string name="advanced_share_set">Set</string>
 </resources>

@@ -41,7 +41,7 @@
 	</string-array>
 	<string-array name="dialog_gravity">
 	    <item>Center</item>
-	    <item>Bottom Bottom</item>
+	    <item>Bottom</item>
 	    <item>Bottom Right</item>
 	    <item>Right</item>
 	    <item>Top Right</item>	    	    	    
@@ -53,5 +53,10 @@
 	<string-array name="manageTrigger">
 	    <item>Wrench Button</item>
 	    <item>Long Click Title</item>
+	</string-array>
+	<string-array name="appShare">
+	    <item>Gallery Single Photo Share</item>
+	    <item>Gallery Multiple Photos Share</item>
+	    <item>QuickPic Multiple Photos Share</item>
 	</string-array>
 </resources>

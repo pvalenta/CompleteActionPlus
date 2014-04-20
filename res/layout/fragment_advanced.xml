@@ -46,5 +46,27 @@
             android:gravity="center_vertical"
             android:text="@string/advanced_rule_per_domain" />
     </RelativeLayout>
-        
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/fragment_advanced_share_set"
+            style="@android:style/Widget.Button.Small"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="@string/advanced_share_set" />
+
+        <Spinner
+            android:id="@+id/fragment_advanced_share_spinner"
+            style="@style/DropDown"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/fragment_advanced_share_set"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
 </LinearLayout>

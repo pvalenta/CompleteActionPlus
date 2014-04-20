@@ -59,4 +59,5 @@
     <string name="manager_restore_failed">Restore failed.</string>
     <string name="manager_restore_success">Restore success.</string>
     <string name="manager_restore_intent">Do you want to restore rules from %s ?</string>
+    <string name="advanced_share_set">Set</string>
 </resources>

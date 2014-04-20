@@ -1,8 +1,8 @@
 <resources>
     <string-array name="change_layout_styles">
-        <item>Подразумевано</item>
-        <item>Листа</item>
-        <item>Иконе</item>
+        <item>Προεπιλογή</item>
+        <item>Λίστα</item>
+        <item>Πλέγμα</item>
     </string-array>
     <string-array name="grid_layout_columns">
         <item>2</item>
@@ -20,39 +20,39 @@
         <item>10</item>
 	</string-array>
     <string-array name="list_text_size">
-	    <item>Нормална</item>
-	    <item>Велика</item>
-	    <item>Екстра велика</item>
+	    <item>Κανονικό</item>
+	    <item>Μεγάλο</item>
+	    <item>Πολύ Μεγάλο</item>
 	</string-array>
 	<string-array name="grid_text_size">
-	    <item>Сакривен</item>
-	    <item>Малецки</item>
-	    <item>Мали</item>
-	    <item>Нормална</item>
+	    <item>Κρυμμένο</item>
+	    <item>Πολύ μικρό</item>
+	    <item>Μικρό</item>
+	    <item>Κανονικό</item>
 	</string-array>
 	<string-array name="theme">
-	    <item>Светло</item>
-	    <item>Тамно</item>
+	    <item>Ανοιχτό</item>
+	    <item>Σκούρο</item>
 	</string-array>
 	<string-array name="dialog_theme">
-	    <item>подразумевани</item>
-		<item>Светло</item>
-	    <item>Тамно</item>
+	    <item>Προεπιλογή</item>
+		<item>Ανοιχτό</item>
+	    <item>Σκούρο</item>
 	</string-array>
 	<string-array name="dialog_gravity">
-	    <item>Центар</item>
-	    <item>Дно</item>
-	    <item>Дно десно</item>
-	    <item>Десно</item>
-	    <item>Врх десно</item>	    	    	    
-		<item>Врх</item>
-	    <item>Врх лево</item>
-	    <item>Лево</item>
-	    <item>Дно лево</item>
+	    <item>Κέντρο</item>
+	    <item>Κάτω</item>
+	    <item>Κάτω δεξιά</item>
+	    <item>Δεξιά</item>
+	    <item>Επάνω δεξιά</item>	    	    	    
+		<item>Επάνω</item>
+	    <item>Επάνω αριστερά</item>
+	    <item>Αριστερά</item>
+	    <item>Κάτω αριστερά</item>
 	</string-array>
 	<string-array name="manageTrigger">
-	    <item>Обртно дугме</item>
-	    <item>Дуги клик наслова</item>
+	    <item>Κλειδί</item>
+	    <item>Παρατετεμένο πάτημα τίτλου</item>
 	</string-array>
 	<string-array name="appShare">
 	    <item>Gallery Single Photo Share</item>

@@ -127,5 +127,5 @@ public class EnumConvert {
 	public static final int manageTriggerIndex(String name) {
 		if (name.equals("Title")) return 1;
 		else return 0;
-	}
+	}	
 }

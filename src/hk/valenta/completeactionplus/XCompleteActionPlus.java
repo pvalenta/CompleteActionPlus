@@ -1,6 +1,5 @@
 package hk.valenta.completeactionplus;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -72,8 +71,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("1.9.7");
-					return "1.9.7";
+					param.setResult("2.0.0");
+					return "2.0.0";
 				}
 			});
 		}
@@ -84,7 +83,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onItemClick", AdapterView.class, View.class, int.class, long.class,
 				new XC_MethodReplacement() {
-			@SuppressWarnings("unchecked")
 			@Override
 			protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 				// invalid index?
@@ -106,67 +104,67 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (showAlways) {
 					// get view
 					boolean always = isAlwaysChecked((View)param.args[0]);
-					boolean manageList = pref.getBoolean("ManageList", false);
+//					boolean manageList = pref.getBoolean("ManageList", false);
 					if (always) {
 						// set always property
 						XposedHelpers.setBooleanField(param.thisObject, "mAlwaysUseOption", true);
 					}					
-					if (always && manageList) {
-						// get adapter
-						Object mAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
-						Field mCurrentResolveList = null;
-						try {
-							mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
-							XposedBridge.log("Android 4.2 mCurrentResolveList");
-						} catch (Exception ex) { }
-						if (mCurrentResolveList == null) {
-							try {
-								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
-								XposedBridge.log("Android 4.4 mOrigResolveList");
-							} catch (Exception ex) { }
-						}
-						if (mCurrentResolveList == null) {
-							try {
-								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
-								XposedBridge.log("Android 4.3 mBaseResolveList");
-							} catch (Exception ex) { }
-						}
-						List<ResolveInfo> mCurrent = null;
-						if (mCurrentResolveList != null) {
-							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
-						}						
-						if (mCurrent == null) {
-							XposedBridge.log("Original list is NULL.");
-						} else {
-							List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
-							XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
-							if (mCurrent.size() != mList.size()) {
-								// get DisplayResolveInfo class
-								Class<?> DisplayResolveInfo = mList.get(0).getClass();
-								Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
-								driCon.setAccessible(true);
-								
-								// add missing one back
-								for (ResolveInfo r : mCurrent) {
-									boolean missing = true;
-									for (Object l : mList) {
-										// get resolve info
-										ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(l, "ri");
-										if (info.activityInfo.packageName.equals(r.activityInfo.packageName) &&
-											info.activityInfo.name.equals(r.activityInfo.name)) {
-											missing = false;
-											break;
-										}
-									}
-									if (missing) {
-										// let's add back
-										Object n = driCon.newInstance(param.thisObject, r, "", "", null);
-										mList.add(n);
-									}
-								}
-							}
-						}
-					}
+//					if (always && manageList) {
+//						// get adapter
+//						Object mAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
+//						Field mCurrentResolveList = null;
+//						try {
+//							mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
+//							XposedBridge.log("Android 4.2 mCurrentResolveList");
+//						} catch (Exception ex) { }
+//						if (mCurrentResolveList == null) {
+//							try {
+//								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
+//								XposedBridge.log("Android 4.4 mOrigResolveList");
+//							} catch (Exception ex) { }
+//						}
+//						if (mCurrentResolveList == null) {
+//							try {
+//								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
+//								XposedBridge.log("Android 4.3 mBaseResolveList");
+//							} catch (Exception ex) { }
+//						}
+//						List<ResolveInfo> mCurrent = null;
+//						if (mCurrentResolveList != null) {
+//							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
+//						}						
+//						if (mCurrent == null) {
+//							XposedBridge.log("Original list is NULL.");
+//						} else {
+//							List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
+//							XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
+//							if (mCurrent.size() != mList.size()) {
+//								// get DisplayResolveInfo class
+//								Class<?> DisplayResolveInfo = mList.get(0).getClass();
+//								Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
+//								driCon.setAccessible(true);
+//								
+//								// add missing one back
+//								for (ResolveInfo r : mCurrent) {
+//									boolean missing = true;
+//									for (Object l : mList) {
+//										// get resolve info
+//										ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(l, "ri");
+//										if (info.activityInfo.packageName.equals(r.activityInfo.packageName) &&
+//											info.activityInfo.name.equals(r.activityInfo.name)) {
+//											missing = false;
+//											break;
+//										}
+//									}
+//									if (missing) {
+//										// let's add back
+//										Object n = driCon.newInstance(param.thisObject, r, "", "", null);
+//										mList.add(n);
+//									}
+//								}
+//							}
+//						}
+//					}
 					startSelected(param.thisObject, rObject, position, always);
 				} else {
 					// call it
@@ -390,54 +388,54 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
 				} 
 				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), scheme);
-				String cHidden = pref.getString(intentId, null);
-				if (cHidden != null && cHidden.length() > 0) {
-					// split by ;
-					String[] hI = cHidden.split(";");
-					ArrayList<String> hiddenItems = new ArrayList<String>();
-					for (String h : hI) {
-						if (!hiddenItems.contains(h)) {							
-							hiddenItems.add(h);
-						}
-					}
-					
-					// get list
-					Field mList = param.thisObject.getClass().getDeclaredField("mList");
-					List<Object> items = (List<Object>)mList.get(param.thisObject);
-					
-					// get original list to solve 4.3 issue
-					List<ResolveInfo> baseList = null;
-					try {
-						Field mBaseResolveList = param.thisObject.getClass().getDeclaredField("mBaseResolveList");
-						baseList = (List<ResolveInfo>)mBaseResolveList.get(param.thisObject);
-						if (baseList == null) {
-							baseList = new ArrayList<ResolveInfo>();
-						}
-					} catch (Exception ex) { }
-					
-					// let's try to find
-					for (String h : hiddenItems) {
-						int count = items.size();
-						for (int i=0; i<count; i++) {
-							// get resolve info
-							Field ri = items.get(i).getClass().getDeclaredField("ri");
-							ResolveInfo info = (ResolveInfo)ri.get(items.get(i));
-							
-							// match?
-							if (info.activityInfo.packageName.equals(h)) {
-								// store in original list for KitKat
-								if (baseList != null) {
-									baseList.add(info);
-								}
-								
-								// remove it
-								items.remove(i);
-								i -= 1;
-								count -= 1;
-							}
-						}
-					}
-				}
+//				String cHidden = pref.getString(intentId, null);
+//				if (cHidden != null && cHidden.length() > 0) {
+//					// split by ;
+//					String[] hI = cHidden.split(";");
+//					ArrayList<String> hiddenItems = new ArrayList<String>();
+//					for (String h : hI) {
+//						if (!hiddenItems.contains(h)) {							
+//							hiddenItems.add(h);
+//						}
+//					}
+//					
+//					// get list
+//					Field mList = param.thisObject.getClass().getDeclaredField("mList");
+//					List<Object> items = (List<Object>)mList.get(param.thisObject);
+//					
+//					// get original list to solve 4.3 issue
+//					List<ResolveInfo> baseList = null;
+//					try {
+//						Field mBaseResolveList = param.thisObject.getClass().getDeclaredField("mBaseResolveList");
+//						baseList = (List<ResolveInfo>)mBaseResolveList.get(param.thisObject);
+//						if (baseList == null) {
+//							baseList = new ArrayList<ResolveInfo>();
+//						}
+//					} catch (Exception ex) { }
+//					
+//					// let's try to find
+//					for (String h : hiddenItems) {
+//						int count = items.size();
+//						for (int i=0; i<count; i++) {
+//							// get resolve info
+//							Field ri = items.get(i).getClass().getDeclaredField("ri");
+//							ResolveInfo info = (ResolveInfo)ri.get(items.get(i));
+//							
+//							// match?
+//							if (info.activityInfo.packageName.equals(h)) {
+//								// store in original list for KitKat
+//								if (baseList != null) {
+//									baseList.add(info);
+//								}
+//								
+//								// remove it
+//								items.remove(i);
+//								i -= 1;
+//								count -= 1;
+//							}
+//						}
+//					}
+//				}
 				
 				// favourites
 				String cFavorites = pref.getString(intentId + "_fav", null);
@@ -475,6 +473,68 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						}
 					}
 				}
+			}
+		});
+		XposedHelpers.findAndHookMethod("com.android.server.pm.PackageManagerService", null, "queryIntentActivities", 
+				Intent.class, String.class, int.class, int.class, new XC_MethodHook() {
+			@SuppressWarnings("unchecked")
+			@Override
+			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+				// let's get intent
+				Intent myIntent = (Intent)param.args[0];
+				if (myIntent == null) return;
+				
+				// any items back?
+				List<ResolveInfo> list = (List<ResolveInfo>)param.getResult();
+				if (list == null || list.size() == 0) return;
+
+				// get current configuration
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				boolean manageList = pref.getBoolean("ManageList", false);
+				if (!manageList) return;
+				
+				String scheme = myIntent.getScheme();
+				if (pref.getBoolean("RulePerWebDomain", false) && scheme != null && (scheme.equals("http") || scheme.equals("https"))) {
+					// add domain
+					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
+				} 
+				String type = myIntent.getType();
+				if (scheme == null && type == null) return;
+				String intentId = String.format("%s;%s;%s", myIntent.getAction(), type, scheme);
+				String cHidden = pref.getString(intentId, null);
+				if (cHidden == null || cHidden.length() == 0) {
+					// found
+					//XposedBridge.log(String.format("Found no match: %s", intentId));
+					return;
+				}
+				
+				// found
+				//XposedBridge.log(String.format("Found match: %s", intentId));
+				
+				// split by ;
+				String[] hI = cHidden.split(";");
+				ArrayList<String> hiddenItems = new ArrayList<String>();
+				for (String h : hI) {
+					if (!hiddenItems.contains(h)) {							
+						hiddenItems.add(h);
+					}
+				}
+				
+				// loop & remove
+				int size = list.size();
+				//XposedBridge.log(String.format("Before removal: %d", size));
+				for (int i=0; i<size; i++) {
+					if (hiddenItems.contains(list.get(i).activityInfo.packageName)) {
+						// remove it
+						list.remove(i);
+						i-=1;
+						size-=1;
+					}
+				}
+				//XposedBridge.log(String.format("After removal: %d", size));
+				
+				// set it back
+				param.setResult(list);
 			}
 		});
 	}

@@ -59,4 +59,5 @@
     <string name="manager_restore_failed">復元に失敗しました。</string>
     <string name="manager_restore_success">復元しました。</string>
     <string name="manager_restore_intent">%sからルールを復元しますか?</string>
+    <string name="advanced_share_set">Set</string>
 </resources>

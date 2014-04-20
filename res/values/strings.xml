@@ -20,8 +20,8 @@
     <string name="manage_list_type">Type:</string>
     <string name="manage_list_scheme">Scheme:</string>
     <string name="manage_list_not_available">N/A</string>
-    <string name="manage_list_warning">Please keep at least two items active in the list.</string>
-    <string name="list_item_favourite_button">Favourite item</string>
+    <string name="manage_list_warning">Please keep at least two apps active in the list.</string>
+    <string name="list_item_favourite_button">Favourite app</string>
     <string name="app_theme">This App Theme</string>
     <string name="activity_main_xhalo">Long Press will start app in XHalo</string>
     <string name="portrait">Portrait</string>
@@ -31,7 +31,7 @@
     <string name="fragment_dialog">Dialog</string>
     <string name="fragment_layout">Layout</string>
     <string name="app_version">Version</string>
-    <string name="grid_dont_reduce_columns">Don\'t reduce columns for less items</string>
+    <string name="grid_dont_reduce_columns">Don\'t reduce columns for less apps</string>
     <string name="dialog_gravity">Dialog position (%s)</string>
     <string name="manage_trigger_style">Manage trigger style</string>
     <string name="text_color">Text color</string>
@@ -45,8 +45,8 @@
     <string name="fragment_favorite">Favorite</string>
     <string name="manager_rule_delete">Delete rule</string>
     <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
-    <string name="advanced_allow_one_item">Allow to keep only one item remain</string>
-    <string name="manage_list_warning_one">Please keep at least one item active in the list.</string>
+    <string name="advanced_allow_one_item">Allow to keep only one app remain</string>
+    <string name="manage_list_warning_one">Please keep at least one app active in the list.</string>
     <string name="advanced_rule_per_domain">Rules per every website domain</string>
     <string name="manager_backup_rules">Backup Rules</string>
     <string name="manager_restore_rules">Restore Rules</string>
@@ -59,4 +59,5 @@
     <string name="manager_restore_failed">Restore failed.</string>
     <string name="manager_restore_success">Restore success.</string>
     <string name="manager_restore_intent">Do you want to restore rules from %s ?</string>
+    <string name="advanced_share_set">Set</string>
 </resources>

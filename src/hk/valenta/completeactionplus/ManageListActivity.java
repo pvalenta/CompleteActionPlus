@@ -40,6 +40,7 @@ public class ManageListActivity extends Activity {
 	private PackageManager pManager;
 	private int remain;
 	private int minLimit = 2;
+	private boolean noFavorite;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -78,6 +79,7 @@ public class ManageListActivity extends Activity {
 		intentId = String.format("%s;%s;%s", action, type, scheme);
 		items = myIntent.getStringArrayExtra("items");
 		names = new String[items.length];
+		noFavorite = myIntent.getBooleanExtra("nofavorite", false);
 		
 		// display info
 		TextView tvAction = (TextView)findViewById(R.id.manage_list_action_value);
@@ -246,6 +248,9 @@ public class ManageListActivity extends Activity {
 				favButton.setVisibility(View.VISIBLE);
 				favButton.setImageResource(android.R.drawable.btn_star_big_off);
 			}
+			if (noFavorite) {
+				favButton.setVisibility(View.INVISIBLE);
+			}
 			
 			// on clicks
 			button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -304,8 +309,10 @@ public class ManageListActivity extends Activity {
 						}
 						
 						// enable favourites button
-						favButton.setVisibility(View.VISIBLE);
-						favButton.setImageResource(android.R.drawable.btn_star_big_off);
+						if (!noFavorite) {
+							favButton.setVisibility(View.VISIBLE);
+							favButton.setImageResource(android.R.drawable.btn_star_big_off);
+						}
 					}
 					
 					// save it in config
