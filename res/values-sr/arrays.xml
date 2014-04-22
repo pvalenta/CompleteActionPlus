@@ -55,8 +55,8 @@
 	    <item>Дуги клик наслова</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
-	    <item>QuickPic Multiple Photos Share</item>
+	    <item>Поделити фотографију Галерије</item>
+	    <item>Поделити фотографије галерије</item>
+	    <item>QuickPic Поделити више фотографија</item>
 	</string-array>
 </resources>

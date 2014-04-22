@@ -59,5 +59,7 @@
     <string name="manager_restore_failed">Обнова неуспешна.</string>
     <string name="manager_restore_success">Обнова успешна.</string>
     <string name="manager_restore_intent">Обновити правила из %s ?</string>
-    <string name="advanced_share_set">Set</string>
+    <string name="advanced_share_set">Постави</string>
+    <string name="debug_turn_on">Enable extra debug messages in log</string>
+    <string name="advanced_no_package_manager_hook">Hide apps using 1.9 version way\n(Only if you have issues with \'Always\' checkbox.)</string>
 </resources>

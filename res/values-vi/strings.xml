@@ -2,7 +2,7 @@
     <string name="app_name">Complete Action Plus</string>
     <string name="activity_main_setting">Settings</string>
     <string name="activity_main_logo">Complete Action Plus logo</string>
-    <string name="activity_main_display_always">Display Always checkbox</string>
+    <string name="activity_main_display_always">Display \'Always\' checkbox</string>
     <string name="activity_main_manage_list">Manage List of Apps</string>
     <string name="activity_main_advanced">Advanced</string>
     <string name="activity_main_change_layout">Change layout</string>
@@ -60,4 +60,6 @@
     <string name="manager_restore_success">Restore success.</string>
     <string name="manager_restore_intent">Do you want to restore rules from %s ?</string>
     <string name="advanced_share_set">Set</string>
+    <string name="debug_turn_on">Enable extra debug messages in log</string>
+    <string name="advanced_no_package_manager_hook">Hide apps using 1.9 version way\n(Only if you have issues with \'Always\' checkbox.)</string>
 </resources>

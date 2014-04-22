@@ -55,8 +55,8 @@
 	    <item>Dlhé stlačenie názvu</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
-	    <item>QuickPic Multiple Photos Share</item>
+	    <item>Zdieľanie jednej fotky z Galérie</item>
+	    <item>Zdieľanie viacerých fotiek z Galérie</item>
+	    <item>Zdieľanie viacerých fotiek z QuickPic</item>
 	</string-array>
 </resources>

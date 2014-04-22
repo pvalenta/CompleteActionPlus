@@ -60,10 +60,22 @@ public class AdvancedFragment extends Fragment {
 			}
 		});
 		
+		// old hide way
+		CheckBox oldWayHide = (CheckBox)layout.findViewById(R.id.fragment_advanced_old_hide_checkbox);
+		oldWayHide.setChecked(pref.getBoolean("OldWayHide", false));
+		oldWayHide.setOnCheckedChangeListener(new OnCheckedChangeListener() {			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("OldWayHide", buttonView.isChecked()).commit();
+			}
+		});
+		
 		// populate share spinner
 		shareSpinner = (Spinner)layout.findViewById(R.id.fragment_advanced_share_spinner);
 		ArrayAdapter<CharSequence> shareAdapter = ArrayAdapter.createFromResource(this.getActivity(), R.array.appShare, android.R.layout.simple_spinner_item);
-		shareAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		shareAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);		
 		shareSpinner.setAdapter(shareAdapter);
 		
 		// share set

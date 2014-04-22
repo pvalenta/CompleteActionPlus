@@ -55,8 +55,8 @@
 	    <item>Παρατετεμένο πάτημα τίτλου</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
-	    <item>QuickPic Multiple Photos Share</item>
+	    <item>Διαμοιρασμός μίας φωτογραφίας από τη συλλογή</item>
+	    <item>Διαμοιρασμός πολλών φωτογραφιών από τη συλλογή</item>
+	    <item>Διαμοιρασμός πολλών φωτογραφιών από την εφαρμογή QuickPic</item>
 	</string-array>
 </resources>

@@ -1,5 +1,6 @@
 package hk.valenta.completeactionplus;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -71,8 +72,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.0.0");
-					return "2.0.0";
+					param.setResult("2.0.1");
+					return "2.0.1";
 				}
 			});
 		}
@@ -83,6 +84,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onItemClick", AdapterView.class, View.class, int.class, long.class,
 				new XC_MethodReplacement() {
+			@SuppressWarnings("unchecked")
 			@Override
 			protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 				// invalid index?
@@ -104,67 +106,79 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (showAlways) {
 					// get view
 					boolean always = isAlwaysChecked((View)param.args[0]);
-//					boolean manageList = pref.getBoolean("ManageList", false);
+					boolean manageList = pref.getBoolean("ManageList", false);
 					if (always) {
 						// set always property
 						XposedHelpers.setBooleanField(param.thisObject, "mAlwaysUseOption", true);
 					}					
-//					if (always && manageList) {
-//						// get adapter
-//						Object mAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
-//						Field mCurrentResolveList = null;
-//						try {
-//							mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
-//							XposedBridge.log("Android 4.2 mCurrentResolveList");
-//						} catch (Exception ex) { }
-//						if (mCurrentResolveList == null) {
-//							try {
-//								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
-//								XposedBridge.log("Android 4.4 mOrigResolveList");
-//							} catch (Exception ex) { }
-//						}
-//						if (mCurrentResolveList == null) {
-//							try {
-//								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
-//								XposedBridge.log("Android 4.3 mBaseResolveList");
-//							} catch (Exception ex) { }
-//						}
-//						List<ResolveInfo> mCurrent = null;
-//						if (mCurrentResolveList != null) {
-//							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
-//						}						
-//						if (mCurrent == null) {
-//							XposedBridge.log("Original list is NULL.");
-//						} else {
-//							List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
-//							XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
-//							if (mCurrent.size() != mList.size()) {
-//								// get DisplayResolveInfo class
-//								Class<?> DisplayResolveInfo = mList.get(0).getClass();
-//								Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
-//								driCon.setAccessible(true);
-//								
-//								// add missing one back
-//								for (ResolveInfo r : mCurrent) {
-//									boolean missing = true;
-//									for (Object l : mList) {
-//										// get resolve info
-//										ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(l, "ri");
-//										if (info.activityInfo.packageName.equals(r.activityInfo.packageName) &&
-//											info.activityInfo.name.equals(r.activityInfo.name)) {
-//											missing = false;
-//											break;
-//										}
-//									}
-//									if (missing) {
-//										// let's add back
-//										Object n = driCon.newInstance(param.thisObject, r, "", "", null);
-//										mList.add(n);
-//									}
-//								}
-//							}
-//						}
-//					}
+					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+					if (always && manageList && oldWayHide) {
+						// get adapter
+						boolean debugOn = pref.getBoolean("DebugLog", false);
+						Object mAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
+						Field mCurrentResolveList = null;
+						try {
+							mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
+							if (debugOn) {
+								XposedBridge.log("Android 4.2 mCurrentResolveList");
+							}
+						} catch (Exception ex) { }
+						if (mCurrentResolveList == null) {
+							try {
+								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
+								if (debugOn) {
+									XposedBridge.log("Android 4.4 mOrigResolveList");
+								}
+							} catch (Exception ex) { }
+						}
+						if (mCurrentResolveList == null) {
+							try {
+								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
+								if (debugOn) {
+									XposedBridge.log("Android 4.3 mBaseResolveList");
+								}
+							} catch (Exception ex) { }
+						}
+						List<ResolveInfo> mCurrent = null;
+						if (mCurrentResolveList != null) {
+							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
+						}						
+						if (mCurrent == null) {
+							if (debugOn) {
+								XposedBridge.log("Original list is NULL.");
+							}
+						} else {
+							List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
+							if (debugOn) {
+								XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
+							}
+							if (mCurrent.size() != mList.size()) {
+								// get DisplayResolveInfo class
+								Class<?> DisplayResolveInfo = mList.get(0).getClass();
+								Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
+								driCon.setAccessible(true);
+								
+								// add missing one back
+								for (ResolveInfo r : mCurrent) {
+									boolean missing = true;
+									for (Object l : mList) {
+										// get resolve info
+										ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(l, "ri");
+										if (info.activityInfo.packageName.equals(r.activityInfo.packageName) &&
+											info.activityInfo.name.equals(r.activityInfo.name)) {
+											missing = false;
+											break;
+										}
+									}
+									if (missing) {
+										// let's add back
+										Object n = driCon.newInstance(param.thisObject, r, "", "", null);
+										mList.add(n);
+									}
+								}
+							}
+						}
+					}
 					startSelected(param.thisObject, rObject, position, always);
 				} else {
 					// call it
@@ -388,54 +402,57 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
 				} 
 				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), scheme);
-//				String cHidden = pref.getString(intentId, null);
-//				if (cHidden != null && cHidden.length() > 0) {
-//					// split by ;
-//					String[] hI = cHidden.split(";");
-//					ArrayList<String> hiddenItems = new ArrayList<String>();
-//					for (String h : hI) {
-//						if (!hiddenItems.contains(h)) {							
-//							hiddenItems.add(h);
-//						}
-//					}
-//					
-//					// get list
-//					Field mList = param.thisObject.getClass().getDeclaredField("mList");
-//					List<Object> items = (List<Object>)mList.get(param.thisObject);
-//					
-//					// get original list to solve 4.3 issue
-//					List<ResolveInfo> baseList = null;
-//					try {
-//						Field mBaseResolveList = param.thisObject.getClass().getDeclaredField("mBaseResolveList");
-//						baseList = (List<ResolveInfo>)mBaseResolveList.get(param.thisObject);
-//						if (baseList == null) {
-//							baseList = new ArrayList<ResolveInfo>();
-//						}
-//					} catch (Exception ex) { }
-//					
-//					// let's try to find
-//					for (String h : hiddenItems) {
-//						int count = items.size();
-//						for (int i=0; i<count; i++) {
-//							// get resolve info
-//							Field ri = items.get(i).getClass().getDeclaredField("ri");
-//							ResolveInfo info = (ResolveInfo)ri.get(items.get(i));
-//							
-//							// match?
-//							if (info.activityInfo.packageName.equals(h)) {
-//								// store in original list for KitKat
-//								if (baseList != null) {
-//									baseList.add(info);
-//								}
-//								
-//								// remove it
-//								items.remove(i);
-//								i -= 1;
-//								count -= 1;
-//							}
-//						}
-//					}
-//				}
+				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+				if (oldWayHide) {
+					String cHidden = pref.getString(intentId, null);
+					if (cHidden != null && cHidden.length() > 0) {
+						// split by ;
+						String[] hI = cHidden.split(";");
+						ArrayList<String> hiddenItems = new ArrayList<String>();
+						for (String h : hI) {
+							if (!hiddenItems.contains(h)) {							
+								hiddenItems.add(h);
+							}
+						}
+						
+						// get list
+						Field mList = param.thisObject.getClass().getDeclaredField("mList");
+						List<Object> items = (List<Object>)mList.get(param.thisObject);
+						
+						// get original list to solve 4.3 issue
+						List<ResolveInfo> baseList = null;
+						try {
+							Field mBaseResolveList = param.thisObject.getClass().getDeclaredField("mBaseResolveList");
+							baseList = (List<ResolveInfo>)mBaseResolveList.get(param.thisObject);
+							if (baseList == null) {
+								baseList = new ArrayList<ResolveInfo>();
+							}
+						} catch (Exception ex) { }
+						
+						// let's try to find
+						for (String h : hiddenItems) {
+							int count = items.size();
+							for (int i=0; i<count; i++) {
+								// get resolve info
+								Field ri = items.get(i).getClass().getDeclaredField("ri");
+								ResolveInfo info = (ResolveInfo)ri.get(items.get(i));
+								
+								// match?
+								if (info.activityInfo.packageName.equals(h)) {
+									// store in original list for KitKat
+									if (baseList != null) {
+										baseList.add(info);
+									}
+									
+									// remove it
+									items.remove(i);
+									i -= 1;
+									count -= 1;
+								}
+							}
+						}
+					}					
+				}
 				
 				// favourites
 				String cFavorites = pref.getString(intentId + "_fav", null);
@@ -491,6 +508,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// get current configuration
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				boolean manageList = pref.getBoolean("ManageList", false);
+				boolean debugOn = pref.getBoolean("DebugLog", false);
 				if (!manageList) return;
 				
 				String scheme = myIntent.getScheme();
@@ -501,15 +519,35 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				String type = myIntent.getType();
 				if (scheme == null && type == null) return;
 				String intentId = String.format("%s;%s;%s", myIntent.getAction(), type, scheme);
+				
+				// do it old way?
+				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+				if (oldWayHide) {
+					// one of ours?
+					if (!intentId.equals("android.intent.action.SEND;image/jpeg;null") &&
+						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/*;null") &&
+						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/jpeg;null")) {
+						if (debugOn) {
+							XposedBridge.log("Hiding app old way.");
+						}
+						return;
+					}
+				}				
+				
+				// get hidden
 				String cHidden = pref.getString(intentId, null);
 				if (cHidden == null || cHidden.length() == 0) {
 					// found
-					//XposedBridge.log(String.format("Found no match: %s", intentId));
+					if (debugOn) {
+						XposedBridge.log(String.format("Found no match: %s", intentId));
+					}
 					return;
 				}
 				
 				// found
-				//XposedBridge.log(String.format("Found match: %s", intentId));
+				if (debugOn) {
+					XposedBridge.log(String.format("Found match: %s", intentId));
+				}
 				
 				// split by ;
 				String[] hI = cHidden.split(";");
@@ -522,7 +560,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				
 				// loop & remove
 				int size = list.size();
-				//XposedBridge.log(String.format("Before removal: %d", size));
+				if (debugOn) {
+					XposedBridge.log(String.format("Before removal: %d", size));
+				}
 				for (int i=0; i<size; i++) {
 					if (hiddenItems.contains(list.get(i).activityInfo.packageName)) {
 						// remove it
@@ -531,7 +571,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						size-=1;
 					}
 				}
-				//XposedBridge.log(String.format("After removal: %d", size));
+				if (debugOn) {
+					XposedBridge.log(String.format("After removal: %d", size));
+				}
 				
 				// set it back
 				param.setResult(list);
@@ -1204,12 +1246,28 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				titleParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
 			}
 			if (changeLayout) {
+				// get divider
+				LinearLayout bigParent = (LinearLayout)titleParent.getParent();
+				View sibling = null;
+				if (bigParent.getChildCount() > 2) {
+					sibling = bigParent.getChildAt(2);
+				} else {
+					XposedBridge.log("Image divider not found.");
+				}
+
+				// set colors
 				if (theme.equals("Light")) {
 					titleView.setTextColor(pref.getInt("TextColor", Color.BLACK));
 					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+					if (sibling != null) {
+						sibling.setBackgroundColor(Color.BLACK);
+					}
 				} else if (theme.equals("Dark")) {
 					titleView.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
 					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					if (sibling != null) {
+						sibling.setBackgroundColor(Color.parseColor("#BEBEBE"));
+					}
 				}					
 			}
 			

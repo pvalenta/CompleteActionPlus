@@ -55,8 +55,8 @@
 	    <item>Appui long sur le titre</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
-	    <item>QuickPic Multiple Photos Share</item>
+	    <item>Partage d\'une photo (Galerie)</item>
+	    <item>Partage de photos multiples (Galerie)</item>
+	    <item>Partage de photos multiples (QuickPic)</item>
 	</string-array>
 </resources>

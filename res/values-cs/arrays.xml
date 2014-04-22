@@ -55,8 +55,8 @@
 	    <item>Podržet titulek okna</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
-	    <item>QuickPic Multiple Photos Share</item>
+	    <item>Galerie sdílení obrázku</item>
+	    <item>Galerie sdílení obrázků</item>
+	    <item>QuickPic sdílení obrázků</item>
 	</string-array>
 </resources>

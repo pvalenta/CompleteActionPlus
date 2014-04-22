@@ -31,7 +31,7 @@
     <string name="fragment_dialog">Dialog</string>
     <string name="fragment_layout">Rozvržení</string>
     <string name="app_version">Verze</string>
-    <string name="grid_dont_reduce_columns">Nesnižovat počet sloupců pro málo aplikací</string>
+    <string name="grid_dont_reduce_columns">Neubírat sloupce pro málo aplikací</string>
     <string name="dialog_gravity">Pozice dialogu (%s)</string>
     <string name="manage_trigger_style">Způsob spuštění</string>
     <string name="text_color">Barva textu</string>
@@ -59,5 +59,7 @@
     <string name="manager_restore_failed">Obnovení se nezdařilo.</string>
     <string name="manager_restore_success">Obnovení provedeno.</string>
     <string name="manager_restore_intent">Chcete obnovit pravidla z %s ?</string>
-    <string name="advanced_share_set">Set</string>
+    <string name="advanced_share_set">Nastavit</string>
+    <string name="debug_turn_on">Enable extra debug messages in log</string>
+    <string name="advanced_no_package_manager_hook">Hide apps using 1.9 version way\n(Only if you have issues with \'Always\' checkbox.)</string>
 </resources>

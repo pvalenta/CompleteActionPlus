@@ -51,6 +51,24 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
+        <CheckBox
+            android:id="@+id/fragment_advanced_old_hide_checkbox"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/fragment_advanced_old_hide_checkbox"
+            android:gravity="center_vertical"
+            android:text="@string/advanced_no_package_manager_hook" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
         <Button
             android:id="@+id/fragment_advanced_share_set"
             style="@android:style/Widget.Button.Small"
@@ -63,8 +81,11 @@
         <Spinner
             android:id="@+id/fragment_advanced_share_spinner"
             style="@style/DropDown"
+            android:minWidth="40dp"
+            android:paddingRight="60dp"
+            android:paddingEnd="60dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/fragment_advanced_share_set"
+            android:layout_toLeftOf="@id/fragment_advanced_share_set"                       
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>

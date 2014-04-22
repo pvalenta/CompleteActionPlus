@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -52,6 +55,18 @@ public class AboutFragment extends Fragment {
 		
 		// preselect
 		themeSpinner.setSelection(currentTheme);
+		
+		// debug 
+		CheckBox debug = (CheckBox)layout.findViewById(R.id.fragment_about_debug_checkbox);
+		debug.setChecked(pref.getBoolean("DebugLog", false));
+		debug.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = buttonView.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("DebugLog", buttonView.isChecked()).commit();
+			}
+		});
 		
 		// show configuration manager
 		Button manager = (Button)layout.findViewById(R.id.fragment_about_manager);
