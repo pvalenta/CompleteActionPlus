@@ -3,6 +3,7 @@ package hk.valenta.completeactionplus;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -17,7 +18,27 @@ public class RuleItemHelper {
 	public final static void createRuleAppElement(FragmentActivity activity, PackageManager pm, LinearLayout list, String pkg) {
 		try {
 			// get information
-			PackageInfo info = pm.getPackageInfo(pkg, PackageManager.GET_ACTIVITIES);
+			String name = null;
+			Drawable icon = null;
+			
+			// exist in cache?
+			ManagerPagerActivity mActivity = (ManagerPagerActivity)activity;
+			if (mActivity.cachePackage.contains(pkg)) {
+				// get it from cache
+				int index = mActivity.cachePackage.indexOf(pkg);
+				name = mActivity.cacheNames.get(index);
+				icon = mActivity.cacheIcons.get(index);
+			} else {
+				// get info
+				PackageInfo info = pm.getPackageInfo(pkg, PackageManager.GET_ACTIVITIES);
+				name = info.applicationInfo.loadLabel(pm).toString();
+				icon = info.applicationInfo.loadIcon(pm);
+				
+				// add to cache
+				mActivity.cachePackage.add(pkg);
+				mActivity.cacheNames.add(name);
+				mActivity.cacheIcons.add(icon);
+			}
 			
 			// setup layout
 			LinearLayout layout = new LinearLayout(activity);
@@ -32,11 +53,8 @@ public class RuleItemHelper {
 			// setup icon
 			ImageView img = new ImageView(activity);
 			img.setScaleType(ScaleType.FIT_XY);
-			try {
-				img.setImageDrawable(info.applicationInfo.loadIcon(pm));
-			} catch (Exception e) {
-				img.setImageResource(R.drawable.ic_launcher);
-			}
+			img.setImageDrawable(icon);
+//			img.setImageResource(R.drawable.ic_launcher);
 			layout.addView(img);
 			params = (LayoutParams)img.getLayoutParams();
 			params.width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics);
@@ -48,7 +66,7 @@ public class RuleItemHelper {
 			text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 			text.setLines(2);
 			text.setGravity(Gravity.CENTER);
-			text.setText(info.applicationInfo.loadLabel(pm).toString());
+			text.setText(name);
 			layout.addView(text);
 			params = (LayoutParams)text.getLayoutParams();
 			params.width = LayoutParams.WRAP_CONTENT;

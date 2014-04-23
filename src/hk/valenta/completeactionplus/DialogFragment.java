@@ -31,6 +31,8 @@ public class DialogFragment extends Fragment {
 	private View backgroundColorView;
 	private int textColor;
 	private int backgroundColor;
+	private CheckBox alwaysCheckbox;
+	private CheckBox keepButtonsCheckbox;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -196,8 +198,8 @@ public class DialogFragment extends Fragment {
 		// preselect
 		manageTriggerSpinner.setSelection(EnumConvert.manageTriggerIndex(pref.getString("ManageTriggerStyle", "Wrench")));				
 		
-		// controls
-		CheckBox alwaysCheckbox = (CheckBox)layout.findViewById(R.id.fragment_dialog_display_always_checkbox);
+		// always checkbox
+		alwaysCheckbox = (CheckBox)layout.findViewById(R.id.fragment_dialog_display_always_checkbox);
 		alwaysCheckbox.setChecked(pref.getBoolean("ShowAlways", false));
 		alwaysCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@SuppressLint("WorldReadableFiles")
@@ -206,8 +208,30 @@ public class DialogFragment extends Fragment {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
 				pref.edit().putBoolean("ShowAlways", buttonView.isChecked()).commit();
+				if (buttonView.isChecked()) {
+					// cannot be both at same time
+					keepButtonsCheckbox.setChecked(false);
+				}
 			}
 		});
+		
+		// keep buttons checkbox
+		keepButtonsCheckbox = (CheckBox)layout.findViewById(R.id.fragment_dialog_keep_buttons_checkbox);
+		keepButtonsCheckbox.setChecked(pref.getBoolean("KeepButtons", false));
+		keepButtonsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("KeepButtons", buttonView.isChecked()).commit();
+				if (buttonView.isChecked()) {
+					// cannot be both at same time
+					alwaysCheckbox.setChecked(false);
+				}
+			}
+		});
+		
+		// manage list		
 		manageTriggerBlock = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_manage_block);
 		CheckBox manageList = (CheckBox)layout.findViewById(R.id.fragment_dialog_manage_list_checkbox);
 		boolean manageListOn = pref.getBoolean("ManageList", false);

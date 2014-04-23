@@ -122,15 +122,20 @@ public class AdvancedFragment extends Fragment {
 		switch (shareIndex) {
 		case 0:
 			// single photo intent
-			Intent photo = new Intent(Intent.ACTION_SEND);
-			photo.setType("image/jpeg");
-			return photo;
+			Intent photo1 = new Intent(Intent.ACTION_SEND);
+			photo1.setType("image/jpeg");
+			return photo1;
 		case 1:
+			// single photo intent
+			Intent photo2 = new Intent(Intent.ACTION_SEND);
+			photo2.setType("image/*");
+			return photo2;
+		case 2:
 			// multiple photo intent
 			Intent multiple1 = new Intent(Intent.ACTION_SEND_MULTIPLE);
 			multiple1.setType("image/*");
 			return multiple1;
-		case 2:
+		case 3:
 			// multiple photo intent
 			Intent multiple2 = new Intent(Intent.ACTION_SEND_MULTIPLE);
 			multiple2.setType("image/jpeg");

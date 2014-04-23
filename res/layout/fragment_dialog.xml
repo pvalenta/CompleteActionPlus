@@ -136,10 +136,24 @@
                 android:text="@string/activity_main_display_always" />
 
             <CheckBox
-                android:id="@+id/fragment_dialog_manage_list_checkbox"
+                android:id="@+id/fragment_dialog_keep_buttons_checkbox"
                 style="@style/Checkbox"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/fragment_dialog_display_always_checkbox" />
+
+            <TextView
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_dialog_keep_buttons_checkbox"
+                android:layout_toLeftOf="@id/fragment_dialog_keep_buttons_checkbox"
+                android:gravity="center_vertical"
+                android:text="@string/keep_bottom_buttons" />            
+            
+            <CheckBox
+                android:id="@+id/fragment_dialog_manage_list_checkbox"
+                style="@style/Checkbox"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_dialog_keep_buttons_checkbox" />
 
             <TextView
                 style="@style/LabelTextView"

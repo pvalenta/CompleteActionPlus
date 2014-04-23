@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -23,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,6 +46,10 @@ public class ManagerPagerActivity extends FragmentActivity {
 	ViewPager viewPager;
 	int selectedBackupIndex = 0;
 	File restoreFile = null;
+	ArrayList<String> cachePackage;
+	ArrayList<Drawable> cacheIcons;
+	ArrayList<String> cacheNames;
+	
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -61,6 +67,11 @@ public class ManagerPagerActivity extends FragmentActivity {
 		// super
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_manager_pager);
+		
+		// initialize cache
+		cachePackage = new ArrayList<String>();
+		cacheIcons = new ArrayList<Drawable>();
+		cacheNames = new ArrayList<String>();
 		
 		// setup pager
 		pageAdapter = new ManagerPageAdapter(getSupportFragmentManager());

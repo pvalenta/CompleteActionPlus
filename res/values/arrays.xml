@@ -56,6 +56,7 @@
 	</string-array>
 	<string-array name="appShare">
 	    <item>Gallery Single Photo Share</item>
+	    <item>Galaxy S4 Gallery Single Photo Share</item>
 	    <item>Gallery Multiple Photos Share</item>
 	    <item>QuickPic Multiple Photos Share</item>
 	</string-array>

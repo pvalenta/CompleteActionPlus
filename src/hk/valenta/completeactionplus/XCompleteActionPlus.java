@@ -72,8 +72,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.0.1");
-					return "2.0.1";
+					param.setResult("2.1.0");
+					return "2.1.0";
 				}
 			});
 		}
@@ -102,6 +102,25 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				
 				// get method
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				if (pref.getBoolean("KeepButtons", false) == true) {
+					// simulate original method
+					boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
+					if (mAlwaysUseOption) {
+						// enable buttons
+						Button mAlwaysButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mAlwaysButton");
+						if (mAlwaysButton != null) {
+							mAlwaysButton.setEnabled(true);
+						}
+						Button mOnceButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mOnceButton");
+						if (mOnceButton != null) {
+							mOnceButton.setEnabled(true);
+						}
+					} else {
+						// start it
+						startSelected(param.thisObject, rObject, position, false);						
+					}
+					return null;
+				}
 				boolean showAlways = pref.getBoolean("ShowAlways", false);
 				if (showAlways) {
 					// get view
@@ -188,6 +207,81 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				return null;
 			}
 		});
+		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onButtonClick", View.class, new XC_MethodReplacement() {
+			@Override
+			protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+				// call next step
+				Class<?> rObject = param.thisObject.getClass();
+				while (!rObject.getName().equals("com.android.internal.app.ResolverActivity")) {
+					rObject = rObject.getSuperclass();
+				}
+				
+				// let's find our resolver
+				Field[] fields = rObject.getDeclaredFields();
+				Field resolver = null;
+				View rControl = null;
+				for (Field f : fields) {
+					String name = f.getName();
+					if (name.equals("mListV") || name.equals("mGrid") || name.equals("mListView")) {
+						resolver = f;
+						
+						// try to get control
+						try {
+							rControl = (View)resolver.get(param.thisObject);
+						} catch (IllegalArgumentException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						if (rControl != null) {
+							break;
+						} else {
+							// not right yet
+							rControl = null;
+							resolver = null;
+						}
+					}
+				}
+				if (resolver == null) {
+					XposedBridge.log("Resolver field not found.");
+					return null;
+				}
+				if (rControl == null) {
+					XposedBridge.log("Resolver field found, but it's null.");
+					return null;
+				}	
+				
+				// what we got?
+				int selectedIndex = -1;
+				if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
+					// set it
+					XposedBridge.log("Grid found.");
+					GridView resGrid = (GridView)resolver.get(param.thisObject);
+					selectedIndex = resGrid.getCheckedItemPosition();
+				} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
+					// set it
+					XposedBridge.log("List found.");
+					ListView resList = (ListView)resolver.get(param.thisObject);
+					selectedIndex = resList.getCheckedItemPosition();
+				}
+				if (selectedIndex == -1) {
+					XposedBridge.log("Nothing selected.");
+					return null;
+				}
+				
+				// always button?
+				Button button = (Button)param.args[0];
+				Button mAlwaysButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mAlwaysButton");
+				boolean always = (button.getId() == mAlwaysButton.getId());
+				
+				// call it
+				startSelected(param.thisObject, rObject, selectedIndex, always);
+				
+				return null;
+			}
+		});
 		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onCreate", Bundle.class, Intent.class, CharSequence.class, 
 				Intent[].class, List.class, boolean.class, new XC_MethodHook() {
 			
@@ -258,7 +352,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// make sure we got buttons hidden
 				FrameLayout frame = (FrameLayout)rControl.getParent();
 				LinearLayout root = (LinearLayout)frame.getParent();
-				if (root.getChildCount() == 2) {
+				if (root.getChildCount() == 2 && pref.getBoolean("KeepButtons", false) == false) {
 					LinearLayout buttonBar = (LinearLayout)root.getChildAt(1);
 					if (buttonBar != null) {
 						if (!showAlways && buttonBar.getVisibility() != View.GONE) {
@@ -309,10 +403,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
 							// set it
 							GridView resGrid = (GridView)resolver.get(param.thisObject);
+							resGrid.setItemChecked(-1, true);
 							setHaloWindow(resGrid);
 						} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 							// set it
 							ListView resList = (ListView)resolver.get(param.thisObject);
+							resList.setItemChecked(-1, true);
 							setHaloWindow(resList);
 						}
 					}
@@ -329,12 +425,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						// set it
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
 						resGrid.setNumColumns(columns);
+						resGrid.setItemChecked(-1, true);
 						if (activeXHalo) {
 							setHaloWindow(resGrid);
 						}
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
 						ListView resList = (ListView)resolver.get(param.thisObject);
+						resList.setItemChecked(-1, true);
 						if (activeXHalo) {
 							setHaloWindow(resList);
 						}
@@ -351,6 +449,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (layoutStyle.equals("List")) {
 					ListView list = (ListView)frame.getChildAt(1);
 					list.setAdapter(adapter);
+					list.setItemChecked(-1, true);
 					list.setOnItemClickListener((OnItemClickListener)param.thisObject);
 					if (activeXHalo) {
 						setHaloWindow(list);
@@ -377,6 +476,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 					grid.setNumColumns(columns);
 					grid.setAdapter(adapter);
+					grid.setItemChecked(-1, true);
 					grid.setOnItemClickListener((OnItemClickListener)param.thisObject);
 					if (activeXHalo) {
 						setHaloWindow(grid);
@@ -675,17 +775,20 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		String framework = htc ? "com.htc.framework" : "android";
 		
 		// hide buttons
+		XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 		Button button_always = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_always", "id", framework));
-		if (button_always != null) {
-			hideElement(button_always);
-		}		
 		Button button_once = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_once", "id", framework));
-		if (button_once != null) {
-			hideElement(button_once);
+		boolean keepButtons = pref.getBoolean("KeepButtons", false);
+		if (!keepButtons) {
+			if (button_always != null) {
+				hideElement(button_always);
+			}		
+			if (button_once != null) {
+				hideElement(button_once);
+			}
 		}
 		
 		// get current configuration
-		XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 		String theme = pref.getString("LayoutTheme", "Default");
 		boolean showAlways = pref.getBoolean("ShowAlways", false);
 		if (showAlways) {			
@@ -702,7 +805,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		} else {
 			// hide button bar
 			LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
-			if (buttonBar != null) {
+			if (buttonBar != null && !keepButtons) {
 				hideElement(buttonBar);
 			}
 		}
@@ -886,6 +989,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		grid.setClipToPadding(false);
 		grid.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 		grid.setColumnWidth((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, metrics));
+		grid.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
 		GridLayout.LayoutParams params = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 //		if (pref.getBoolean("DontReduceColumns", false)) {
 //			params.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
@@ -941,6 +1045,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics),
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics));
+		list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		if (theme.equals("Light")) {
 			list.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
 		} else if (theme.equals("Dark")) {
@@ -1328,12 +1433,28 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				titleParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
 			}
 			if (changeLayout) {
+				// get divider
+				LinearLayout bigParent = (LinearLayout)titleParent.getParent();
+				View sibling = null;
+				if (bigParent.getChildCount() > 2) {
+					sibling = bigParent.getChildAt(2);
+				} else {
+					XposedBridge.log("Image divider not found.");
+				}
+				
+				// set colors
 				if (theme.equals("Light")) {
 					titleView.setTextColor(pref.getInt("TextColor", Color.BLACK));
 					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+					if (sibling != null) {
+						sibling.setBackgroundColor(Color.BLACK);
+					}
 				} else if (theme.equals("Dark")) {
 					titleView.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
 					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					if (sibling != null) {
+						sibling.setBackgroundColor(Color.parseColor("#BEBEBE"));
+					}
 				}					
 			}
 		} catch (Exception e) {
