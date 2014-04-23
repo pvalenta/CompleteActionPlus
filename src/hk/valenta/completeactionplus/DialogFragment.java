@@ -17,8 +17,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView;
@@ -27,12 +29,16 @@ public class DialogFragment extends Fragment {
 
 	private RelativeLayout manageTriggerBlock;
 	private RelativeLayout colorBlock;
+	private View titleColorView;
 	private View textColorView;
 	private View backgroundColorView;
+	private int titleColor;
 	private int textColor;
 	private int backgroundColor;
 	private CheckBox alwaysCheckbox;
 	private CheckBox keepButtonsCheckbox;
+	private TextView transparencyValue;
+	private TextView roundCornerValue;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -74,11 +80,32 @@ public class DialogFragment extends Fragment {
 
 		// color block
 		colorBlock = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_color_block);
+		titleColorView = layout.findViewById(R.id.fragment_dialog_color_title);
 		textColorView = layout.findViewById(R.id.fragment_dialog_color_text);
 		backgroundColorView = layout.findViewById(R.id.fragment_dialog_color_background);
 		showColorBlock(layoutThemeIndex, false);
 		
 		// on color click
+		titleColorView.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View view) {
+				ColorPicker picker = new ColorPicker(view.getContext(), titleColor, new OnResultListener() {			
+					@Override
+					public void OnDone(ColorPicker dialog, int color) {
+						// set it
+						titleColor = color;
+						titleColorView.setBackgroundColor(color);
+						SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+						pref.edit().putInt("TitleColor", titleColor).commit();
+					}
+					
+					@Override
+					public void OnCancel(ColorPicker dialog) {
+					}
+				});
+				picker.show();
+			}
+		});
 		textColorView.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -119,6 +146,32 @@ public class DialogFragment extends Fragment {
 					}
 				});
 				picker.show();
+			}
+		});
+		
+		// round corners
+		roundCornerValue = (TextView)layout.findViewById(R.id.fragment_dialog_roundCorners_value);
+		SeekBar roundCorner = (SeekBar)layout.findViewById(R.id.fragment_dialog_roundCorners_seek);
+		int r = pref.getInt("RoundCorner", 0);
+		roundCorner.setProgress(r);
+		roundCornerValue.setText(String.format("%d", r));
+		roundCorner.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// set it in preferences
+				SharedPreferences pref = seekBar.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putInt("RoundCorner", seekBar.getProgress()).commit();
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				// let's display it
+				roundCornerValue.setText(String.format("%d", progress));
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// nothing				
 			}
 		});
 		
@@ -197,6 +250,32 @@ public class DialogFragment extends Fragment {
 		
 		// preselect
 		manageTriggerSpinner.setSelection(EnumConvert.manageTriggerIndex(pref.getString("ManageTriggerStyle", "Wrench")));				
+		
+		// transparency
+		transparencyValue = (TextView)layout.findViewById(R.id.fragment_dialog_transparency_value);
+		SeekBar transparency = (SeekBar)layout.findViewById(R.id.fragment_dialog_trasparency_seek);
+		int t = pref.getInt("Transparency", 0);
+		transparency.setProgress(t);
+		transparencyValue.setText(String.format("%d%%", t));
+		transparency.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// set it in preferences
+				SharedPreferences pref = seekBar.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putInt("Transparency", seekBar.getProgress()).commit();
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				// let's display it
+				transparencyValue.setText(String.format("%d%%", progress));
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// nothing				
+			}
+		});
 		
 		// always checkbox
 		alwaysCheckbox = (CheckBox)layout.findViewById(R.id.fragment_dialog_display_always_checkbox);
@@ -301,16 +380,21 @@ public class DialogFragment extends Fragment {
 			colorBlock.setVisibility(View.VISIBLE);
 			if (defaultColors) {
 				// set default
+				titleColor = Color.BLACK;
 				textColor = Color.BLACK;
 				backgroundColor = Color.WHITE;
+				titleColorView.setBackgroundColor(titleColor);
 				textColorView.setBackgroundColor(textColor);
 				backgroundColorView.setBackgroundColor(backgroundColor);
-				pref.edit().putInt("TextColor", textColor).commit();
-				pref.edit().putInt("BackgroundColor", backgroundColor).commit();
+				pref.edit().putInt("TitleColor", titleColor)
+					.putInt("TextColor", textColor)
+					.putInt("BackgroundColor", backgroundColor).commit();
 			} else {
 				// get current one
+				titleColor = pref.getInt("TitleColor", Color.BLACK);
 				textColor = pref.getInt("TextColor", Color.BLACK);
 				backgroundColor = pref.getInt("BackgroundColor", Color.WHITE);
+				titleColorView.setBackgroundColor(titleColor);
 				textColorView.setBackgroundColor(textColor);
 				backgroundColorView.setBackgroundColor(backgroundColor);
 			}
@@ -319,16 +403,21 @@ public class DialogFragment extends Fragment {
 			colorBlock.setVisibility(View.VISIBLE);
 			if (defaultColors) {
 				// set default
+				titleColor = Color.parseColor("#BEBEBE");
 				textColor = Color.parseColor("#BEBEBE");
 				backgroundColor = Color.parseColor("#101214");
+				titleColorView.setBackgroundColor(titleColor);
 				textColorView.setBackgroundColor(textColor);
 				backgroundColorView.setBackgroundColor(backgroundColor);
-				pref.edit().putInt("TextColor", textColor).commit();
-				pref.edit().putInt("BackgroundColor", backgroundColor).commit();
+				pref.edit().putInt("TitleColor", titleColor)
+					.putInt("TextColor", textColor)
+					.putInt("BackgroundColor", backgroundColor).commit();
 			} else {
 				// get current one
+				titleColor = pref.getInt("TitleColor", Color.parseColor("#BEBEBE"));
 				textColor = pref.getInt("TextColor", Color.parseColor("#BEBEBE"));
 				backgroundColor = pref.getInt("BackgroundColor", Color.parseColor("#101214"));
+				titleColorView.setBackgroundColor(titleColor);
 				textColorView.setBackgroundColor(textColor);
 				backgroundColorView.setBackgroundColor(backgroundColor);
 			}

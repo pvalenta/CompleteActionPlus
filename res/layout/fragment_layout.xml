@@ -28,6 +28,7 @@
                 style="@style/LabelDropDown"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/fragment_layout_spinner"
+                android:layout_toStartOf="@id/fragment_layout_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_layout_choice" />
         </RelativeLayout>
@@ -47,6 +48,7 @@
                 style="@style/LabelDropDown"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/fragment_layout_listTextSize_spinner"
+                android:layout_toStartOf="@id/fragment_layout_listTextSize_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_list_textSize" />
         </RelativeLayout>
@@ -67,6 +69,7 @@
                 style="@style/LabelDropDown"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/fragment_layout_gridColumns_spinner"
+                android:layout_toStartOf="@id/fragment_layout_gridColumns_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_grid_columns" />
 
@@ -82,6 +85,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@id/fragment_layout_gridColumnsLandscape_spinner"
                 android:layout_toLeftOf="@id/fragment_layout_gridColumnsLandscape_spinner"
+                android:layout_toStartOf="@id/fragment_layout_gridColumnsLandscape_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_grid_columns" />
 
@@ -96,6 +100,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@id/fragment_layout_gridTextSize_spinner"
                 android:layout_toLeftOf="@id/fragment_layout_gridTextSize_spinner"
+                android:layout_toStartOf="@id/fragment_layout_gridTextSize_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_grid_textSize" />
 
@@ -110,6 +115,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@id/fragment_layout_reduce_columns_checkbox"
                 android:layout_toLeftOf="@id/fragment_layout_reduce_columns_checkbox"
+                android:layout_toStartOf="@id/fragment_layout_reduce_columns_checkbox"
                 android:gravity="center_vertical"
                 android:text="@string/grid_dont_reduce_columns" />
         </RelativeLayout>

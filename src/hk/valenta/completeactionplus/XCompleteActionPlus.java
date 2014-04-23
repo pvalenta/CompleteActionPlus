@@ -17,6 +17,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -24,6 +26,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
@@ -295,6 +298,21 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						return false;
 					}
 				});
+				
+				// get current configuration
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				int transparency = pref.getInt("Transparency", 0);
+				if (transparency > 0) {
+					// let's get activity
+					Activity activity = (Activity)param.thisObject;
+					Window window = activity.getWindow();
+					WindowManager.LayoutParams params = window.getAttributes();
+
+					// set transparency
+//					params.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//					params.dimAmount = 0.8f;
+					params.alpha = 1f - ((float)transparency / 100f);				
+				}
 			}
 
 			@Override
@@ -796,10 +814,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
 			if (buttonBar != null) {
 				addAlwaysCheckbox(liparam, buttonBar, button_always.getText(), theme, pref);
-				if (theme.equals("Light")) {
-					buttonBar.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
-				} else if (theme.equals("Dark")) {
-					buttonBar.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+				if (pref.getInt("RoundCorner", 0) == 0) {
+					if (theme.equals("Light")) {
+						buttonBar.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+					} else if (theme.equals("Dark")) {
+						buttonBar.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					}
 				}
 			}
 		} else {
@@ -835,18 +855,22 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// create grid
 				createGridLayout(liparam, resolver_grid, columns, theme, pref);
 			} else {
+				if (pref.getInt("RoundCorner", 0) == 0) {
+					if (theme.equals("Light")) {
+						resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+					} else if (theme.equals("Dark")) {
+						resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					}		
+				}
+			}
+		} else {
+			if (pref.getInt("RoundCorner", 0) == 0) {
 				if (theme.equals("Light")) {
 					resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
 				} else if (theme.equals("Dark")) {
 					resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
 				}		
 			}
-		} else {
-			if (theme.equals("Light")) {
-				resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
-			} else if (theme.equals("Dark")) {
-				resolver_grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
-			}		
 		}
 	}
 	
@@ -991,18 +1015,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		grid.setColumnWidth((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, metrics));
 		grid.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
 		GridLayout.LayoutParams params = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//		if (pref.getBoolean("DontReduceColumns", false)) {
-//			params.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-//			grid.setStretchMode(GridView.NO_STRETCH);
-//		} else {
-//			params.setGravity(Gravity.CENTER);
-//		}
 		grid.setLayoutParams(params);
-		if (theme.equals("Light")) {
-			grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
-		} else if (theme.equals("Dark")) {
-			grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
-		}		
+		if (pref.getInt("RoundCorner", 0) == 0) {
+			if (theme.equals("Light")) {
+				grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+			} else if (theme.equals("Dark")) {
+				grid.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+			}		
+		}
 		parent.addView(grid);
 		parent.setMinimumHeight(0);
 		parent.setMeasureAllChildren(false);
@@ -1046,11 +1066,13 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics));
 		list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		if (theme.equals("Light")) {
-			list.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
-		} else if (theme.equals("Dark")) {
-			list.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
-		}		
+		if (pref.getInt("RoundCorner", 0) == 0) {
+			if (theme.equals("Light")) {
+				list.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+			} else if (theme.equals("Dark")) {
+				list.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+			}		
+		}
 		parent.addView(list);
 		parent.setMinimumHeight(0);
 		parent.setMeasureAllChildren(false);
@@ -1359,19 +1381,34 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} else {
 					XposedBridge.log("Image divider not found.");
 				}
+				
+				// round corners
+				int roundCorners = pref.getInt("RoundCorner", 0);
 
 				// set colors
 				if (theme.equals("Light")) {
-					titleView.setTextColor(pref.getInt("TextColor", Color.BLACK));
-					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+					int titleColor = pref.getInt("TitleColor", Color.BLACK);
+					titleView.setTextColor(titleColor);				
+					if (roundCorners == 0) {
+						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));						
+					} else {
+						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+					}
 					if (sibling != null) {
-						sibling.setBackgroundColor(Color.BLACK);
+						sibling.setBackgroundColor(titleColor);
 					}
 				} else if (theme.equals("Dark")) {
-					titleView.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
-					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					int titleColor = pref.getInt("TitleColor", Color.parseColor("#BEBEBE"));
+					titleView.setTextColor(titleColor);
+					if (roundCorners == 0) {
+						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					} else {
+						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+					}
 					if (sibling != null) {
-						sibling.setBackgroundColor(Color.parseColor("#BEBEBE"));
+						sibling.setBackgroundColor(titleColor);
 					}
 				}					
 			}
@@ -1442,16 +1479,29 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					XposedBridge.log("Image divider not found.");
 				}
 				
+				// round corners
+				int roundCorners = pref.getInt("RoundCorner", 0);
+				
 				// set colors
 				if (theme.equals("Light")) {
 					titleView.setTextColor(pref.getInt("TextColor", Color.BLACK));
-					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
+					if (roundCorners == 0) {
+						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));						
+					} else {
+						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+					}
 					if (sibling != null) {
 						sibling.setBackgroundColor(Color.BLACK);
 					}
 				} else if (theme.equals("Dark")) {
 					titleView.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
-					titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					if (roundCorners == 0) {
+						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
+					} else {
+						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+					}
 					if (sibling != null) {
 						sibling.setBackgroundColor(Color.parseColor("#BEBEBE"));
 					}
@@ -1625,5 +1675,37 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		else if (position.equals("Left")) mWindow.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.LEFT | Gravity.START);
 		else if (position.equals("BottomLeft")) mWindow.setGravity(Gravity.LEFT | Gravity.START | Gravity.BOTTOM);
 		else mWindow.setGravity(Gravity.CENTER);
+	}
+	
+	private void setRoundCorners(LinearLayout root, int color, int roundValue) {
+		// top round corners
+		GradientDrawable topBorder = new GradientDrawable(Orientation.BOTTOM_TOP, new int[] { color, color });
+		topBorder.setCornerRadii(new float[] { roundValue, roundValue, roundValue, roundValue, 0, 0, 0, 0 });
+
+		// bottom round corners
+		GradientDrawable bottomBorder = new GradientDrawable(Orientation.TOP_BOTTOM, new int[] { color, color });
+		bottomBorder.setCornerRadii(new float[] { 0, 0, 0, 0, roundValue, roundValue, roundValue, roundValue });
+		
+		// set first child
+		View first = root.getChildAt(0);
+		first.setBackground(topBorder);
+		
+		// find bottom
+		int lastIndex = root.getChildCount() - 1;
+		while(root.getChildAt(lastIndex).getVisibility() != View.VISIBLE) {
+			lastIndex -= 1;
+		}
+		
+		// set bottom
+		View last = root.getChildAt(lastIndex);
+		last.setBackground(bottomBorder);
+		
+		// set in between
+		if (lastIndex > 1) {
+			for (int i=1; i<lastIndex;i++) {
+				View m = root.getChildAt(i);
+				m.setBackgroundColor(color);
+			}
+		}
 	}
 }

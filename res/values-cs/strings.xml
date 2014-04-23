@@ -60,6 +60,10 @@
     <string name="manager_restore_success">Obnovení provedeno.</string>
     <string name="manager_restore_intent">Chcete obnovit pravidla z %s ?</string>
     <string name="advanced_share_set">Nastavit</string>
-    <string name="debug_turn_on">Enable extra debug messages in log</string>
-    <string name="advanced_no_package_manager_hook">Hide apps using 1.9 version way\n(Only if you have issues with \'Always\' checkbox.)</string>
+    <string name="debug_turn_on">Povolit další chybové zprávy v protokolu</string>
+    <string name="advanced_no_package_manager_hook">Skrýt aplikace metodou z verze 1.9\n(Pouze pokud máte problémy s volbou \'Vždy \'.)</string>
+    <string name="keep_bottom_buttons">Keep \'Once\' and \'Always\' buttons</string>
+    <string name="transparency">Transparency</string>
+    <string name="title_color">Title color</string>
+    <string name="round_corners">Round corners</string>
 </resources>

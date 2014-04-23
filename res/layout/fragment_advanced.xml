@@ -25,6 +25,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/fragment_advanced_allow_one_checkbox"
+            android:layout_toStartOf="@id/fragment_advanced_allow_one_checkbox"
             android:gravity="center_vertical"
             android:text="@string/advanced_allow_one_item" />
     </RelativeLayout>
@@ -43,6 +44,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/fragment_advanced_web_domain_checkbox"
+            android:layout_toStartOf="@id/fragment_advanced_web_domain_checkbox"
             android:gravity="center_vertical"
             android:text="@string/advanced_rule_per_domain" />
     </RelativeLayout>
@@ -61,6 +63,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/fragment_advanced_old_hide_checkbox"
+            android:layout_toStartOf="@id/fragment_advanced_old_hide_checkbox"
             android:gravity="center_vertical"
             android:text="@string/advanced_no_package_manager_hook" />
     </RelativeLayout>
@@ -82,10 +85,11 @@
             android:id="@+id/fragment_advanced_share_spinner"
             style="@style/DropDown"
             android:minWidth="40dp"
-            android:paddingRight="50dp"
-            android:paddingEnd="50dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/fragment_advanced_share_set"                       
+            android:layout_toLeftOf="@id/fragment_advanced_share_set"  
+            android:layout_toStartOf="@id/fragment_advanced_share_set"                     
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>

@@ -29,6 +29,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/fragment_dialog_theme_spinner"
+                android:layout_toStartOf="@id/fragment_dialog_theme_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_layout_theme" />
         </RelativeLayout>
@@ -36,15 +37,37 @@
         <RelativeLayout
             android:id="@+id/fragment_dialog_color_block"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="2" >
+            android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:id="@+id/fragment_dialog_color_title_border"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/black"
+                android:padding="1dp" >
+
+                <View
+                    android:id="@+id/fragment_dialog_color_title"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp" />
+            </RelativeLayout>
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_dialog_color_title_border"
+                android:layout_toStartOf="@id/fragment_dialog_color_title_border"
+                android:gravity="center_vertical"
+                android:text="@string/title_color" />            
+            
             <RelativeLayout
                 android:id="@+id/fragment_dialog_color_text_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_dialog_color_title_border"
+                android:layout_marginTop="5dp"
                 android:background="@android:color/black"
                 android:padding="1dp" >
 
@@ -57,7 +80,9 @@
             <TextView
                 style="@style/LabelDropDown"
                 android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_dialog_color_text_border"
                 android:layout_toLeftOf="@id/fragment_dialog_color_text_border"
+                android:layout_toStartOf="@id/fragment_dialog_color_text_border"
                 android:gravity="center_vertical"
                 android:text="@string/text_color" />
 
@@ -82,8 +107,38 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@id/fragment_dialog_color_background_border"
                 android:layout_toLeftOf="@id/fragment_dialog_color_background_border"
+                android:layout_toStartOf="@id/fragment_dialog_color_background_border"
                 android:gravity="center_vertical"
                 android:text="@string/background_color" />
+            
+            <TextView android:id="@+id/fragment_dialog_roundCorners_value"
+                style="@style/LabelTextView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_dialog_color_background_border"
+                android:layout_marginTop="5dp"
+                android:layout_width="40dp"
+                android:gravity="center_vertical" />            
+            
+            <TextView android:id="@+id/fragment_dialog_roundCorners_label"
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_dialog_roundCorners_value"
+                android:gravity="center_vertical"
+                android:text="@string/round_corners" />
+            
+            <SeekBar android:id="@+id/fragment_dialog_roundCorners_seek"
+                style="@android:style/Widget.Holo.SeekBar"
+                android:max="30"
+                android:layout_toLeftOf="@id/fragment_dialog_roundCorners_value"
+                android:layout_toStartOf="@id/fragment_dialog_roundCorners_value"
+                android:layout_toRightOf="@id/fragment_dialog_roundCorners_label"
+                android:layout_toEndOf="@id/fragment_dialog_roundCorners_label"
+                android:layout_alignTop="@id/fragment_dialog_roundCorners_value"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_width="match_parent" 
+                android:layout_height="wrap_content"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -100,6 +155,7 @@
                 style="@style/LabelDropDown"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/fragment_dialog_position_portrait_spinner"
+                android:layout_toStartOf="@id/fragment_dialog_position_portrait_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/dialog_gravity" />
 
@@ -115,8 +171,40 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@id/fragment_dialog_position_landscape_spinner"
                 android:layout_toLeftOf="@id/fragment_dialog_position_landscape_spinner"
+                android:layout_toStartOf="@id/fragment_dialog_position_landscape_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/dialog_gravity" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView android:id="@+id/fragment_dialog_transparency_value"
+                style="@style/LabelTextView"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_width="40dp"
+                android:gravity="center_vertical" />            
+            
+            <TextView android:id="@+id/fragment_dialog_transparency_label"
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:gravity="center_vertical"
+                android:text="@string/transparency" />
+            
+            <SeekBar android:id="@+id/fragment_dialog_trasparency_seek"
+                style="@android:style/Widget.Holo.SeekBar"
+                android:max="50"
+                android:layout_toLeftOf="@id/fragment_dialog_transparency_value"
+                android:layout_toStartOf="@id/fragment_dialog_transparency_value"
+                android:layout_toRightOf="@id/fragment_dialog_transparency_label"
+                android:layout_toEndOf="@id/fragment_dialog_transparency_label"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_width="match_parent" 
+                android:layout_height="wrap_content"/>
+            
         </RelativeLayout>
 
         <RelativeLayout
@@ -132,6 +220,7 @@
                 style="@style/LabelTextView"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/fragment_dialog_display_always_checkbox"
+                android:layout_toStartOf="@id/fragment_dialog_display_always_checkbox"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_display_always" />
 
@@ -146,9 +235,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@id/fragment_dialog_keep_buttons_checkbox"
                 android:layout_toLeftOf="@id/fragment_dialog_keep_buttons_checkbox"
+                android:layout_toStartOf="@id/fragment_dialog_keep_buttons_checkbox"
                 android:gravity="center_vertical"
-                android:text="@string/keep_bottom_buttons" />            
-            
+                android:text="@string/keep_bottom_buttons" />
+
             <CheckBox
                 android:id="@+id/fragment_dialog_manage_list_checkbox"
                 style="@style/Checkbox"
@@ -160,6 +250,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignTop="@id/fragment_dialog_manage_list_checkbox"
                 android:layout_toLeftOf="@id/fragment_dialog_manage_list_checkbox"
+                android:layout_toStartOf="@id/fragment_dialog_manage_list_checkbox"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_manage_list" />
         </RelativeLayout>
@@ -178,6 +269,7 @@
                 style="@style/LabelDropDown"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/fragment_dialog_manage_style_spinner"
+                android:layout_toStartOf="@id/fragment_dialog_manage_style_spinner"
                 android:gravity="center_vertical"
                 android:text="@string/manage_trigger_style" />
         </RelativeLayout>
@@ -196,6 +288,7 @@
                 style="@style/LabelTextView"
                 android:layout_alignParentStart="true"
                 android:layout_toLeftOf="@id/fragment_dialog_xhalo_checkbox"
+                android:layout_toStartOf="@id/fragment_dialog_xhalo_checkbox"
                 android:gravity="center_vertical"
                 android:text="@string/activity_main_xhalo" />
         </RelativeLayout>
