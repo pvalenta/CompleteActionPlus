@@ -38,7 +38,7 @@
     <string name="background_color">Color de fondo</string>
     <string name="xposed_not_installed">Xposed Framework no está instalado.\n¿Ir al post de la aplicación?</string>
     <string name="mod_not_activated">Este mod no está activado o falta reiniciar el dispositivo.</string>
-    <string name="not_yet_restarted">Reinicie el dispositivo primero, por favor.</string>
+    <string name="not_yet_restarted">Aún no ha reiniciado el dispositivo.</string>
     <string name="show_rule_manager">Abrir Administrador de Reglas</string>
     <string name="activity_manager_title">Administrador de reglas</string>
     <string name="fragment_hidden">Oculto</string>
@@ -62,8 +62,8 @@
     <string name="advanced_share_set">Configurar</string>
     <string name="debug_turn_on">Habilitar mensajes adicionales en el registro</string>
     <string name="advanced_no_package_manager_hook">Ocultar aplicaciones como en la versión 1.9\n(Sólo si tiene problemas con la casilla "Siempre".)</string>
-    <string name="keep_bottom_buttons">Keep \'Once\' and \'Always\' buttons</string>
-    <string name="transparency">Transparency</string>
-    <string name="title_color">Title color</string>
-    <string name="round_corners">Round corners</string>
+    <string name="keep_bottom_buttons">Mantener los botones \"Siempre\" y \"Solo esta vez\"</string>
+    <string name="transparency">Transparencia</string>
+    <string name="title_color">Color del título</string>
+    <string name="round_corners">Esquinas redondeadas</string>
 </resources>

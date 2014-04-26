@@ -55,9 +55,9 @@
 	    <item>Podržet titulek okna</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Galerie sdílení obrázku</item>
-	    <item>Galerie sdílení obrázků</item>
-	    <item>QuickPic sdílení obrázků</item>
-	    <item>Galaxy S4 Gallery Single Photo Share</item>
+	    <item>Sdílení obrázku z Galerie</item>
+	    <item>Sdílení obrázků z Galerie</item>
+	    <item>Sdílení obrázků z QuickPic</item>
+	    <item>Sdílení obrázku z Galerie SGS4</item>
 	</string-array>
 </resources>

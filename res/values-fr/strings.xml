@@ -60,10 +60,10 @@
     <string name="manager_restore_success">Restauration terminée.</string>
     <string name="manager_restore_intent">Restaurer les règles depuis %s ?</string>
     <string name="advanced_share_set">Régler</string>
-    <string name="debug_turn_on">Enable extra debug messages in log</string>
-    <string name="advanced_no_package_manager_hook">Hide apps using 1.9 version way\n(Only if you have issues with \'Always\' checkbox.)</string>
-    <string name="keep_bottom_buttons">Keep \'Once\' and \'Always\' buttons</string>
-    <string name="transparency">Transparency</string>
-    <string name="title_color">Title color</string>
-    <string name="round_corners">Round corners</string>
+    <string name="debug_turn_on">Activer les données de débuggage dans le journal</string>
+    <string name="advanced_no_package_manager_hook">Cacher les apps utilisant la méthode v1.9\n(qu\'en cas de problèmes avec la case \'Toujours\'.)</string>
+    <string name="keep_bottom_buttons">Garder les boutons \'Une seule fois\' et \'Toujours\'</string>
+    <string name="transparency">Transparence</string>
+    <string name="title_color">Couleur du titre</string>
+    <string name="round_corners">Arrondi des coins</string>
 </resources>

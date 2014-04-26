@@ -61,9 +61,9 @@
     <string name="manager_restore_intent">%sからルールを復元しますか?</string>
     <string name="advanced_share_set">セット</string>
     <string name="debug_turn_on">ログに詳細なデバッグ情報を記録する</string>
-    <string name="advanced_no_package_manager_hook">v1.9の手法でアプリを非表示にする\n(「常に表示」ボタンに問題がある場合のみ有効にしてください)</string>
-    <string name="keep_bottom_buttons">Keep \'Once\' and \'Always\' buttons</string>
-    <string name="transparency">Transparency</string>
-    <string name="title_color">Title color</string>
-    <string name="round_corners">Round corners</string>
+    <string name="advanced_no_package_manager_hook">v1.9の手法でアプリを非表示にする\n(「常時」ボタンに問題がある場合のみ有効にしてください)</string>
+    <string name="keep_bottom_buttons">「常時」「今回のみ」ボタンを表示する</string>
+    <string name="transparency">透過度</string>
+    <string name="title_color">タイトル色</string>
+    <string name="round_corners">角丸</string>
 </resources>

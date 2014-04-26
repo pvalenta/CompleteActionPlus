@@ -154,7 +154,7 @@ public class DialogFragment extends Fragment {
 		SeekBar roundCorner = (SeekBar)layout.findViewById(R.id.fragment_dialog_roundCorners_seek);
 		int r = pref.getInt("RoundCorner", 0);
 		roundCorner.setProgress(r);
-		roundCornerValue.setText(String.format("%d", r));
+		roundCornerValue.setText(String.format("%s (%d)", getString(R.string.round_corners), r));
 		roundCorner.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -166,7 +166,7 @@ public class DialogFragment extends Fragment {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				// let's display it
-				roundCornerValue.setText(String.format("%d", progress));
+				roundCornerValue.setText(String.format("%s (%d)", getString(R.string.round_corners), progress));
 			}
 
 			@Override
@@ -256,7 +256,7 @@ public class DialogFragment extends Fragment {
 		SeekBar transparency = (SeekBar)layout.findViewById(R.id.fragment_dialog_trasparency_seek);
 		int t = pref.getInt("Transparency", 0);
 		transparency.setProgress(t);
-		transparencyValue.setText(String.format("%d%%", t));
+		transparencyValue.setText(String.format("%s (%d%%)", getString(R.string.transparency), t));
 		transparency.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -268,7 +268,7 @@ public class DialogFragment extends Fragment {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				// let's display it
-				transparencyValue.setText(String.format("%d%%", progress));
+				transparencyValue.setText(String.format("%s (%d%%)", getString(R.string.transparency), progress));
 			}
 
 			@Override

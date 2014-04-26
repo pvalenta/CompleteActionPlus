@@ -62,8 +62,8 @@
     <string name="advanced_share_set">Ορισμός</string>
     <string name="debug_turn_on">Ενεργοποίηση επιπλέον μηνυμάτων εντοπισμού σφαλμάτων στο αρχείο καταγραφής</string>
     <string name="advanced_no_package_manager_hook">Απόκρυψη  εφαρμογών όπως στην έκδοση 1.9 (Μόνο αν έχετε προβλήματα με την επιλογή \'Πάντα\')</string>
-    <string name="keep_bottom_buttons">Keep \'Once\' and \'Always\' buttons</string>
-    <string name="transparency">Transparency</string>
-    <string name="title_color">Title color</string>
-    <string name="round_corners">Round corners</string>
+    <string name="keep_bottom_buttons">Διατήρηση των επιλογών \'Μία φορά\' και \'Πάντα\' </string>
+    <string name="transparency">Διαφάνεια</string>
+    <string name="title_color">Χρώμα πλακιδίου</string>
+    <string name="round_corners">Στρογγυλές γωνίες</string>
 </resources>

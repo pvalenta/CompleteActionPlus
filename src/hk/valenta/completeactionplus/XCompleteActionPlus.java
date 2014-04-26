@@ -75,8 +75,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.1.0");
-					return "2.1.0";
+					param.setResult("2.1.1");
+					return "2.1.1";
 				}
 			});
 		}
@@ -643,6 +643,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (oldWayHide) {
 					// one of ours?
 					if (!intentId.equals("android.intent.action.SEND;image/jpeg;null") &&
+						!intentId.equals("android.intent.action.SEND;image/*;null") &&
 						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/*;null") &&
 						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/jpeg;null")) {
 						if (debugOn) {
