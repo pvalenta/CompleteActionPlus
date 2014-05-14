@@ -171,15 +171,15 @@ public class ColorPicker {
 		// get current configuration
 		SharedPreferences pref = context.getSharedPreferences("config", Context.MODE_WORLD_READABLE);
 		int currentTheme = EnumConvert.themeIndex(pref.getString("AppTheme", "Light"));
-		int theme = android.R.style.Theme_Holo_Light_NoActionBar;
+//		int theme = android.R.style.Theme_Holo_Light_NoActionBar;
 		if (currentTheme == 1) {
-			theme = android.R.style.Theme_Holo_NoActionBar;
+//			theme = android.R.style.Theme_Holo_NoActionBar;
 			ImageView arrow = (ImageView)layer.findViewById(R.id.fragment_color_arrow);
 			arrow.setImageResource(R.drawable.icon_arrow_white);
 		}
 		
 		// setup alert
-		alert = new AlertDialog.Builder(context, theme)
+		alert = new AlertDialog.Builder(context)
 				.setPositiveButton(android.R.string.ok, new OnClickListener() {
 					
 					@Override

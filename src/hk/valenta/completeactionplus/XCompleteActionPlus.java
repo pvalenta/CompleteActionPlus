@@ -2,7 +2,6 @@ package hk.valenta.completeactionplus;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +74,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.1.1");
-					return "2.1.1";
+					param.setResult("2.1.2");
+					return "2.1.2";
 				}
 			});
 		}
@@ -163,6 +162,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						}
 						List<ResolveInfo> mCurrent = null;
 						if (mCurrentResolveList != null) {
+							mCurrentResolveList.setAccessible(true);
 							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
 						}						
 						if (mCurrent == null) {
@@ -230,6 +230,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						
 						// try to get control
 						try {
+							resolver.setAccessible(true);
 							rControl = (View)resolver.get(param.thisObject);
 						} catch (IllegalArgumentException e) {
 							// TODO Auto-generated catch block
@@ -290,6 +291,28 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			
 			Unhook hookResolveAttribute = null;
 			
+//			class FirstChoiceTimer extends CountDownTimer {
+//
+//				private Context context;
+//				
+//				public FirstChoiceTimer(Context context, long millisInFuture, long countDownInterval) {
+//					super(millisInFuture, countDownInterval);
+//					this.context = context;
+//				}
+//
+//				@Override
+//				public void onTick(long millisUntilFinished) {
+//					XposedBridge.log("TICK");
+//					Toast.makeText(context, "TICK", Toast.LENGTH_SHORT).show();
+//				}
+//
+//				@Override
+//				public void onFinish() {
+//					XposedBridge.log("BOOM");
+//					Toast.makeText(context, "BOOM", Toast.LENGTH_SHORT).show();
+//				}
+//			}
+					
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 				hookResolveAttribute = XposedHelpers.findAndHookMethod(Resources.Theme.class, "resolveAttribute", int.class, TypedValue.class, boolean.class, new XC_MethodReplacement() {
@@ -344,6 +367,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						resolver = f;
 						
 						// try to get control
+						resolver.setAccessible(true);						
 						rControl = (View)resolver.get(param.thisObject);
 						if (rControl != null) {
 							break;
@@ -413,6 +437,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				Window currentWindow = (Window)XposedHelpers.callMethod(param.thisObject, "getWindow");
 				setDialogGravity(root.getContext(), currentWindow, pref);
 				currentWindow.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+//				FirstChoiceTimer timer = new FirstChoiceTimer(rControl.getContext(), 5000, 1000);
+//				timer.start();
 				
 				// change layout?
 				boolean activeXHalo = pref.getBoolean("ActiveXHalo", false);
@@ -460,8 +487,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 
 				// get adapter
-				Field mAdapter = rObject.getDeclaredField("mAdapter");
-				BaseAdapter adapter = (BaseAdapter)mAdapter.get(param.thisObject);
+				BaseAdapter adapter = (BaseAdapter)XposedHelpers.getObjectField(param.thisObject, "mAdapter");
 				
 				// let's get new layout
 				if (layoutStyle.equals("List")) {
@@ -477,9 +503,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					int columns = getColumnsNumber(frame.getContext(), pref);
 					int itemCounts = adapter.getCount();
 					if (columns > itemCounts) {
-						// wrap content
-						//currentWindow.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-						
 						// reduce columns?
 						columns = itemCounts;
 						if (pref.getBoolean("DontReduceColumns", false)) {
@@ -488,9 +511,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 							grid.setColumnWidth((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, metrics));
 							grid.setStretchMode(GridView.NO_STRETCH);
 						}
-					} else {
-						// fill parent
-						//currentWindow.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 					}
 					grid.setNumColumns(columns);
 					grid.setAdapter(adapter);
@@ -512,8 +532,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (!manageList) return;
 				
 				// let's get intent
-				Field mIntent = param.thisObject.getClass().getDeclaredField("mIntent");
-				Intent myIntent = (Intent)mIntent.get(param.thisObject);
+				Intent myIntent = (Intent)XposedHelpers.getObjectField(param.thisObject, "mIntent");
 				String scheme = myIntent.getScheme();
 				if (pref.getBoolean("RulePerWebDomain", false) && scheme != null && (scheme.equals("http") || scheme.equals("https"))) {
 					// add domain
@@ -534,14 +553,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						}
 						
 						// get list
-						Field mList = param.thisObject.getClass().getDeclaredField("mList");
-						List<Object> items = (List<Object>)mList.get(param.thisObject);
+						List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
 						
 						// get original list to solve 4.3 issue
 						List<ResolveInfo> baseList = null;
 						try {
-							Field mBaseResolveList = param.thisObject.getClass().getDeclaredField("mBaseResolveList");
-							baseList = (List<ResolveInfo>)mBaseResolveList.get(param.thisObject);
+							baseList = (List<ResolveInfo>)XposedHelpers.getObjectField(param.thisObject, "mBaseResolveList");
 							if (baseList == null) {
 								baseList = new ArrayList<ResolveInfo>();
 							}
@@ -552,8 +569,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 							int count = items.size();
 							for (int i=0; i<count; i++) {
 								// get resolve info
-								Field ri = items.get(i).getClass().getDeclaredField("ri");
-								ResolveInfo info = (ResolveInfo)ri.get(items.get(i));
+								ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(items.get(i), "ri");
 								
 								// match?
 								if (info.activityInfo.packageName.equals(h)) {
@@ -585,8 +601,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 					
 					// get list
-					Field mList = param.thisObject.getClass().getDeclaredField("mList");
-					List<Object> items = (List<Object>)mList.get(param.thisObject);
+					List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
 					
 					// loop by favourites
 					int favIndex = 0;
@@ -594,8 +609,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					for (int i=0; i<itemSize; i++) {
 						// get resolve info
 						Object o = items.get(i);
-						Field ri = o.getClass().getDeclaredField("ri");
-						ResolveInfo info = (ResolveInfo)ri.get(o);
+						ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(o, "ri");
 						
 						// match?
 						if (favItems.contains(info.activityInfo.packageName) && favIndex < i) {
@@ -1283,13 +1297,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	private void makeManageListButton(MethodHookParam param, Class<?> resolverActivity, Intent myIntent, boolean changeLayout, String theme, XSharedPreferences pref) {
 		try {
 			// move one level up
-			Class<?> alertActivity = resolverActivity.getSuperclass();
-			Field mAlert = alertActivity.getDeclaredField("mAlert");
-			Object aControl = mAlert.get(param.thisObject);
+			Object aControl = XposedHelpers.getObjectField(param.thisObject, "mAlert");
 
 			// get title view
-			Field mTitleView = aControl.getClass().getDeclaredField("mTitleView");
-			TextView titleView = (TextView)mTitleView.get(aControl);
+			TextView titleView = (TextView)XposedHelpers.getObjectField(aControl, "mTitleView");
 			
 			// get config
 			String triggerStyle = pref.getString("ManageTriggerStyle", "Wrench");
@@ -1313,14 +1324,11 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 			
 			// let's Assemble list of items
-			Field mAdapter = resolverActivity.getDeclaredField("mAdapter");
-			Object adapter = (Object)mAdapter.get(param.thisObject);
-			Method getCount = adapter.getClass().getDeclaredMethod("getCount");
-			int count = (Integer)getCount.invoke(adapter);
+			Object adapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
+			int count = (Integer)XposedHelpers.callMethod(adapter, "getCount");
 			ArrayList<String> items = new ArrayList<String>();
-			Method resolveInfoForPosition = adapter.getClass().getDeclaredMethod("resolveInfoForPosition", int.class);
 			for (int i=0; i<count; i++) {
-				ResolveInfo info = (ResolveInfo)resolveInfoForPosition.invoke(adapter, i);
+				ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", i);
 				if (!items.contains(info.activityInfo.packageName)) {
 					items.add(info.activityInfo.packageName);
 				}
@@ -1448,13 +1456,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	private void themeTitleView(MethodHookParam param, Class<?> resolverActivity, boolean changeLayout, String theme, XSharedPreferences pref) {
 		try {
 			// move one level up
-			Class<?> alertActivity = resolverActivity.getSuperclass();
-			Field mAlert = alertActivity.getDeclaredField("mAlert");
-			Object aControl = mAlert.get(param.thisObject);
+			Object aControl = XposedHelpers.getObjectField(param.thisObject, "mAlert");
 			
 			// get title view
-			Field mTitleView = aControl.getClass().getDeclaredField("mTitleView");
-			TextView titleView = (TextView)mTitleView.get(aControl);
+			TextView titleView = (TextView)XposedHelpers.getObjectField(aControl, "mTitleView");
 			LinearLayout titleParent = (LinearLayout)titleView.getParent();
 			DisplayMetrics metrics = titleParent.getContext().getResources().getDisplayMetrics();
 			titleParent.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, metrics),
@@ -1551,12 +1556,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	
 	private void startSelected(Object thisObject, Class<?> thisClass, int position, boolean always) {
 		try {
-			// get method
-			Method startSelected = thisClass.getDeclaredMethod("startSelected", int.class, boolean.class);
-			
 			// call selected value
-			//XposedBridge.log(String.format("StartSelected(%d,%b)", position, always));
-			startSelected.invoke(thisObject, position, always);
+			XposedHelpers.callMethod(thisObject, "startSelected", position, always);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			XposedBridge.log("StartSelected method failed: " + e.toString());
@@ -1582,8 +1583,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// call activity directly
 				Object adapter = parent.getAdapter();
 				try {
-					Method intentForPosition = adapter.getClass().getDeclaredMethod("intentForPosition", int.class);
-					Intent intent = (Intent)intentForPosition.invoke(adapter, position);
+					Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
 					if (intent != null) {
 						intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT | Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP | 0x00002000);
 						parent.getContext().startActivity(intent);
@@ -1621,8 +1621,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// call activity directly
 				Object adapter = parent.getAdapter();
 				try {
-					Method intentForPosition = adapter.getClass().getDeclaredMethod("intentForPosition", int.class);
-					Intent intent = (Intent)intentForPosition.invoke(adapter, position);
+					Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
 					if (intent != null) {
 						intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT | Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP | 0x00002000);
 						parent.getContext().startActivity(intent);

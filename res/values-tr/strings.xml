@@ -59,11 +59,13 @@
     <string name="manager_restore_failed">Geriyükleme başarısız oldu.</string>
     <string name="manager_restore_success">Geri yükleme başarılı.</string>
     <string name="manager_restore_intent">%s dosyaları geri yüklemek istiyor musunuz?</string>
-    <string name="advanced_share_set">Set</string>
-    <string name="debug_turn_on">Enable extra debug messages in log</string>
-    <string name="advanced_no_package_manager_hook">Hide apps using 1.9 version way\n(Only if you have issues with \'Always\' checkbox.)</string>
-    <string name="keep_bottom_buttons">Keep \'Once\' and \'Always\' buttons</string>
-    <string name="transparency">Transparency</string>
-    <string name="title_color">Title color</string>
-    <string name="round_corners">Round corners</string>
+    <string name="advanced_share_set">Ayarla</string>
+    <string name="debug_turn_on">Günlüğünden ekstra hata ayıklama iletilerini etkinleştir </string>
+    <string name="advanced_no_package_manager_hook">Sadece 1.9 sürümünü kullanıyorsan\n uygulamaları gizle (onay kutusu ile sorunları \'her zaman\'  yoktur.)
+
+</string>
+    <string name="keep_bottom_buttons">Butonları \'Bir kez\' veya \'Daima\' tutun</string>
+    <string name="transparency">Şeffaf</string>
+    <string name="title_color">Başlık rengi</string>
+    <string name="round_corners">Yuvarlak köşeler</string>
 </resources>

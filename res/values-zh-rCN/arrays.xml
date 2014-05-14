@@ -55,9 +55,9 @@
 	    <item>长按标题打开</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
-	    <item>QuickPic Multiple Photos Share</item>
-	    <item>Galaxy S4 Gallery Single Photo Share</item>
+	    <item>相册单图分享</item>
+	    <item>相册多图分享</item>
+	    <item>快图浏览多图分享</item>
+	    <item>Galaxy S4 相册单图分享</item>
 	</string-array>
 </resources>

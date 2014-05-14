@@ -25,7 +25,7 @@
 	    <item>Çok Büyük</item>
 	</string-array>
 	<string-array name="grid_text_size">
-	    <item>Gizlenmiş</item>
+	    <item>Gizliler</item>
 	    <item>Küçücük</item>
 	    <item>Küçük</item>
 	    <item>Düzenli</item>
@@ -55,9 +55,9 @@
 	    <item>Uzun Başlığa Tıklayın</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
-	    <item>QuickPic Multiple Photos Share</item>
-	    <item>Galaxy S4 Gallery Single Photo Share</item>
+	    <item>Galeriden bir Fotoğraf paylaş</item>
+	    <item>Galeriden Birden fazla Fotoğraf Paylaş</item>
+	    <item>Quickpic Birden fazla Fotoğraf Paylaş</item>
+	    <item>Galaxy S4 Galerisinden Bir Fotoğraf paylaş</item>
 	</string-array>
 </resources>
