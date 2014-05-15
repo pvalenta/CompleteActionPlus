@@ -41,7 +41,7 @@
     <string name="not_yet_restarted">Önce yeniden başlatın.</string>
     <string name="show_rule_manager">Bir kural yöneticisi Göster</string>
     <string name="activity_manager_title">Kural Yöneticisi</string>
-    <string name="fragment_hidden">Gizlenmiş</string>
+    <string name="fragment_hidden">Gizliler</string>
     <string name="fragment_favorite">Favoriler</string>
     <string name="manager_rule_delete">Kuralı Sil</string>
     <string name="manager_rule_delete_confirm">Bu kuralı silmek istediğinizden emin misiniz?</string>
@@ -68,4 +68,5 @@
     <string name="transparency">Şeffaf</string>
     <string name="title_color">Başlık rengi</string>
     <string name="round_corners">Yuvarlak köşeler</string>
+    <string name="autostart_timeout">Auto-start first app in seconds</string>
 </resources>

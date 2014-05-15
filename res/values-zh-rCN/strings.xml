@@ -66,4 +66,5 @@
     <string name="transparency">透明度</string>
     <string name="title_color">标题颜色</string>
     <string name="round_corners">圆角</string>
+    <string name="autostart_timeout">Auto-start first app in seconds</string>
 </resources>

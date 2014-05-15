@@ -20,6 +20,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -49,6 +50,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -74,8 +76,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.1.2");
-					return "2.1.2";
+					param.setResult("2.1.3");
+					return "2.1.3";
 				}
 			});
 		}
@@ -119,7 +121,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						}
 					} else {
 						// start it
-						startSelected(param.thisObject, rObject, position, false);						
+						startSelected(param.thisObject, position, false);						
 					}
 					return null;
 				}
@@ -201,10 +203,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 							}
 						}
 					}
-					startSelected(param.thisObject, rObject, position, always);
+					startSelected(param.thisObject, position, always);
 				} else {
 					// call it
-					startSelected(param.thisObject, rObject, position, false);
+					startSelected(param.thisObject, position, false);
 				}
 				
 				return null;
@@ -281,7 +283,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				boolean always = (button.getId() == mAlwaysButton.getId());
 				
 				// call it
-				startSelected(param.thisObject, rObject, selectedIndex, always);
+				startSelected(param.thisObject, selectedIndex, always);
 				
 				return null;
 			}
@@ -291,27 +293,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			
 			Unhook hookResolveAttribute = null;
 			
-//			class FirstChoiceTimer extends CountDownTimer {
-//
-//				private Context context;
-//				
-//				public FirstChoiceTimer(Context context, long millisInFuture, long countDownInterval) {
-//					super(millisInFuture, countDownInterval);
-//					this.context = context;
-//				}
-//
-//				@Override
-//				public void onTick(long millisUntilFinished) {
-//					XposedBridge.log("TICK");
-//					Toast.makeText(context, "TICK", Toast.LENGTH_SHORT).show();
-//				}
-//
-//				@Override
-//				public void onFinish() {
-//					XposedBridge.log("BOOM");
-//					Toast.makeText(context, "BOOM", Toast.LENGTH_SHORT).show();
-//				}
-//			}
+			class FirstChoiceTimer extends CountDownTimer {
+
+				private ProgressBar progressBar;		
+				private Object resolver;
+				
+				public FirstChoiceTimer(ProgressBar progress, Object resolver, long millisInFuture, long countDownInterval) {
+					super(millisInFuture, countDownInterval);
+					// setup
+					this.progressBar = progress;
+					this.resolver = resolver;
+				}
+
+				@Override
+				public void onTick(long millisUntilFinished) {
+					// tick
+					int p = this.progressBar.getProgress() + 1;
+					this.progressBar.setProgress(p);
+				}
+
+				@Override
+				public void onFinish() {
+					// start it
+					startSelected(resolver, 0, false);
+				}
+			}
 					
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -438,8 +444,26 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				setDialogGravity(root.getContext(), currentWindow, pref);
 				currentWindow.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-//				FirstChoiceTimer timer = new FirstChoiceTimer(rControl.getContext(), 5000, 1000);
-//				timer.start();
+				// timeout only for view dialog
+				DisplayMetrics metrics = frame.getContext().getResources().getDisplayMetrics();
+				int autoStart = pref.getInt("AutoStart", 0);
+				if (autoStart > 0 && XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption")) {
+					// add progress bar
+					ProgressBar progress = new ProgressBar(frame.getContext(), null, android.R.attr.progressBarStyleHorizontal);
+					progress.setMax(autoStart);
+					progress.setProgress(1);
+					progress.setPadding(0, 0, 0, 0);
+					root.addView(progress, 0);
+					LinearLayout.LayoutParams progParam = (LinearLayout.LayoutParams)progress.getLayoutParams();
+					progParam.width = LayoutParams.MATCH_PARENT;
+					progParam.height = LayoutParams.WRAP_CONTENT;
+					progParam.setMargins(0 ,(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -6, metrics), 
+							0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -6, metrics));					
+
+					// timer
+					FirstChoiceTimer timer = new FirstChoiceTimer(progress, param.thisObject, autoStart * 1000, 1000);
+					timer.start();
+				}
 				
 				// change layout?
 				boolean activeXHalo = pref.getBoolean("ActiveXHalo", false);
@@ -507,7 +531,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						columns = itemCounts;
 						if (pref.getBoolean("DontReduceColumns", false)) {
 							grid.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-							DisplayMetrics metrics = grid.getContext().getResources().getDisplayMetrics();
 							grid.setColumnWidth((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, metrics));
 							grid.setStretchMode(GridView.NO_STRETCH);
 						}
@@ -1554,7 +1577,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		return alwaysCheck.isChecked();
 	}
 	
-	private void startSelected(Object thisObject, Class<?> thisClass, int position, boolean always) {
+	private void startSelected(Object thisObject, int position, boolean always) {
 		try {
 			// call selected value
 			XposedHelpers.callMethod(thisObject, "startSelected", position, always);

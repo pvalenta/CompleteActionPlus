@@ -66,4 +66,5 @@
     <string name="transparency">Transparence</string>
     <string name="title_color">Couleur du titre</string>
     <string name="round_corners">Arrondi des coins</string>
+    <string name="autostart_timeout">Auto-start first app in seconds</string>
 </resources>

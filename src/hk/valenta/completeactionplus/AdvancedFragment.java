@@ -19,12 +19,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class AdvancedFragment extends Fragment {
 
 	Spinner shareSpinner;
+	TextView autostartValue;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -111,6 +115,32 @@ public class AdvancedFragment extends Fragment {
 				startActivity(manage);
 			}
 		});		
+		
+		// autostart
+		autostartValue = (TextView)layout.findViewById(R.id.fragment_advanced_timeout_value);
+		SeekBar autostart = (SeekBar)layout.findViewById(R.id.fragment_advanced_timeout);
+		int t = pref.getInt("AutoStart", 0);
+		autostart.setProgress(t);
+		autostartValue.setText(String.format("%s (%d)", getString(R.string.autostart_timeout), t));
+		autostart.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// set it in preferences
+				SharedPreferences pref = seekBar.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putInt("AutoStart", seekBar.getProgress()).commit();
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				// let's display it
+				autostartValue.setText(String.format("%s (%d)", getString(R.string.autostart_timeout), progress));
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// nothing				
+			}
+		});
 		
 		return layout;
 	}
