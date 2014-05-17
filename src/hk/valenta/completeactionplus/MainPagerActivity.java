@@ -2,7 +2,6 @@ package hk.valenta.completeactionplus;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -116,17 +115,17 @@ public class MainPagerActivity extends FragmentActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// continue to activation
-						if (xposedVersion == 1) {
-							Intent modules = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
-							modules.setPackage("de.robv.android.xposed.installer");
-							modules.putExtra("section", "modules");
-							modules.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							startActivity(modules);
-						} else if (xposedVersion == 2) {
-							Intent modules = new Intent(Intent.ACTION_MAIN);
-							modules.setComponent(ComponentName.unflattenFromString("pro.burgerz.wsm.manager/pro.burgerz.wsm.manager.ModuleSettingActivity"));
-							startActivity(modules);
-						}
+//						if (xposedVersion == 1) {
+//							Intent modules = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
+//							modules.setPackage("de.robv.android.xposed.installer");
+//							modules.putExtra("section", "modules");
+//							modules.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//							startActivity(modules);
+//						} else if (xposedVersion == 2) {
+//							Intent modules = new Intent(Intent.ACTION_MAIN);
+//							modules.setComponent(ComponentName.unflattenFromString("pro.burgerz.wsm.manager/pro.burgerz.wsm.manager.ModuleSettingActivity"));
+//							startActivity(modules);
+//						}
 						finish();
 					}
 				}).create();
@@ -135,7 +134,7 @@ public class MainPagerActivity extends FragmentActivity {
 		}
 		
 		// correct version?
-		if (version != null && !version.equals("2.1.3")) {
+		if (version != null && !version.equals("2.1.5")) {
 			// show message
 			AlertDialog alertActivate = new AlertDialog.Builder(this)
 				.setMessage(R.string.not_yet_restarted)
@@ -144,17 +143,17 @@ public class MainPagerActivity extends FragmentActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// continue to activation
-						if (xposedVersion == 1) {
-							Intent modules = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
-							modules.setPackage("de.robv.android.xposed.installer");
-							modules.putExtra("section", "install");
-							modules.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							startActivity(modules);
-						} else if (xposedVersion == 2) {
-							Intent modules = new Intent(Intent.ACTION_MAIN);
-							modules.setComponent(ComponentName.unflattenFromString("pro.burgerz.wsm.manager/pro.burgerz.wsm.manager.InstallerActivity"));
-							startActivity(modules);
-						}
+//						if (xposedVersion == 1) {
+//							Intent modules = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
+//							modules.setPackage("de.robv.android.xposed.installer");
+//							modules.putExtra("section", "install");
+//							modules.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//							startActivity(modules);
+//						} else if (xposedVersion == 2) {
+//							Intent modules = new Intent(Intent.ACTION_MAIN);
+//							modules.setComponent(ComponentName.unflattenFromString("pro.burgerz.wsm.manager/pro.burgerz.wsm.manager.InstallerActivity"));
+//							startActivity(modules);
+//						}
 						finish();
 					}
 				}).create();

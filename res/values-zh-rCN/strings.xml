@@ -2,7 +2,7 @@
     <string name="app_name">Complete Action Plus</string>
     <string name="activity_main_setting">设置</string>
     <string name="activity_main_logo">Complete Action Plus logo</string>
-    <string name="activity_main_display_always">显示“总是”复选框</string>
+    <string name="activity_main_display_always">显示“始终”复选框</string>
     <string name="activity_main_manage_list">管理应用程序列表</string>
     <string name="activity_main_advanced">高级设置</string>
     <string name="activity_main_change_layout">更换布局</string>
@@ -10,8 +10,8 @@
     <string name="activity_main_grid_columns">网格列数 (%s)</string>
     <string name="activity_main_list_textSize">列表中的文本大小</string>
     <string name="activity_main_grid_textSize">网格中的文本大小</string>
-    <string name="activity_main_open_button">进入官方论坛!</string>
-    <string name="activity_main_share_button">分享此应用!</string>
+    <string name="activity_main_open_button">测试“打开”对话框</string>
+    <string name="activity_main_share_button">测试“分享”对话框</string>
     <string name="app_icon">程序图标</string>
     <string name="manage_list_title">管理项目列表</string>
     <string name="manage_list_item_off">禁用</string>
@@ -19,8 +19,8 @@
     <string name="manage_list_action">动作:</string>
     <string name="manage_list_type">类型:</string>
     <string name="manage_list_scheme">方案:</string>
-    <string name="manage_list_not_available">N/A</string>
-    <string name="manage_list_warning">请保持至少两个列表中的活动项目</string>
+    <string name="manage_list_not_available">不可用</string>
+    <string name="manage_list_warning">请在列表中保持两个以上的程序活动项目</string>
     <string name="list_item_favourite_button">最喜欢的项目</string>
     <string name="app_theme">程序界面主题</string>
     <string name="activity_main_xhalo">长按将在 XHalo 中启动应用</string>

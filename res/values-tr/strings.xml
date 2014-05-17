@@ -47,7 +47,7 @@
     <string name="manager_rule_delete_confirm">Bu kuralı silmek istediğinizden emin misiniz?</string>
     <string name="advanced_allow_one_item">Sadece bir öğeyi geri tutmak için izin ver</string>
     <string name="manage_list_warning_one">Listede en az iki öğeyi aktif olarak saklayınız.</string>
-    <string name="advanced_rule_per_domain">Her web sitesi etki alanı başına KurallarI</string>
+    <string name="advanced_rule_per_domain">Her web sitesi başına etki alanı kuralları</string>
     <string name="manager_backup_rules">Kuralı Yedekle</string>
     <string name="manager_restore_rules">Kuralı Geriyükle</string>
     <string name="manager_backup_failed">Yedekleme başarısız oldu.</string>
@@ -68,5 +68,5 @@
     <string name="transparency">Şeffaf</string>
     <string name="title_color">Başlık rengi</string>
     <string name="round_corners">Yuvarlak köşeler</string>
-    <string name="autostart_timeout">Auto-start first app in seconds</string>
+    <string name="autostart_timeout">Uygulamyı bir saniyede oto-başlat</string>
 </resources>

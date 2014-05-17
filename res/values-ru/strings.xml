@@ -17,10 +17,10 @@
     <string name="manage_list_item_off">Выкл.</string>
     <string name="manage_list_item_on">Вкл.</string>
     <string name="manage_list_action">Action:</string>
-    <string name="manage_list_type">Type:</string>
+    <string name="manage_list_type">Тип</string>
     <string name="manage_list_scheme">Scheme:</string>
     <string name="manage_list_not_available">N/A</string>
-    <string name="manage_list_warning">Оствьте активными минимум два приложения.</string>
+    <string name="manage_list_warning">Оставьте активными как минимум два приложения</string>
     <string name="list_item_favourite_button">Favourite item</string>
     <string name="app_theme">Тема приложения</string>
     <string name="activity_main_xhalo">Долгое нажатие откроет приложение в XHaloFloatingMultiwindow</string>

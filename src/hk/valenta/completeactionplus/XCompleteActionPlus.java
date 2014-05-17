@@ -2,6 +2,7 @@ package hk.valenta.completeactionplus;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,8 +77,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.1.3");
-					return "2.1.3";
+					param.setResult("2.1.5");
+					return "2.1.5";
 				}
 			});
 		}
@@ -88,7 +89,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	public void initZygote(StartupParam startupParam) throws Throwable {
 		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onItemClick", AdapterView.class, View.class, int.class, long.class,
 				new XC_MethodReplacement() {
-			@SuppressWarnings("unchecked")
 			@Override
 			protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 				// invalid index?
@@ -103,12 +103,23 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				while (!rObject.getName().equals("com.android.internal.app.ResolverActivity")) {
 					rObject = rObject.getSuperclass();
 				}
+
+				// auto start?
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				int autoStart = pref.getInt("AutoStart", 0);
+				boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
+				if (autoStart > 0 && mAlwaysUseOption) {
+					// make sure we got buttons hidden
+					AdapterView<?> rControl = (AdapterView<?>)param.args[0];
+					FrameLayout frame = (FrameLayout)rControl.getParent();
+					LinearLayout root = (LinearLayout)frame.getParent();
+					ProgressBar progress = (ProgressBar)root.getChildAt(0);
+					progress.setVisibility(View.GONE);
+				}
 				
 				// get method
-				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				if (pref.getBoolean("KeepButtons", false) == true) {
 					// simulate original method
-					boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
 					if (mAlwaysUseOption) {
 						// enable buttons
 						Button mAlwaysButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mAlwaysButton");
@@ -130,78 +141,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					// get view
 					boolean always = isAlwaysChecked((View)param.args[0]);
 					boolean manageList = pref.getBoolean("ManageList", false);
-					if (always) {
-						// set always property
-						XposedHelpers.setBooleanField(param.thisObject, "mAlwaysUseOption", true);
-					}					
 					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 					if (always && manageList && oldWayHide) {
-						// get adapter
-						boolean debugOn = pref.getBoolean("DebugLog", false);
-						Object mAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
-						Field mCurrentResolveList = null;
-						try {
-							mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
-							if (debugOn) {
-								XposedBridge.log("Android 4.2 mCurrentResolveList");
-							}
-						} catch (Exception ex) { }
-						if (mCurrentResolveList == null) {
-							try {
-								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
-								if (debugOn) {
-									XposedBridge.log("Android 4.4 mOrigResolveList");
-								}
-							} catch (Exception ex) { }
-						}
-						if (mCurrentResolveList == null) {
-							try {
-								mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
-								if (debugOn) {
-									XposedBridge.log("Android 4.3 mBaseResolveList");
-								}
-							} catch (Exception ex) { }
-						}
-						List<ResolveInfo> mCurrent = null;
-						if (mCurrentResolveList != null) {
-							mCurrentResolveList.setAccessible(true);
-							mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
-						}						
-						if (mCurrent == null) {
-							if (debugOn) {
-								XposedBridge.log("Original list is NULL.");
-							}
-						} else {
-							List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
-							if (debugOn) {
-								XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
-							}
-							if (mCurrent.size() != mList.size()) {
-								// get DisplayResolveInfo class
-								Class<?> DisplayResolveInfo = mList.get(0).getClass();
-								Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
-								driCon.setAccessible(true);
-								
-								// add missing one back
-								for (ResolveInfo r : mCurrent) {
-									boolean missing = true;
-									for (Object l : mList) {
-										// get resolve info
-										ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(l, "ri");
-										if (info.activityInfo.packageName.equals(r.activityInfo.packageName) &&
-											info.activityInfo.name.equals(r.activityInfo.name)) {
-											missing = false;
-											break;
-										}
-									}
-									if (missing) {
-										// let's add back
-										Object n = driCon.newInstance(param.thisObject, r, "", "", null);
-										mList.add(n);
-									}
-								}
-							}
-						}
+						// restore items
+						restoreListItems(param.thisObject, pref);
 					}
 					startSelected(param.thisObject, position, always);
 				} else {
@@ -281,6 +224,15 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				Button button = (Button)param.args[0];
 				Button mAlwaysButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mAlwaysButton");
 				boolean always = (button.getId() == mAlwaysButton.getId());
+
+				// restore items?
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+				boolean manageList = pref.getBoolean("ManageList", false);
+				if (always && manageList && oldWayHide) {
+					// restore items
+					restoreListItems(param.thisObject, pref);
+				}
 				
 				// call it
 				startSelected(param.thisObject, selectedIndex, always);
@@ -307,6 +259,15 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 
 				@Override
 				public void onTick(long millisUntilFinished) {
+					// are we cancel?
+					if (this.progressBar.getVisibility() == View.GONE) {
+						// cancel
+//						Handler mHandler = (Handler)XposedHelpers.getObjectField(this, "mHandler");
+//						mHandler.removeMessages(1);
+//						super.cancel();
+						return;
+					}
+					
 					// tick
 					int p = this.progressBar.getProgress() + 1;
 					this.progressBar.setProgress(p);
@@ -314,6 +275,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 
 				@Override
 				public void onFinish() {
+					// are we cancel?
+					if (this.progressBar.getVisibility() == View.GONE) {
+						// cancel
+//						super.cancel();
+						return;
+					}
 					// start it
 					startSelected(resolver, 0, false);
 				}
@@ -458,10 +425,11 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					progParam.width = LayoutParams.MATCH_PARENT;
 					progParam.height = LayoutParams.WRAP_CONTENT;
 					progParam.setMargins(0 ,(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -6, metrics), 
-							0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -6, metrics));					
+							0, (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -6, metrics));
 
 					// timer
 					FirstChoiceTimer timer = new FirstChoiceTimer(progress, param.thisObject, autoStart * 1000, 1000);
+					rControl.setTag(timer);
 					timer.start();
 				}
 				
@@ -1729,6 +1697,91 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				View m = root.getChildAt(i);
 				m.setBackgroundColor(color);
 			}
+		}
+	}
+	
+	@SuppressLint("DefaultLocale")
+	@SuppressWarnings("unchecked")
+	private void restoreListItems(Object thisObject, XSharedPreferences pref) {
+		try {
+			// get adapter
+			boolean debugOn = pref.getBoolean("DebugLog", false);
+			Object mAdapter = XposedHelpers.getObjectField(thisObject, "mAdapter");
+			Field mCurrentResolveList = null;
+			try {
+				mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
+				if (debugOn) {
+					XposedBridge.log("Android 4.2 mCurrentResolveList");
+				}
+			} catch (Exception ex) { }
+			if (mCurrentResolveList == null) {
+				try {
+					mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
+					if (debugOn) {
+						XposedBridge.log("Android 4.4 mOrigResolveList");
+					}
+				} catch (Exception ex) { }
+			}
+			if (mCurrentResolveList == null) {
+				try {
+					mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
+					if (debugOn) {
+						XposedBridge.log("Android 4.3 mBaseResolveList");
+					}
+				} catch (Exception ex) { }
+			}
+			List<ResolveInfo> mCurrent = null;
+			if (mCurrentResolveList != null) {
+				mCurrentResolveList.setAccessible(true);
+				mCurrent =(List<ResolveInfo>)mCurrentResolveList.get(mAdapter); 
+			}						
+			if (mCurrent == null) {
+				if (debugOn) {
+					XposedBridge.log("Original list is NULL.");
+				}
+			} else {
+				List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
+				if (debugOn) {
+					XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
+				}
+				if (mCurrent.size() != mList.size()) {
+					// get DisplayResolveInfo class
+					Class<?> DisplayResolveInfo = mList.get(0).getClass();
+					Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
+					driCon.setAccessible(true);
+					
+					// add missing one back
+					for (ResolveInfo r : mCurrent) {
+						boolean missing = true;
+						for (Object l : mList) {
+							// get resolve info
+							ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(l, "ri");
+							if (info.activityInfo.packageName.equals(r.activityInfo.packageName) &&
+								info.activityInfo.name.equals(r.activityInfo.name)) {
+								missing = false;
+								break;
+							}
+						}
+						if (missing) {
+							// let's add back
+							Object n = driCon.newInstance(thisObject, r, "", "", null);
+							mList.add(n);
+						}
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

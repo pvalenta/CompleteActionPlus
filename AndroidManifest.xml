@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.valenta.completeactionplus"
-    android:versionCode="60"
-    android:versionName="2.1.3" >
+    android:versionCode="62"
+    android:versionName="2.1.5" >
 
     <uses-sdk
         android:minSdkVersion="16"

@@ -20,24 +20,24 @@
         <item>10</item>
 	</string-array>
     <string-array name="list_text_size">
-	    <item>中</item>
-	    <item>大</item>
+	    <item>中等</item>
+	    <item>大型</item>
 	    <item>特大</item>
 	</string-array>
 	<string-array name="grid_text_size">
 	    <item>隐藏</item>
 	    <item>非常小</item>
-	    <item>小</item>
-	    <item>中</item>
+	    <item>小型</item>
+	    <item>中等</item>
 	</string-array>
 	<string-array name="theme">
-	    <item>白色背景</item>
-	    <item>黑色背景</item>
+	    <item>亮色</item>
+	    <item>暗色</item>
 	</string-array>
 	<string-array name="dialog_theme">
 	    <item>默认</item>
-		<item>简白</item>
-	    <item>黑暗</item>
+		<item>亮色</item>
+	    <item>暗色</item>
 	</string-array>
 	<string-array name="dialog_gravity">
 	    <item>居中</item>

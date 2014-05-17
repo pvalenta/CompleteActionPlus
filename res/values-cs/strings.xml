@@ -66,5 +66,5 @@
     <string name="transparency">Průhlednost</string>
     <string name="title_color">Barva titulku</string>
     <string name="round_corners">Kulaté rohy</string>
-    <string name="autostart_timeout">Auto-start first app in seconds</string>
+    <string name="autostart_timeout">Auto-start první aplikace v sekundách</string>
 </resources>
