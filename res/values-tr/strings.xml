@@ -69,4 +69,5 @@
     <string name="title_color">Başlık rengi</string>
     <string name="round_corners">Yuvarlak köşeler</string>
     <string name="autostart_timeout">Uygulamyı bir saniyede oto-başlat</string>
+    <string name="long_press_action">Long press app action</string>
 </resources>

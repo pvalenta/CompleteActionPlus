@@ -60,4 +60,10 @@
 	    <item>Quickpic Birden fazla Fotoğraf Paylaş</item>
 	    <item>Galaxy S4 Galerisinden Bir Fotoğraf paylaş</item>
 	</string-array>
+	<string-array name="long_press_actions">
+	    <item>No action</item>
+	    <item>App Information</item>
+	    <item>Set as default</item>
+	    <item>XHalo Window</item>
+	</string-array>
 </resources>

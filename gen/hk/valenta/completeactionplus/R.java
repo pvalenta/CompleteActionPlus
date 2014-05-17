@@ -17,6 +17,7 @@ public final class R {
         public static final int grid_layout_columns_landscape=0x7f040002;
         public static final int grid_text_size=0x7f040004;
         public static final int list_text_size=0x7f040003;
+        public static final int long_press_actions=0x7f04000a;
         public static final int manageTrigger=0x7f040008;
         public static final int theme=0x7f040005;
     }
@@ -86,6 +87,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int fragment_dialog_color_title_border=0x7f080029;
         public static final int fragment_dialog_display_always_checkbox=0x7f080037;
         public static final int fragment_dialog_keep_buttons_checkbox=0x7f080038;
+        public static final int fragment_dialog_long_press_spinner=0x7f08003c;
         public static final int fragment_dialog_manage_block=0x7f08003a;
         public static final int fragment_dialog_manage_list_checkbox=0x7f080039;
         public static final int fragment_dialog_manage_style_spinner=0x7f08003b;
@@ -98,24 +100,22 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int fragment_dialog_theme_spinner=0x7f080027;
         public static final int fragment_dialog_transparency_value=0x7f080036;
         public static final int fragment_dialog_trasparency_seek=0x7f080035;
-        public static final int fragment_dialog_xhalo_block=0x7f08003c;
-        public static final int fragment_dialog_xhalo_checkbox=0x7f08003d;
-        public static final int fragment_favorite_list=0x7f08003e;
-        public static final int fragment_hidden_list=0x7f08003f;
-        public static final int fragment_layout_gridColumnsLandscape_label=0x7f080047;
-        public static final int fragment_layout_gridColumnsLandscape_spinner=0x7f080046;
-        public static final int fragment_layout_gridColumns_label=0x7f080045;
-        public static final int fragment_layout_gridColumns_spinner=0x7f080044;
-        public static final int fragment_layout_gridLayout_group=0x7f080043;
-        public static final int fragment_layout_gridTextSize_spinner=0x7f080048;
-        public static final int fragment_layout_listLayout_group=0x7f080041;
-        public static final int fragment_layout_listTextSize_spinner=0x7f080042;
-        public static final int fragment_layout_reduce_columns_checkbox=0x7f080049;
-        public static final int fragment_layout_spinner=0x7f080040;
-        public static final int list_item_favourite_button=0x7f08004d;
-        public static final int list_item_hide_button=0x7f08004c;
-        public static final int list_item_icon=0x7f08004a;
-        public static final int list_item_title=0x7f08004b;
+        public static final int fragment_favorite_list=0x7f08003d;
+        public static final int fragment_hidden_list=0x7f08003e;
+        public static final int fragment_layout_gridColumnsLandscape_label=0x7f080046;
+        public static final int fragment_layout_gridColumnsLandscape_spinner=0x7f080045;
+        public static final int fragment_layout_gridColumns_label=0x7f080044;
+        public static final int fragment_layout_gridColumns_spinner=0x7f080043;
+        public static final int fragment_layout_gridLayout_group=0x7f080042;
+        public static final int fragment_layout_gridTextSize_spinner=0x7f080047;
+        public static final int fragment_layout_listLayout_group=0x7f080040;
+        public static final int fragment_layout_listTextSize_spinner=0x7f080041;
+        public static final int fragment_layout_reduce_columns_checkbox=0x7f080048;
+        public static final int fragment_layout_spinner=0x7f08003f;
+        public static final int list_item_favourite_button=0x7f08004c;
+        public static final int list_item_hide_button=0x7f08004b;
+        public static final int list_item_icon=0x7f080049;
+        public static final int list_item_title=0x7f08004a;
         public static final int main_pager_button_bar=0x7f080002;
         public static final int main_pager_logo=0x7f080000;
         public static final int main_pager_title_strip=0x7f080004;
@@ -136,11 +136,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int manager_pager_logo=0x7f080010;
         public static final int manager_pager_title_strip=0x7f080013;
         public static final int manager_pager_viewPager=0x7f080012;
-        public static final int rule_item_action=0x7f08004e;
-        public static final int rule_item_apps=0x7f080051;
-        public static final int rule_item_delete_button=0x7f080052;
-        public static final int rule_item_scheme=0x7f080050;
-        public static final int rule_item_type=0x7f08004f;
+        public static final int rule_item_action=0x7f08004d;
+        public static final int rule_item_apps=0x7f080050;
+        public static final int rule_item_delete_button=0x7f080051;
+        public static final int rule_item_scheme=0x7f08004f;
+        public static final int rule_item_type=0x7f08004e;
     }
     public static final class layout {
         public static final int activity_main_pager=0x7f030000;
@@ -193,6 +193,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int keep_bottom_buttons=0x7f06003f;
         public static final int landscape=0x7f06001a;
         public static final int list_item_favourite_button=0x7f060016;
+        public static final int long_press_action=0x7f060044;
         public static final int manage_list_action=0x7f060011;
         public static final int manage_list_item_off=0x7f06000f;
         public static final int manage_list_item_on=0x7f060010;

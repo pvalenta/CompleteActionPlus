@@ -67,4 +67,5 @@
     <string name="title_color">Farba názvu</string>
     <string name="round_corners">Guľaté rohy</string>
     <string name="autostart_timeout">Automaticky spustiť prvú aplikáciu v sekundách</string>
+    <string name="long_press_action">Long press app action</string>
 </resources>

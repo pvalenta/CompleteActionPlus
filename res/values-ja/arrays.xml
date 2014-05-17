@@ -60,4 +60,10 @@
 	    <item>QuickPic複数画像共有</item>
 	    <item>Galaxy S4ギャラリー単体画像共有</item>
 	</string-array>
+	<string-array name="long_press_actions">
+	    <item>No action</item>
+	    <item>App Information</item>
+	    <item>Set as default</item>
+	    <item>XHalo Window</item>
+	</string-array>
 </resources>

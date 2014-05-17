@@ -19,6 +19,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -77,8 +78,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.1.5");
-					return "2.1.5";
+					param.setResult("2.2.0");
+					return "2.2.0";
 				}
 			});
 		}
@@ -414,7 +415,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// timeout only for view dialog
 				DisplayMetrics metrics = frame.getContext().getResources().getDisplayMetrics();
 				int autoStart = pref.getInt("AutoStart", 0);
-				if (autoStart > 0 && XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption")) {
+				boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
+				if (autoStart > 0 && mAlwaysUseOption) {
 					// add progress bar
 					ProgressBar progress = new ProgressBar(frame.getContext(), null, android.R.attr.progressBarStyleHorizontal);
 					progress.setMax(autoStart);
@@ -433,21 +435,19 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					timer.start();
 				}
 				
-				// change layout?
-				boolean activeXHalo = pref.getBoolean("ActiveXHalo", false);
+				// default layout for long press
+				String longPressAction = pref.getString("LongPress", "Nothing");
 				if (layoutStyle.equals("Default")) {
-					if (activeXHalo) {
-						if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
-							// set it
-							GridView resGrid = (GridView)resolver.get(param.thisObject);
-							resGrid.setItemChecked(-1, true);
-							setHaloWindow(resGrid);
-						} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
-							// set it
-							ListView resList = (ListView)resolver.get(param.thisObject);
-							resList.setItemChecked(-1, true);
-							setHaloWindow(resList);
-						}
+					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
+						// set it
+						GridView resGrid = (GridView)resolver.get(param.thisObject);
+						resGrid.setItemChecked(-1, true);
+						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);						
+					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
+						// set it
+						ListView resList = (ListView)resolver.get(param.thisObject);
+						resList.setItemChecked(-1, true);
+						setLongPress(resList, longPressAction, mAlwaysUseOption, param.thisObject, pref);
 					}
 					
 					return;
@@ -463,16 +463,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
 						resGrid.setNumColumns(columns);
 						resGrid.setItemChecked(-1, true);
-						if (activeXHalo) {
-							setHaloWindow(resGrid);
-						}
+						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);						
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
 						ListView resList = (ListView)resolver.get(param.thisObject);
 						resList.setItemChecked(-1, true);
-						if (activeXHalo) {
-							setHaloWindow(resList);
-						}
+						setLongPress(resList, longPressAction, mAlwaysUseOption, param.thisObject, pref);
 					}
 					
 					return;
@@ -487,9 +483,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					list.setAdapter(adapter);
 					list.setItemChecked(-1, true);
 					list.setOnItemClickListener((OnItemClickListener)param.thisObject);
-					if (activeXHalo) {
-						setHaloWindow(list);
-					}
+					setLongPress(list, longPressAction, mAlwaysUseOption, param.thisObject, pref);
 				} else if (layoutStyle.equals("Grid")) {
 					GridView grid = (GridView)frame.getChildAt(1);
 					int columns = getColumnsNumber(frame.getContext(), pref);
@@ -507,9 +501,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					grid.setAdapter(adapter);
 					grid.setItemChecked(-1, true);
 					grid.setOnItemClickListener((OnItemClickListener)param.thisObject);
-					if (activeXHalo) {
-						setHaloWindow(grid);
-					}
+					setLongPress(grid, longPressAction, mAlwaysUseOption, param.thisObject, pref);						
 				}
 			}
 		});
@@ -1555,6 +1547,65 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		}		
 	}
 	
+	private void setLongPress(ListView list, String action, boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+		if (action.equals("AppInfo")) setAppInfo(list);
+		else if (action.equals("Default") && mAlwaysUseOption) {
+			boolean manageList = pref.getBoolean("ManageList", false);
+			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+			if (manageList && oldWayHide) {
+				// restore items
+				restoreListItems(thisObject, pref);
+			}
+			setDefault(list, thisObject);
+		}
+		else if (action.equals("XHalo")) setHaloWindow(list);
+	}
+	
+	private void setAppInfo(ListView list) {
+		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				// call activity directly
+				Object adapter = parent.getAdapter();
+				try {
+					ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
+					if (info != null) {
+						Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+								.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
+								.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+						parent.getContext().startActivity(intent);
+						Activity a = (Activity)parent.getContext();
+						a.finish();
+					}
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					XposedBridge.log(e.getMessage());
+				}
+				
+				return true;
+			}
+			
+		});		
+	}
+
+	private void setDefault(ListView list, Object thisObject) {
+		list.setTag(thisObject);
+		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				// call activity directly
+				Object thisObject = parent.getTag();
+				XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+				
+				return true;
+			}
+			
+		});		
+	}
+	
 	private void setHaloWindow(ListView list) {
 		
 		PackageManager pm = list.getContext().getPackageManager();
@@ -1592,6 +1643,65 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			
 		});		
 	}	
+	
+	private void setLongPress(GridView grid, String action, boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+		if (action.equals("AppInfo")) setAppInfo(grid);
+		else if (action.equals("Default") && mAlwaysUseOption) {
+			boolean manageList = pref.getBoolean("ManageList", false);
+			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+			if (manageList && oldWayHide) {
+				// restore items
+				restoreListItems(thisObject, pref);
+			}
+			setDefault(grid, thisObject);
+		}
+		else if (action.equals("XHalo")) setHaloWindow(grid);
+	}
+	
+	private void setAppInfo(GridView grid) {
+		grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				// call activity directly
+				Object adapter = parent.getAdapter();
+				try {
+					ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
+					if (info != null) {
+						Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+								.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
+								.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+						parent.getContext().startActivity(intent);
+						Activity a = (Activity)parent.getContext();
+						a.finish();
+					}
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					XposedBridge.log(e.getMessage());
+				}
+				
+				return true;
+			}
+			
+		});		
+	}
+	
+	private void setDefault(GridView grid, Object thisObject) {
+		grid.setTag(thisObject);
+		grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				// call activity directly
+				Object thisObject = parent.getTag();
+				XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+				
+				return true;
+			}
+			
+		});		
+	}
 	
 	private void setHaloWindow(GridView grid) {
 		

@@ -327,21 +327,40 @@ public class DialogFragment extends Fragment {
 				showManageTriggerStyle(checked);
 			}
 		});
-		CheckBox activeXHalo = (CheckBox)layout.findViewById(R.id.fragment_dialog_xhalo_checkbox);
-		activeXHalo.setChecked(pref.getBoolean("ActiveXHalo", false));
-		activeXHalo.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@SuppressLint("WorldReadableFiles")
+
+		// populate long press
+		Spinner longPressSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_long_press_spinner);
+		longPressSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
-				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("ActiveXHalo", buttonView.isChecked()).commit();
+				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putString("LongPress", EnumConvert.longPressName(pos)).commit();				
 			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// nothing to do				
+			}
+			
 		});
+		String[] actions = getResources().getStringArray(R.array.long_press_actions);
 		if (!existXHalo()) {
-			RelativeLayout xHaloBlock = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_xhalo_block);
-			xHaloBlock.setVisibility(View.GONE);
-		}
+			// actions without XHalo
+			String[] temp = new String[3];
+			temp[0] = actions[0];
+			temp[1] = actions[1];
+			temp[2] = actions[2];
+			actions = temp;
+		}		
+		ArrayAdapter<CharSequence> longPressAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, actions);
+		longPressAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		longPressSpinner.setAdapter(longPressAdapter);
+		
+		// preselect
+		int longPressIndex = EnumConvert.longPressIndex(pref.getString("LongPress", "Nothing"));
+		longPressSpinner.setSelection(longPressIndex);	
 		
 		return layout;
 	}

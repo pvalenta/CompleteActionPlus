@@ -67,4 +67,5 @@
     <string name="title_color">Title color</string>
     <string name="round_corners">Round corners</string>
     <string name="autostart_timeout">Auto-start first app in seconds</string>
+    <string name="long_press_action">Long press app action</string>
 </resources>

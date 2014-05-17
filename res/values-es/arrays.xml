@@ -60,4 +60,10 @@
 	    <item>Fotos Múltiples (QuickPic)</item>
 	    <item>Foto Individual (Galería Galaxy S4)</item>
 	</string-array>
+	<string-array name="long_press_actions">
+	    <item>No action</item>
+	    <item>App Information</item>
+	    <item>Set as default</item>
+	    <item>XHalo Window</item>
+	</string-array>
 </resources>

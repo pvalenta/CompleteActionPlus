@@ -60,4 +60,10 @@
 	    <item>快图浏览多图分享</item>
 	    <item>Galaxy S4 相册单图分享</item>
 	</string-array>
+	<string-array name="long_press_actions">
+	    <item>No action</item>
+	    <item>App Information</item>
+	    <item>Set as default</item>
+	    <item>XHalo Window</item>
+	</string-array>
 </resources>

@@ -128,4 +128,24 @@ public class EnumConvert {
 		if (name.equals("Title")) return 1;
 		else return 0;
 	}	
+	
+	public static final String longPressName(int index) {
+		switch (index) {
+		case 1:
+			return "AppInfo";
+		case 2:
+			return "Default";
+		case 3:
+			return "XHalo";
+		default:
+			return "Nothing";
+		}
+	}
+	
+	public static final int longPressIndex(String name) {
+		if (name.equals("AppInfo")) return 1;
+		else if (name.equals("Default")) return 2;
+		else if (name.equals("XHalo")) return 3;
+		else return 0;
+	}
 }
