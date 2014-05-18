@@ -61,11 +61,11 @@
     <string name="manager_restore_intent">Restaurer les règles depuis %s ?</string>
     <string name="advanced_share_set">Régler</string>
     <string name="debug_turn_on">Activer les données de débuggage dans le journal</string>
-    <string name="advanced_no_package_manager_hook">Cacher les apps utilisant la méthode v1.9\n(qu\'en cas de problèmes avec la case \'Toujours\'.)</string>
+    <string name="advanced_no_package_manager_hook">Cacher les apps utilisant la méthode v1.9\n(qu\'en cas de pb avec la case \'Toujours\'.)</string>
     <string name="keep_bottom_buttons">Garder les boutons \'Une seule fois\' et \'Toujours\'</string>
     <string name="transparency">Transparence</string>
     <string name="title_color">Couleur du titre</string>
     <string name="round_corners">Arrondi des coins</string>
-    <string name="autostart_timeout">Auto-start first app in seconds</string>
-    <string name="long_press_action">Long press app action</string>
+    <string name="autostart_timeout">Démarrage auto de la première appli en secondes</string>
+    <string name="long_press_action">Action de l\'appui long</string>
 </resources>

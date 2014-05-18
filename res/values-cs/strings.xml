@@ -67,5 +67,5 @@
     <string name="title_color">Barva titulku</string>
     <string name="round_corners">Kulaté rohy</string>
     <string name="autostart_timeout">Auto-start první aplikace v sekundách</string>
-    <string name="long_press_action">Long press app action</string>
+    <string name="long_press_action">Spustit akci podržením</string>
 </resources>

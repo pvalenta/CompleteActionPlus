@@ -396,29 +396,15 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //					// hide buttons
 //					hideButtonBarButtons(buttonBar);
 //				}
-				
-				// manage list?
-				boolean manageList = pref.getBoolean("ManageList", false);
-				String layoutStyle = pref.getString("LayoutStyle", "Default");
-				String theme = pref.getString("LayoutTheme", "Default");
-				if (manageList) {
-					makeManageListButton(param, rObject, myIntent, !theme.equals("Default"), theme, pref);
-				} else {
-					themeTitleView(param, rObject, !theme.equals("Default"), theme, pref);
-				}
-				
-				// dialog gravity
-				Window currentWindow = (Window)XposedHelpers.callMethod(param.thisObject, "getWindow");
-				setDialogGravity(root.getContext(), currentWindow, pref);
-				currentWindow.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
 				// timeout only for view dialog
 				DisplayMetrics metrics = frame.getContext().getResources().getDisplayMetrics();
 				int autoStart = pref.getInt("AutoStart", 0);
 				boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
+				ProgressBar progress = null;
 				if (autoStart > 0 && mAlwaysUseOption) {
 					// add progress bar
-					ProgressBar progress = new ProgressBar(frame.getContext(), null, android.R.attr.progressBarStyleHorizontal);
+					progress = new ProgressBar(frame.getContext(), null, android.R.attr.progressBarStyleHorizontal);
 					progress.setMax(autoStart);
 					progress.setProgress(1);
 					progress.setPadding(0, 0, 0, 0);
@@ -434,6 +420,21 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					rControl.setTag(timer);
 					timer.start();
 				}
+				
+				// manage list?
+				boolean manageList = pref.getBoolean("ManageList", false);
+				String layoutStyle = pref.getString("LayoutStyle", "Default");
+				String theme = pref.getString("LayoutTheme", "Default");
+				if (manageList) {
+					makeManageListButton(param, rObject, myIntent, !theme.equals("Default"), theme, pref, progress);
+				} else {
+					themeTitleView(param, rObject, !theme.equals("Default"), theme, pref);
+				}
+				
+				// dialog gravity
+				Window currentWindow = (Window)XposedHelpers.callMethod(param.thisObject, "getWindow");
+				setDialogGravity(root.getContext(), currentWindow, pref);
+				currentWindow.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 				
 				// default layout for long press
 				String longPressAction = pref.getString("LongPress", "Nothing");
@@ -1277,7 +1278,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	}
 	
 	@SuppressLint("NewApi")
-	private void makeManageListButton(MethodHookParam param, Class<?> resolverActivity, Intent myIntent, boolean changeLayout, String theme, XSharedPreferences pref) {
+	private void makeManageListButton(MethodHookParam param, Class<?> resolverActivity, Intent myIntent, boolean changeLayout, 
+			String theme, XSharedPreferences pref, ProgressBar autoStartProgressBar) {
 		try {
 			// move one level up
 			Object aControl = XposedHelpers.getObjectField(param.thisObject, "mAlert");
@@ -1334,10 +1336,17 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			
 			if (triggerStyle.equals("Title")) {
 				titleView.setTag(manage);
+				titleView.setTag(R.id.TAG_AUTOSTART_PROGRESSBAR, autoStartProgressBar);
 				titleView.setOnLongClickListener(new OnLongClickListener() {
 					
 					@Override
 					public boolean onLongClick(View view) {
+						// progress bar
+						ProgressBar autoStartProgressBar = (ProgressBar)view.getTag(R.id.TAG_AUTOSTART_PROGRESSBAR);
+						if (autoStartProgressBar != null) {
+							autoStartProgressBar.setVisibility(View.GONE);
+						}
+						
 						// execute intent
 						Intent manage = (Intent)view.getTag();
 						view.getContext().startActivity(manage);
@@ -1418,9 +1427,15 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
 				prefButton.setLayoutParams(prefLayout);
 				prefButton.setTag(manage);
+				prefButton.setTag(R.id.TAG_AUTOSTART_PROGRESSBAR, autoStartProgressBar);
 				prefButton.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View view) {
+						// progress bar
+						ProgressBar autoStartProgressBar = (ProgressBar)view.getTag(R.id.TAG_AUTOSTART_PROGRESSBAR);
+						if (autoStartProgressBar != null) {
+							autoStartProgressBar.setVisibility(View.GONE);
+						}
 						Intent manage = (Intent)view.getTag();
 						view.getContext().startActivity(manage);
 						Activity a = (Activity)view.getContext();

@@ -4,8 +4,6 @@ import hk.valenta.completeactionplus.ColorPicker.OnResultListener;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -345,16 +343,7 @@ public class DialogFragment extends Fragment {
 			}
 			
 		});
-		String[] actions = getResources().getStringArray(R.array.long_press_actions);
-		if (!existXHalo()) {
-			// actions without XHalo
-			String[] temp = new String[3];
-			temp[0] = actions[0];
-			temp[1] = actions[1];
-			temp[2] = actions[2];
-			actions = temp;
-		}		
-		ArrayAdapter<CharSequence> longPressAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item, actions);
+		ArrayAdapter<CharSequence> longPressAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.long_press_actions, android.R.layout.simple_spinner_item);
 		longPressAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		longPressSpinner.setAdapter(longPressAdapter);
 		
@@ -364,19 +353,6 @@ public class DialogFragment extends Fragment {
 		
 		return layout;
 	}
-	
-	private boolean existXHalo() {
-		PackageManager pm = getActivity().getPackageManager();
-		try {
-			if (pm.getPackageInfo("com.zst.xposed.halo.floatingwindow", PackageManager.GET_META_DATA) != null) {
-				return true;
-			}
-		} catch (NameNotFoundException e1) {
-			// not found package
-		}
-		
-		return false;
-	}	
 	
 	private void showManageTriggerStyle(boolean show) {
 		if (show) {

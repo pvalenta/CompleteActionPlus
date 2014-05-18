@@ -62,10 +62,10 @@
     <string name="advanced_share_set">Постави</string>
     <string name="debug_turn_on">Укључи додатне поруке у логу</string>
     <string name="advanced_no_package_manager_hook">Сакрити програме помоћу везрије 1.9\n(Само ако имате проблеме са \'Увек\' чекбоксом.)</string>
-    <string name="keep_bottom_buttons">Keep \'Once\' and \'Always\' buttons</string>
-    <string name="transparency">Transparency</string>
-    <string name="title_color">Title color</string>
-    <string name="round_corners">Round corners</string>
-    <string name="autostart_timeout">Auto-start first app in seconds</string>
-    <string name="long_press_action">Long press app action</string>
+    <string name="keep_bottom_buttons">Задржати тастере \'Једном\' и \'Увек\'</string>
+    <string name="transparency">Транспарентно</string>
+    <string name="title_color">Боја наслова</string>
+    <string name="round_corners">Заобљени углови</string>
+    <string name="autostart_timeout">Ауто старт прве апликације у секундама</string>
+    <string name="long_press_action">Акција дугог притиска апликације</string>
 </resources>

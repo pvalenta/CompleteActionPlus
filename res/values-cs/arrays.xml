@@ -61,9 +61,9 @@
 	    <item>Sdílení obrázku z Galerie SGS4</item>
 	</string-array>
 	<string-array name="long_press_actions">
-	    <item>No action</item>
-	    <item>App Information</item>
-	    <item>Set as default</item>
-	    <item>XHalo Window</item>
+	    <item>Bez akce</item>
+	    <item>Info o app</item>
+	    <item>Nastavit \'Vždy\'</item>
+	    <item>XHalo okno</item>
 	</string-array>
 </resources>
