@@ -83,7 +83,11 @@ public class ManageListActivity extends Activity {
 		
 		// display info
 		TextView tvAction = (TextView)findViewById(R.id.manage_list_action_value);
-		tvAction.setText(action.substring(action.lastIndexOf(".") + 1));
+		if (action == null) {
+			tvAction.setText(getString(R.string.manage_list_not_available));
+		} else {
+			tvAction.setText(action.substring(action.lastIndexOf(".") + 1));
+		}
 		TextView tvType = (TextView)findViewById(R.id.manage_list_type_value);
 		if (type == null) {
 			tvType.setText(getString(R.string.manage_list_not_available));

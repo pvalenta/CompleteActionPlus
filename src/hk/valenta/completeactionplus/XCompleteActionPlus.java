@@ -78,8 +78,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.2.0");
-					return "2.2.0";
+					param.setResult("2.2.3");
+					return "2.2.3";
 				}
 			});
 		}
@@ -123,13 +123,24 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					// simulate original method
 					if (mAlwaysUseOption) {
 						// enable buttons
+						String theme = pref.getString("LayoutTheme", "Default");
 						Button mAlwaysButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mAlwaysButton");
 						if (mAlwaysButton != null) {
 							mAlwaysButton.setEnabled(true);
+							if (theme.equals("Light")) {
+								mAlwaysButton.setTextColor(pref.getInt("TextColor", Color.BLACK));
+							} else if (theme.equals("Dark")) {
+								mAlwaysButton.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+							}
 						}
 						Button mOnceButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mOnceButton");
 						if (mOnceButton != null) {
 							mOnceButton.setEnabled(true);
+							if (theme.equals("Light")) {
+								mOnceButton.setTextColor(pref.getInt("TextColor", Color.BLACK));
+							} else if (theme.equals("Dark")) {
+								mOnceButton.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+							}
 						}
 					} else {
 						// start it
@@ -826,6 +837,39 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
 			if (buttonBar != null && !keepButtons) {
 				hideElement(buttonBar);
+			}
+		}
+		if (keepButtons) {
+			// change color
+			if (theme.equals("Light")) {
+				if (button_always != null) {
+					button_always.setBackgroundColor(Color.TRANSPARENT);
+					button_always.setTextColor(pref.getInt("TextColor", Color.BLACK));
+				}		
+				if (button_once != null) {
+					button_once.setBackgroundColor(Color.TRANSPARENT);
+					button_once.setTextColor(pref.getInt("TextColor", Color.BLACK));
+				}
+			}
+			if (theme.equals("Dark")) {
+				if (button_always != null) {
+					button_always.setBackgroundColor(Color.TRANSPARENT);
+					button_always.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+				}		
+				if (button_once != null) {
+					button_once.setBackgroundColor(Color.TRANSPARENT);
+					button_once.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+				}
+			}
+			
+			// make sure no extra margin
+			if (button_always != null) {
+				LinearLayout.LayoutParams buttonParams = (LinearLayout.LayoutParams)button_always.getLayoutParams();
+				buttonParams.setMargins(0, 0, 0, 0);
+			}
+			if (button_once != null) {
+				LinearLayout.LayoutParams buttonParams = (LinearLayout.LayoutParams)button_once.getLayoutParams();
+				buttonParams.setMargins(0, 0, 0, 0);
 			}
 		}
 		

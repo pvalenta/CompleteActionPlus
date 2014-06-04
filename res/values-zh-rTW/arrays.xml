@@ -61,9 +61,9 @@
 	    <item>Galaxy S4 相冊單圖分享</item>
 	</string-array>
 	<string-array name="long_press_actions">
-	    <item>No action</item>
-	    <item>App Information</item>
-	    <item>Set as default</item>
-	    <item>XHalo Window</item>
+	    <item>沒有動作</item>
+	    <item>應用資料</item>
+	    <item>定為預設</item>
+	    <item>Halo 應用框</item>
 	</string-array>
 </resources>

@@ -67,5 +67,5 @@
     <string name="title_color">標題顏色</string>
     <string name="round_corners">圓角</string>
     <string name="autostart_timeout">於多少秒後自動啟動第一個程式</string>
-    <string name="long_press_action">Long press app action</string>
+    <string name="long_press_action">長按啟動應用框</string>
 </resources>

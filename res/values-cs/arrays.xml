@@ -62,8 +62,8 @@
 	</string-array>
 	<string-array name="long_press_actions">
 	    <item>Bez akce</item>
-	    <item>Info o app</item>
+	    <item>Info o aplikaci</item>
 	    <item>Nastavit \'Vždy\'</item>
-	    <item>XHalo okno</item>
+	    <item>Halo okno</item>
 	</string-array>
 </resources>

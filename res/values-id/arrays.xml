@@ -1,0 +1,69 @@
+<resources>
+    <string-array name="change_layout_styles">
+        <item>Bawaan</item>
+        <item>Daftar</item>
+        <item>Petak</item>
+    </string-array>
+    <string-array name="grid_layout_columns">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+	</string-array>
+    <string-array name="grid_layout_columns_landscape">
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+	</string-array>
+    <string-array name="list_text_size">
+	    <item>Biasa</item>
+	    <item>Besar</item>
+	    <item>Sangat Besar</item>
+	</string-array>
+	<string-array name="grid_text_size">
+	    <item>Sembunyikan</item>
+	    <item>Mini</item>
+	    <item>Kecil</item>
+	    <item>Biasa</item>
+	</string-array>
+	<string-array name="theme">
+	    <item>Terang</item>
+	    <item>Gelap</item>
+	</string-array>
+	<string-array name="dialog_theme">
+	    <item>Bawaan</item>
+		<item>Terang</item>
+	    <item>Gelap</item>
+	</string-array>
+	<string-array name="dialog_gravity">
+	    <item>Tengah</item>
+	    <item>Bawah</item>
+	    <item>Bawah Kanan</item>
+	    <item>Kanan</item>
+	    <item>Atas Kanan</item>	    	    	    
+		<item>Atas</item>
+	    <item>Atas Kiri</item>
+	    <item>Kiri</item>
+	    <item>Bawah Kiri</item>
+	</string-array>
+	<string-array name="manageTrigger">
+	    <item>Tombol Kunci</item>
+	    <item>Tekan Lama Judul</item>
+	</string-array>
+	<string-array name="appShare">
+	    <item>Berbagi Photo Tunggal Galeri</item>
+	    <item>Berbagi Multiple Photo Galeri</item>
+	    <item>Berbagi Multiple Photo Quickpic</item>
+	    <item>Berbagi Photo Tunggal Galeri Galaxy S4</item>
+	</string-array>
+	<string-array name="long_press_actions">
+	    <item>Tdk ada aksi</item>
+	    <item>Informasi Aplikasi</item>
+	    <item>Setel sebagai bawaan</item>
+	    <item>Halo Window</item>
+	</string-array>
+</resources>

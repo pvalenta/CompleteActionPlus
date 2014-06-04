@@ -147,6 +147,17 @@ public class DialogFragment extends Fragment {
 			}
 		});
 		
+		// set color borders
+		int currentTheme = EnumConvert.themeIndex(pref.getString("AppTheme", "Light"));
+		if (currentTheme == 1) {
+			RelativeLayout titleBorder = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_color_title_border);
+			titleBorder.setBackgroundColor(Color.parseColor("#BEBEBE"));
+			RelativeLayout textBorder = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_color_text_border);
+			textBorder.setBackgroundColor(Color.parseColor("#BEBEBE"));
+			RelativeLayout backBorder = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_color_background_border);
+			backBorder.setBackgroundColor(Color.parseColor("#BEBEBE"));
+		}		
+		
 		// round corners
 		roundCornerValue = (TextView)layout.findViewById(R.id.fragment_dialog_roundCorners_value);
 		SeekBar roundCorner = (SeekBar)layout.findViewById(R.id.fragment_dialog_roundCorners_seek);

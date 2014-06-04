@@ -22,7 +22,7 @@
     <string name="manage_list_not_available">N/A</string>
     <string name="manage_list_warning">Nechte alespoň 2 položky aktivní.</string>
     <string name="list_item_favourite_button">Oblíbená</string>
-    <string name="app_theme">Téma této aplikace</string>
+    <string name="app_theme">Téma pro tuto aplikaci</string>
     <string name="activity_main_xhalo">Spustit aplikaci v XHalo podržením</string>
     <string name="portrait">Na výšku</string>
     <string name="landscape">Na šířku</string>
@@ -61,11 +61,11 @@
     <string name="manager_restore_intent">Chcete obnovit pravidla z %s ?</string>
     <string name="advanced_share_set">Nastavit</string>
     <string name="debug_turn_on">Povolit rozšířené chybové zprávy v logu</string>
-    <string name="advanced_no_package_manager_hook">Skrýt aplikace metodou z verze 1.9 pokud máte problémy s volbou \'Vždy \'</string>
+    <string name="advanced_no_package_manager_hook">Skrýt aplikace metodou z verze 1.9 (pouze pokud máte problémy s volbou \'Vždy \')</string>
     <string name="keep_bottom_buttons">Ponechat tlačítka \'Jednou\' a \'Vždy\'</string>
     <string name="transparency">Průhlednost</string>
     <string name="title_color">Barva titulku</string>
     <string name="round_corners">Kulaté rohy</string>
     <string name="autostart_timeout">Auto-start první aplikace v sekundách</string>
-    <string name="long_press_action">Spustit akci podržením</string>
+    <string name="long_press_action">Podržením spustit akci</string>
 </resources>

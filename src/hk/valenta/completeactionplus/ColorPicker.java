@@ -176,6 +176,10 @@ public class ColorPicker {
 //			theme = android.R.style.Theme_Holo_NoActionBar;
 			ImageView arrow = (ImageView)layer.findViewById(R.id.fragment_color_arrow);
 			arrow.setImageResource(R.drawable.icon_arrow_white);
+			RelativeLayout origBorder = (RelativeLayout)layer.findViewById(R.id.fragment_color_orig_border);
+			origBorder.setBackgroundColor(Color.parseColor("#BEBEBE"));
+			RelativeLayout newBorder = (RelativeLayout)layer.findViewById(R.id.fragment_color_new_border);
+			newBorder.setBackgroundColor(Color.parseColor("#BEBEBE"));
 		}
 		
 		// setup alert

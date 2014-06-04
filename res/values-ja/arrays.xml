@@ -61,9 +61,9 @@
 	    <item>Galaxy S4ギャラリー単体画像共有</item>
 	</string-array>
 	<string-array name="long_press_actions">
-	    <item>No action</item>
-	    <item>App Information</item>
-	    <item>Set as default</item>
-	    <item>Halo Window</item>
+	    <item>アクションなし</item>
+	    <item>アプリ情報</item>
+	    <item>デフォルトにセット</item>
+	    <item>Haloウインドウ</item>
 	</string-array>
 </resources>

@@ -66,6 +66,6 @@
     <string name="transparency">透過度</string>
     <string name="title_color">タイトル色</string>
     <string name="round_corners">角丸</string>
-    <string name="autostart_timeout">Auto-start first app in seconds</string>
-    <string name="long_press_action">Long press app action</string>
+    <string name="autostart_timeout">最初のアプリを自動起動するまでの時間(秒)</string>
+    <string name="long_press_action">アプリ長押しアクション</string>
 </resources>
