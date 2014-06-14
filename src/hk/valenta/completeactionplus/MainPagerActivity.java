@@ -134,7 +134,7 @@ public class MainPagerActivity extends FragmentActivity {
 		}
 		
 		// correct version?
-		if (version != null && !version.equals("2.2.3")) {
+		if (version != null && !version.equals("2.2.4")) {
 			// show message
 			AlertDialog alertActivate = new AlertDialog.Builder(this)
 				.setMessage(R.string.not_yet_restarted)

@@ -148,4 +148,30 @@ public class EnumConvert {
 		else if (name.equals("XHalo")) return 3;
 		else return 0;
 	}
+	
+	public static final String iconSizeName(int index) {
+		switch (index) {
+		case 1:
+			return "24";
+		case 2:
+			return "36";
+		case 3:
+			return "48";
+		case 4:
+			return "64";
+		case 5:
+			return "72";
+		default:
+			return "Default";
+		}
+	}
+	
+	public static final int iconSizeIndex(String name) {
+		if (name.equals("24")) return 1;
+		else if (name.equals("36")) return 2;
+		else if (name.equals("48")) return 3;
+		else if (name.equals("64")) return 4;
+		else if (name.equals("72")) return 5;
+		else return 0;
+	}
 }

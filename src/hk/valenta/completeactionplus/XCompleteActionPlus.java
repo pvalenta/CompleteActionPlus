@@ -26,6 +26,7 @@ import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -54,6 +55,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -78,8 +80,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.2.3");
-					return "2.2.3";
+					param.setResult("2.2.4");
+					return "2.2.4";
 				}
 			});
 		}
@@ -206,11 +208,11 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 				}
 				if (resolver == null) {
-					XposedBridge.log("Resolver field not found.");
+					XposedBridge.log("CAP: Resolver field not found.");
 					return null;
 				}
 				if (rControl == null) {
-					XposedBridge.log("Resolver field found, but it's null.");
+					XposedBridge.log("CAP: Resolver field found, but it's null.");
 					return null;
 				}	
 				
@@ -218,17 +220,17 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				int selectedIndex = -1;
 				if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
 					// set it
-					XposedBridge.log("Grid found.");
+					XposedBridge.log("CAP: Grid found.");
 					GridView resGrid = (GridView)resolver.get(param.thisObject);
 					selectedIndex = resGrid.getCheckedItemPosition();
 				} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 					// set it
-					XposedBridge.log("List found.");
+					XposedBridge.log("CAP: List found.");
 					ListView resList = (ListView)resolver.get(param.thisObject);
 					selectedIndex = resList.getCheckedItemPosition();
 				}
 				if (selectedIndex == -1) {
-					XposedBridge.log("Nothing selected.");
+					XposedBridge.log("CAP: Nothing selected.");
 					return null;
 				}
 				
@@ -364,11 +366,11 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 				}
 				if (resolver == null) {
-					XposedBridge.log("Resolver field not found.");
+					XposedBridge.log("CAP: Resolver field not found.");
 					return;
 				}
 				if (rControl == null) {
-					XposedBridge.log("Resolver field found, but it's null.");
+					XposedBridge.log("CAP: Resolver field found, but it's null.");
 					return;
 				}
 				
@@ -535,6 +537,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} 
 				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), scheme);
 				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+				boolean debugOn = pref.getBoolean("DebugLog", false);
+				int removed = myIntent.getIntExtra("CAP-Removed", 0);
+				int favorited = 0;
 				if (oldWayHide) {
 					String cHidden = pref.getString(intentId, null);
 					if (cHidden != null && cHidden.length() > 0) {
@@ -577,8 +582,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 									items.remove(i);
 									i -= 1;
 									count -= 1;
+									removed += 1;
 								}
 							}
+						}
+						if (debugOn && removed > 0) {
+							XposedBridge.log(String.format("CAP: Removed %d from %s", removed, intentId));
 						}
 					}					
 				}
@@ -614,8 +623,18 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 							
 							// move up
 							favIndex += 1;
+							favorited += 1;
 						}
 					}
+					if (debugOn && favorited > 0) {
+						XposedBridge.log(String.format("CAP: Favorited %d from %s", favorited, intentId));
+					}
+				}
+				
+				// debug on for toast?
+				if (debugOn && (removed > 0 || favorited > 0)) {
+					LayoutInflater mInflater = (LayoutInflater)XposedHelpers.getObjectField(param.thisObject, "mInflater");
+					Toast.makeText(mInflater.getContext(), String.format("CAP: Call captured, hidden %d and favorited %d",  removed, favorited), Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -656,7 +675,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/*;null") &&
 						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/jpeg;null")) {
 						if (debugOn) {
-							XposedBridge.log("Hiding app old way.");
+							XposedBridge.log("CAP: Hiding app old way.");
 						}
 						return;
 					}
@@ -667,14 +686,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (cHidden == null || cHidden.length() == 0) {
 					// found
 					if (debugOn) {
-						XposedBridge.log(String.format("Found no match: %s", intentId));
+						XposedBridge.log(String.format("CAP: Found no match: %s", intentId));
 					}
 					return;
 				}
 				
 				// found
 				if (debugOn) {
-					XposedBridge.log(String.format("Found match: %s", intentId));
+					XposedBridge.log(String.format("CAP: Found match: %s", intentId));
 				}
 				
 				// split by ;
@@ -688,8 +707,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				
 				// loop & remove
 				int size = list.size();
+				int removed = 0;
 				if (debugOn) {
-					XposedBridge.log(String.format("Before removal: %d", size));
+					XposedBridge.log(String.format("CAP: Before removal: %d", size));
 				}
 				for (int i=0; i<size; i++) {
 					if (hiddenItems.contains(list.get(i).activityInfo.packageName)) {
@@ -697,14 +717,85 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						list.remove(i);
 						i-=1;
 						size-=1;
+						removed+=1;
 					}
 				}
 				if (debugOn) {
-					XposedBridge.log(String.format("After removal: %d", size));
+					XposedBridge.log(String.format("CAP: After removal: %d, removed: %d", size, removed));
+					if (removed > 0) {
+						myIntent.putExtra("CAP-Removed", removed);						
+					}
 				}
 				
 				// set it back
 				param.setResult(list);
+			}
+		});
+		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity.ItemLongClickListener", null, "onItemLongClick",
+				AdapterView.class, View.class, int.class, long.class, new XC_MethodReplacement() {
+			@Override
+			protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {				
+				// get parameters
+				AdapterView<?> parent = (AdapterView<?>)param.args[0];
+				int position = (Integer)param.args[2];
+				
+				// get current configuration
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				String action = pref.getString("LongPress", "Nothing");
+				if (action.equals("AppInfo")) {
+					// call activity directly
+					Object adapter = parent.getAdapter();
+					try {
+						ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
+						if (info != null) {
+							Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+									.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
+									.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+							parent.getContext().startActivity(intent);
+							Activity a = (Activity)parent.getContext();
+							a.finish();
+						}
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						XposedBridge.log(e.getMessage());
+					}
+					
+					return true;
+				}
+				else if (action.equals("XHalo")) {
+					// call activity directly
+					Object adapter = parent.getAdapter();
+					try {
+						Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
+						if (intent != null) {
+							intent.setFlags(0x00002000);
+							parent.getContext().startActivity(intent);
+							Activity a = (Activity)parent.getContext();
+							a.finish();
+						}
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						XposedBridge.log(e.getMessage());
+					}
+					
+					return true;
+				}
+				else if (action.equals("Default") && XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption")) {
+					boolean manageList = pref.getBoolean("ManageList", false);
+					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+					if (manageList && oldWayHide) {
+						// restore items
+						restoreListItems(param.thisObject, pref);
+					}
+					// call activity directly
+					XposedHelpers.callMethod(param.thisObject, "startSelected", position, true);
+					
+					return true;
+				}
+				
+				return true;
 			}
 		});
 	}
@@ -791,10 +882,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// not found
 		}
 		if (!foundGrid) {
-			XposedBridge.log("Grid/List resource not found.");
+			XposedBridge.log("CAP: Grid/List resource not found.");
 		}
 		if (!foundItems) {
-			XposedBridge.log("Grid/List item resource not found.");
+			XposedBridge.log("CAP: Grid/List item resource not found.");
 		}
 	}
 	
@@ -843,21 +934,25 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// change color
 			if (theme.equals("Light")) {
 				if (button_always != null) {
-					button_always.setBackgroundColor(Color.TRANSPARENT);
+					button_always.setBackgroundResource(button_always.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
+					//button_always.setBackgroundColor(Color.TRANSPARENT);
 					button_always.setTextColor(pref.getInt("TextColor", Color.BLACK));
 				}		
 				if (button_once != null) {
-					button_once.setBackgroundColor(Color.TRANSPARENT);
+					button_once.setBackgroundResource(button_once.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
+					//button_once.setBackgroundColor(Color.TRANSPARENT);
 					button_once.setTextColor(pref.getInt("TextColor", Color.BLACK));
 				}
 			}
 			if (theme.equals("Dark")) {
 				if (button_always != null) {
-					button_always.setBackgroundColor(Color.TRANSPARENT);
+					button_always.setBackgroundResource(button_always.getResources().getIdentifier("btn_default_holo_dark", "drawable", "android"));
+					//button_always.setBackgroundColor(Color.TRANSPARENT);
 					button_always.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
 				}		
 				if (button_once != null) {
-					button_once.setBackgroundColor(Color.TRANSPARENT);
+					button_once.setBackgroundResource(button_once.getResources().getIdentifier("btn_default_holo_dark", "drawable", "android"));
+					//button_once.setBackgroundColor(Color.TRANSPARENT);
 					button_once.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
 				}
 			}
@@ -1185,13 +1280,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		// add icon
 		ImageView icon = new ImageView(parent.getContext());
 		icon.setId(liparam.res.getIdentifier("icon", "id", framework));
-		LinearLayout.LayoutParams iconLayout = new LinearLayout.LayoutParams(0, 0);
+		LinearLayout.LayoutParams iconLayout = new LinearLayout.LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics),
+				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics));
+		icon.setScaleType(ScaleType.FIT_CENTER);
 		icon.setLayoutParams(iconLayout);
 		icon.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, metrics),
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-		icon.setScaleType(ScaleType.FIT_CENTER);
 		parent.addView(icon);		
 		
 		// linear layout
@@ -1247,6 +1343,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		linear.addView(text2);
 	}
 	
+	@SuppressLint("DefaultLocale")
 	private void convertToGridItem(LayoutInflatedParam liparam, LinearLayout parent, String textSize, String theme, String framework, XSharedPreferences pref) {
 		// setup parent
 		parent.setOrientation(1); // vertical
@@ -1258,6 +1355,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics));
 		parent.setMinimumHeight((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, metrics));
 		parent.setMinimumWidth((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, metrics));
+
 		// remove all children
 		parent.removeAllViews();
 		
@@ -1285,10 +1383,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		// add icon
 		ImageView icon = new ImageView(parent.getContext());
 		icon.setId(liparam.res.getIdentifier("icon", "id", framework));
-		LinearLayout.LayoutParams iconLayout = new LinearLayout.LayoutParams(0, 0);
-		//LinearLayout.LayoutParams iconLayout = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		icon.setLayoutParams(iconLayout);
+		LinearLayout.LayoutParams iconLayout = new LinearLayout.LayoutParams((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics),
+				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics));
 		icon.setScaleType(ScaleType.FIT_CENTER);
+		icon.setLayoutParams(iconLayout);
 		parent.addView(icon);
 		
 		// add text1
@@ -1405,14 +1503,11 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// set title parent layout
 			LinearLayout titleParent = (LinearLayout)titleView.getParent();
 			titleParent.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics));
-			LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams)titleParent.getLayoutParams();
-			titleParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
+					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+			LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams)titleParent.getLayoutParams();
+			titleParams.setMargins(0, 0, 0, 0);
 			if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
 				titleParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
 				titleParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
@@ -1424,7 +1519,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (bigParent.getChildCount() > 2) {
 					sibling = bigParent.getChildAt(2);
 				} else {
-					XposedBridge.log("Image divider not found.");
+					XposedBridge.log("CAP: Image divider not found.");
 				}
 				
 				// round corners
@@ -1490,7 +1585,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			XposedBridge.log("makeManageListButton exception: " + e.getMessage());
+			XposedBridge.log("CAP: makeManageListButton exception: " + e.getMessage());
 		}		
 	}
 	
@@ -1505,14 +1600,11 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			LinearLayout titleParent = (LinearLayout)titleView.getParent();
 			DisplayMetrics metrics = titleParent.getContext().getResources().getDisplayMetrics();
 			titleParent.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
+					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics));
-			LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams)titleParent.getLayoutParams();
-			titleParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+			LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams)titleParent.getLayoutParams();
+			titleParams.setMargins(0, 0, 0, 0);
 			if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
 				titleParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
 				titleParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
@@ -1524,7 +1616,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (bigParent.getChildCount() > 2) {
 					sibling = bigParent.getChildAt(2);
 				} else {
-					XposedBridge.log("Image divider not found.");
+					XposedBridge.log("CAP: Image divider not found.");
 				}
 				
 				// round corners
@@ -1557,39 +1649,39 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			XposedBridge.log("makeManageListButton exception: " + e.getMessage());
+			XposedBridge.log("CAP: makeManageListButton exception: " + e.getMessage());
 		}		
 	}
 	
 	private boolean isAlwaysChecked(View adapterView) {		
 		// one level up
 		if (adapterView == null || adapterView.getParent() == null || !adapterView.getParent().getClass().equals(FrameLayout.class)) {
-			XposedBridge.log("AdapterView is null.");
+			XposedBridge.log("CAP: AdapterView is null.");
 			return false;
 		}
 		FrameLayout frame = (FrameLayout)adapterView.getParent();
 		
 		// one more to root
 		if (frame.getParent() == null || !frame.getParent().getClass().equals(LinearLayout.class)) {
-			XposedBridge.log("Parent is wrong.");
+			XposedBridge.log("CAP: Parent is wrong.");
 			return false;
 		}
 		LinearLayout root = (LinearLayout)frame.getParent();
 
 		// get button bar
 		if (root.getChildCount() < 2 || !root.getChildAt(1).getClass().equals(LinearLayout.class)) {
-			XposedBridge.log("Wrong number of children.");
+			XposedBridge.log("CAP: Wrong number of children.");
 			return false;
 		}
 		LinearLayout buttonBar = (LinearLayout)root.getChildAt(1);
 		if (buttonBar.getChildCount() == 0) {
-			XposedBridge.log("There is no button bar with checkbox.");
+			XposedBridge.log("CAP: There is no button bar with checkbox.");
 			return false;
 		}
 		
 		// get checkbox
 		if (!buttonBar.getChildAt(0).getClass().equals(CheckBox.class)) {
-			XposedBridge.log("There is no checkbox.");
+			XposedBridge.log("CAP: There is no checkbox.");
 			return false;
 		}
 		CheckBox alwaysCheck = (CheckBox)buttonBar.getChildAt(0);
@@ -1602,7 +1694,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			XposedHelpers.callMethod(thisObject, "startSelected", position, always);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			XposedBridge.log("StartSelected method failed: " + e.toString());
+			XposedBridge.log("CAP: StartSelected method failed: " + e.toString());
 		}		
 	}
 	
@@ -1686,7 +1778,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				try {
 					Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
 					if (intent != null) {
-						intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT | Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP | 0x00002000);
+						intent.setFlags(0x00002000);
 						parent.getContext().startActivity(intent);
 						Activity a = (Activity)parent.getContext();
 						a.finish();
@@ -1783,7 +1875,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				try {
 					Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
 					if (intent != null) {
-						intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT | Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP | 0x00002000);
+						intent.setFlags(0x00002000);
 						parent.getContext().startActivity(intent);
 						Activity a = (Activity)parent.getContext();
 						a.finish();
@@ -1880,14 +1972,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			try {
 				mCurrentResolveList = mAdapter.getClass().getDeclaredField("mCurrentResolveList");
 				if (debugOn) {
-					XposedBridge.log("Android 4.2 mCurrentResolveList");
+					XposedBridge.log("CAP: Android 4.2 mCurrentResolveList");
 				}
 			} catch (Exception ex) { }
 			if (mCurrentResolveList == null) {
 				try {
 					mCurrentResolveList = mAdapter.getClass().getDeclaredField("mOrigResolveList");
 					if (debugOn) {
-						XposedBridge.log("Android 4.4 mOrigResolveList");
+						XposedBridge.log("CAP: Android 4.4 mOrigResolveList");
 					}
 				} catch (Exception ex) { }
 			}
@@ -1895,7 +1987,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				try {
 					mCurrentResolveList = mAdapter.getClass().getDeclaredField("mBaseResolveList");
 					if (debugOn) {
-						XposedBridge.log("Android 4.3 mBaseResolveList");
+						XposedBridge.log("CAP: Android 4.3 mBaseResolveList");
 					}
 				} catch (Exception ex) { }
 			}
@@ -1906,12 +1998,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}						
 			if (mCurrent == null) {
 				if (debugOn) {
-					XposedBridge.log("Original list is NULL.");
+					XposedBridge.log("CAP: Original list is NULL.");
 				}
 			} else {
 				List<Object> mList = (List<Object>)XposedHelpers.getObjectField(mAdapter, "mList");
 				if (debugOn) {
-					XposedBridge.log(String.format("mCurrent size = %d", mCurrent.size()));
+					XposedBridge.log(String.format("CAP: mCurrent size = %d", mCurrent.size()));
 				}
 				if (mCurrent.size() != mList.size()) {
 					// get DisplayResolveInfo class
