@@ -80,8 +80,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.2.4");
-					return "2.2.4";
+					param.setResult("2.2.5");
+					return "2.2.5";
 				}
 			});
 		}
@@ -218,16 +218,36 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				
 				// what we got?
 				int selectedIndex = -1;
-				if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
-					// set it
-					XposedBridge.log("CAP: Grid found.");
-					GridView resGrid = (GridView)resolver.get(param.thisObject);
-					selectedIndex = resGrid.getCheckedItemPosition();
-				} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
-					// set it
-					XposedBridge.log("CAP: List found.");
-					ListView resList = (ListView)resolver.get(param.thisObject);
-					selectedIndex = resList.getCheckedItemPosition();
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				String layoutStyle = pref.getString("LayoutStyle", "Default");
+				if (layoutStyle.equals("Default")) {				
+					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
+						// set it
+						XposedBridge.log("CAP: Grid found.");
+						GridView resGrid = (GridView)resolver.get(param.thisObject);
+						selectedIndex = resGrid.getCheckedItemPosition();
+					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
+						// set it
+						XposedBridge.log("CAP: List found.");
+						ListView resList = (ListView)resolver.get(param.thisObject);
+						selectedIndex = resList.getCheckedItemPosition();
+					}
+				} else {
+					// let's get new layout
+					FrameLayout frame = (FrameLayout)rControl.getParent();
+					if (layoutStyle.equals("List")) {
+						ListView list = (ListView)frame.getChildAt(1);
+						if (list != null) {
+							XposedBridge.log("CAP: List found.");
+							selectedIndex = list.getCheckedItemPosition();
+						}
+					} else if (layoutStyle.equals("Grid")) {
+						GridView grid = (GridView)frame.getChildAt(1);
+						if (grid != null) {
+							XposedBridge.log("CAP: Grid found.");
+							selectedIndex = grid.getCheckedItemPosition();
+						}
+					}
 				}
 				if (selectedIndex == -1) {
 					XposedBridge.log("CAP: Nothing selected.");
@@ -240,7 +260,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				boolean always = (button.getId() == mAlwaysButton.getId());
 
 				// restore items?
-				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 				boolean manageList = pref.getBoolean("ManageList", false);
 				if (always && manageList && oldWayHide) {
@@ -731,6 +750,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				param.setResult(list);
 			}
 		});
+		try {
 		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity.ItemLongClickListener", null, "onItemLongClick",
 				AdapterView.class, View.class, int.class, long.class, new XC_MethodReplacement() {
 			@Override
@@ -798,6 +818,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				return true;
 			}
 		});
+		} catch(Exception e) {
+			// not found
+			XposedBridge.log("CAP: ItemLongClickListener not found.");
+		}
 	}
 
 	@Override
@@ -897,6 +921,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 		Button button_always = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_always", "id", framework));
 		Button button_once = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_once", "id", framework));
+		LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
 		boolean keepButtons = pref.getBoolean("KeepButtons", false);
 		if (!keepButtons) {
 			if (button_always != null) {
@@ -912,7 +937,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		boolean showAlways = pref.getBoolean("ShowAlways", false);
 		if (showAlways) {			
 			// add check box
-			LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
 			if (buttonBar != null) {
 				addAlwaysCheckbox(liparam, buttonBar, button_always.getText(), theme, pref);
 				if (pref.getInt("RoundCorner", 0) == 0) {
@@ -925,14 +949,16 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 		} else {
 			// hide button bar
-			LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
 			if (buttonBar != null && !keepButtons) {
 				hideElement(buttonBar);
 			}
 		}
 		if (keepButtons) {
+			// transparent button bar
+			buttonBar.setBackgroundColor(Color.TRANSPARENT);
+			
 			// change color
-			if (theme.equals("Light")) {
+			if (theme.equals("Light")) {				
 				if (button_always != null) {
 					button_always.setBackgroundResource(button_always.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
 					//button_always.setBackgroundColor(Color.TRANSPARENT);

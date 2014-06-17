@@ -142,7 +142,13 @@ public class ColorPicker {
 
 					try {
 						// parse color
-						int color = Color.parseColor(hexEdit.getText().toString());
+						String inputColor = hexEdit.getText().toString();
+						if (!inputColor.startsWith("#")) {
+							// add # in front
+							inputColor = new StringBuilder("#").append(inputColor).toString();
+							hexEdit.setText(inputColor);
+						}
+						int color = Color.parseColor(inputColor);
 						
 						// let's update
 						Color.colorToHSV(color, currentColorHsv);
