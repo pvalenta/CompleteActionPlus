@@ -80,8 +80,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.2.5");
-					return "2.2.5";
+					param.setResult("2.2.6");
+					return "2.2.6";
 				}
 			});
 		}
@@ -220,7 +220,20 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				int selectedIndex = -1;
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				String layoutStyle = pref.getString("LayoutStyle", "Default");
+				FrameLayout frame = (FrameLayout)rControl.getParent();
 				if (layoutStyle.equals("Default")) {				
+					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
+						// set it
+						XposedBridge.log("CAP: Grid found.");
+						GridView resGrid = (GridView)resolver.get(param.thisObject);
+						selectedIndex = resGrid.getCheckedItemPosition();
+					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
+						// set it
+						XposedBridge.log("CAP: List found.");
+						ListView resList = (ListView)resolver.get(param.thisObject);
+						selectedIndex = resList.getCheckedItemPosition();
+					}
+				} else if (frame.getChildCount() < 2) {
 					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
 						// set it
 						XposedBridge.log("CAP: Grid found.");
@@ -234,7 +247,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 				} else {
 					// let's get new layout
-					FrameLayout frame = (FrameLayout)rControl.getParent();
 					if (layoutStyle.equals("List")) {
 						ListView list = (ListView)frame.getChildAt(1);
 						if (list != null) {
