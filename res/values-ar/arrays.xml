@@ -31,13 +31,13 @@
 	    <item>عادي</item>
 	</string-array>
 	<string-array name="theme">
-	    <item>أبيض</item>
-	    <item>أسود</item>
+	    <item>فاتح</item>
+	    <item>مظلم</item>
 	</string-array>
 	<string-array name="dialog_theme">
 	    <item>إفتراضي</item>
-		<item>أبيض</item>
-	    <item>أسود</item>
+		<item>فاتح</item>
+	    <item>مظلم</item>
 	</string-array>
 	<string-array name="dialog_gravity">
 	    <item>المنتصف</item>
@@ -55,15 +55,15 @@
 	    <item>الضغط المطول على العنوان</item>
 	</string-array>
 	<string-array name="appShare">
-	    <item>Gallery Single Photo Share</item>
-	    <item>Gallery Multiple Photos Share</item>
+	    <item>مشاركة صورة واحدة من ألبوم الصور</item>
+	    <item>مشاركة عدة صور من الألبوم</item>
 	    <item>QuickPic Multiple Photos Share</item>
 	    <item>Galaxy S4 Gallery Single Photo Share</item>
 	</string-array>
 	<string-array name="long_press_actions">
-	    <item>No action</item>
-	    <item>App Information</item>
-	    <item>Set as default</item>
+	    <item>لا إجراء</item>
+	    <item>معلومات البرنامج</item>
+	    <item>الوضع الإفتراضي</item>
 	    <item>Halo Window</item>
 	</string-array>
 </resources>

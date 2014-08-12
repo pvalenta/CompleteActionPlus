@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -141,6 +143,58 @@ public class AdvancedFragment extends Fragment {
 				// nothing				
 			}
 		});
+		
+		// populate position portrait
+		Spinner positionPortraitSpinner = (Spinner)layout.findViewById(R.id.fragment_advanced_position_portrait_spinner);
+		positionPortraitSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+				// set it in preferences
+				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putString("PositionPortrait", EnumConvert.positionName(pos)).commit();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// nothing to do				
+			}
+			
+		});
+		ArrayAdapter<CharSequence> positionPortraitAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.dialog_gravity, android.R.layout.simple_spinner_item);
+		positionPortraitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		positionPortraitSpinner.setAdapter(positionPortraitAdapter);
+		
+		// preselect
+		positionPortraitSpinner.setSelection(EnumConvert.positionIndex(pref.getString("PositionPortrait", "Center")));				
+		TextView positionPortraitLabel = (TextView)layout.findViewById(R.id.fragment_advanced_position_portrait_label);
+		positionPortraitLabel.setText(String.format(getString(R.string.dialog_gravity), getString(R.string.portrait)));
+
+		// populate position landscape
+		Spinner positionLandscapeSpinner = (Spinner)layout.findViewById(R.id.fragment_advanced_position_landscape_spinner);
+		positionLandscapeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+				// set it in preferences
+				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putString("PositionLandscape", EnumConvert.positionName(pos)).commit();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// nothing to do				
+			}
+			
+		});
+		ArrayAdapter<CharSequence> positionLandscapeAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.dialog_gravity, android.R.layout.simple_spinner_item);
+		positionLandscapeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		positionLandscapeSpinner.setAdapter(positionLandscapeAdapter);
+		
+		// preselect
+		positionLandscapeSpinner.setSelection(EnumConvert.positionIndex(pref.getString("PositionLandscape", "Center")));				
+		TextView positionLandscapeLabel = (TextView)layout.findViewById(R.id.fragment_advanced_position_landscape_label);
+		positionLandscapeLabel.setText(String.format(getString(R.string.dialog_gravity), getString(R.string.landscape)));
 		
 		return layout;
 	}

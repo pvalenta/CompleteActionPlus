@@ -37,6 +37,7 @@ public class DialogFragment extends Fragment {
 	private CheckBox keepButtonsCheckbox;
 	private TextView transparencyValue;
 	private TextView roundCornerValue;
+	private RelativeLayout doubletapBlock;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -183,58 +184,6 @@ public class DialogFragment extends Fragment {
 				// nothing				
 			}
 		});
-		
-		// populate position portrait
-		Spinner positionPortraitSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_position_portrait_spinner);
-		positionPortraitSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-				// set it in preferences
-				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("PositionPortrait", EnumConvert.positionName(pos)).commit();
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// nothing to do				
-			}
-			
-		});
-		ArrayAdapter<CharSequence> positionPortraitAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.dialog_gravity, android.R.layout.simple_spinner_item);
-		positionPortraitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		positionPortraitSpinner.setAdapter(positionPortraitAdapter);
-		
-		// preselect
-		positionPortraitSpinner.setSelection(EnumConvert.positionIndex(pref.getString("PositionPortrait", "Center")));				
-		TextView positionPortraitLabel = (TextView)layout.findViewById(R.id.fragment_dialog_position_portrait_label);
-		positionPortraitLabel.setText(String.format(getString(R.string.dialog_gravity), getString(R.string.portrait)));
-
-		// populate position landscape
-		Spinner positionLandscapeSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_position_landscape_spinner);
-		positionLandscapeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-				// set it in preferences
-				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("PositionLandscape", EnumConvert.positionName(pos)).commit();
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// nothing to do				
-			}
-			
-		});
-		ArrayAdapter<CharSequence> positionLandscapeAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.dialog_gravity, android.R.layout.simple_spinner_item);
-		positionLandscapeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		positionLandscapeSpinner.setAdapter(positionLandscapeAdapter);
-		
-		// preselect
-		positionLandscapeSpinner.setSelection(EnumConvert.positionIndex(pref.getString("PositionLandscape", "Center")));				
-		TextView positionLandscapeLabel = (TextView)layout.findViewById(R.id.fragment_dialog_position_landscape_label);
-		positionLandscapeLabel.setText(String.format(getString(R.string.dialog_gravity), getString(R.string.landscape)));
 
 		// populate position landscape
 		Spinner manageTriggerSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_manage_style_spinner);
@@ -304,8 +253,10 @@ public class DialogFragment extends Fragment {
 		});
 		
 		// keep buttons checkbox
+		doubletapBlock = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_doubletap);
 		keepButtonsCheckbox = (CheckBox)layout.findViewById(R.id.fragment_dialog_keep_buttons_checkbox);
 		keepButtonsCheckbox.setChecked(pref.getBoolean("KeepButtons", false));
+		showDoubleTap(keepButtonsCheckbox.isChecked());
 		keepButtonsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -315,28 +266,37 @@ public class DialogFragment extends Fragment {
 				if (buttonView.isChecked()) {
 					// cannot be both at same time
 					alwaysCheckbox.setChecked(false);
+				} else {
 				}
-			}
-		});
-		
-		// manage list		
-		manageTriggerBlock = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_manage_block);
-		CheckBox manageList = (CheckBox)layout.findViewById(R.id.fragment_dialog_manage_list_checkbox);
-		boolean manageListOn = pref.getBoolean("ManageList", false);
-		manageList.setChecked(manageListOn);	
-		showManageTriggerStyle(manageListOn);
-		manageList.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@SuppressLint("WorldReadableFiles")
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				// set it in preferences
-				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				boolean checked = buttonView.isChecked();
-				pref.edit().putBoolean("ManageList", checked).commit();
-				showManageTriggerStyle(checked);
+				showDoubleTap(buttonView.isChecked());
 			}
 		});
 
+		// populate double tap
+		Spinner doubleTapSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_doubletap_spinner);
+		doubleTapSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+				// set it in preferences
+				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putString("DoubleTap", EnumConvert.longPressName(pos)).commit();				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// nothing to do				
+			}
+			
+		});
+		ArrayAdapter<CharSequence> doubleTapAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.long_press_actions, android.R.layout.simple_spinner_item);
+		doubleTapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		doubleTapSpinner.setAdapter(doubleTapAdapter);
+		
+		// preselect
+		int doubleTapIndex = EnumConvert.longPressIndex(pref.getString("DoubleTap", "Nothing"));
+		doubleTapSpinner.setSelection(doubleTapIndex);			
+		
 		// populate long press
 		Spinner longPressSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_long_press_spinner);
 		longPressSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -360,7 +320,25 @@ public class DialogFragment extends Fragment {
 		
 		// preselect
 		int longPressIndex = EnumConvert.longPressIndex(pref.getString("LongPress", "Nothing"));
-		longPressSpinner.setSelection(longPressIndex);	
+		longPressSpinner.setSelection(longPressIndex);			
+		
+		// manage list		
+		manageTriggerBlock = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_manage_block);
+		CheckBox manageList = (CheckBox)layout.findViewById(R.id.fragment_dialog_manage_list_checkbox);
+		boolean manageListOn = pref.getBoolean("ManageList", false);
+		manageList.setChecked(manageListOn);	
+		showManageTriggerStyle(manageListOn);
+		manageList.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@SuppressLint("WorldReadableFiles")
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				boolean checked = buttonView.isChecked();
+				pref.edit().putBoolean("ManageList", checked).commit();
+				showManageTriggerStyle(checked);
+			}
+		});
 		
 		return layout;
 	}
@@ -427,6 +405,37 @@ public class DialogFragment extends Fragment {
 				textColorView.setBackgroundColor(textColor);
 				backgroundColorView.setBackgroundColor(backgroundColor);
 			}
+		} else if (layoutThemeIndex == 3) {
+			// transparent
+			colorBlock.setVisibility(View.VISIBLE);
+			if (defaultColors) {
+				// set default
+				titleColor = Color.BLACK;
+				textColor = Color.BLACK;
+				backgroundColor = Color.WHITE;
+				titleColorView.setBackgroundColor(titleColor);
+				textColorView.setBackgroundColor(textColor);
+				backgroundColorView.setBackgroundColor(backgroundColor);
+				pref.edit().putInt("TitleColor", titleColor)
+					.putInt("TextColor", textColor)
+					.putInt("BackgroundColor", backgroundColor).commit();
+			} else {
+				// get current one
+				titleColor = pref.getInt("TitleColor", Color.BLACK);
+				textColor = pref.getInt("TextColor", Color.BLACK);
+				backgroundColor = pref.getInt("BackgroundColor", Color.WHITE);
+				titleColorView.setBackgroundColor(titleColor);
+				textColorView.setBackgroundColor(textColor);
+				backgroundColorView.setBackgroundColor(backgroundColor);
+			}
+		}
+	}
+	
+	private void showDoubleTap(boolean show) {
+		if (show) {
+			doubletapBlock.setVisibility(View.VISIBLE);
+		} else {
+			doubletapBlock.setVisibility(View.GONE);
 		}
 	}
 }

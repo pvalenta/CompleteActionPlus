@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.valenta.completeactionplus"
-    android:versionCode="68"
-    android:versionName="2.2.6" >
+    android:versionCode="69"
+    android:versionName="2.3.0" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -54,7 +54,7 @@
             android:value="true" />
         <meta-data
             android:name="xposedminversion"
-            android:value="2.0*" />
+            android:value="2.6*" />
         <meta-data
             android:name="xposeddescription"
             android:value="Tweaks &apos;Complete action using&apos; android dialog." />

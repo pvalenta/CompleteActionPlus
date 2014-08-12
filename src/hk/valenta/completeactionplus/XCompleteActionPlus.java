@@ -10,21 +10,26 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,6 +49,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -80,8 +86,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.2.6");
-					return "2.2.6";
+					param.setResult("2.3.0");
+					return "2.3.0";
 				}
 			});
 		}
@@ -343,7 +349,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// get current configuration
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				int transparency = pref.getInt("Transparency", 0);
-				if (transparency > 0) {
+				String theme = pref.getString("LayoutTheme", "Default");
+				if (transparency > 0 || theme.equals("Transparent")) {
 					// let's get activity
 					Activity activity = (Activity)param.thisObject;
 					Window window = activity.getWindow();
@@ -351,8 +358,16 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 
 					// set transparency
 //					params.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-//					params.dimAmount = 0.8f;
-					params.alpha = 1f - ((float)transparency / 100f);				
+					if (theme.equals("Transparent")) {
+//						params.format = PixelFormat.TRANSLUCENT;
+//						params.height = LayoutParams.MATCH_PARENT;
+//						params.width = LayoutParams.MATCH_PARENT;		
+//						params.flags = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+						params.dimAmount = 0.999f;
+					}
+					if (transparency > 0) {
+						params.alpha = 1f - ((float)transparency / 100f);	
+					}
 				}
 			}
 
@@ -474,25 +489,53 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} else {
 					themeTitleView(param, rObject, !theme.equals("Default"), theme, pref);
 				}
+//				if (theme.equals("Transparent")) {
+//					XposedBridge.log("CAP: Let's make full screen dialog.");
+//					// let's get activity
+//					Activity activity = (Activity)param.thisObject;
+//					Window window = activity.getWindow();
+//					WindowManager.LayoutParams params = window.getAttributes();
+//					params.width = WindowManager.LayoutParams.MATCH_PARENT;
+//					params.height = WindowManager.LayoutParams.MATCH_PARENT; 					
+//					XposedBridge.log("CAP: Should be full screen dialog.");
+//				}
 				
 				// dialog gravity
 				Window currentWindow = (Window)XposedHelpers.callMethod(param.thisObject, "getWindow");
-				setDialogGravity(root.getContext(), currentWindow, pref);
-				currentWindow.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				if (theme.equals("Transparent")) {
+					currentWindow.setGravity(Gravity.LEFT | Gravity.TOP);
+					currentWindow.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+				} else {
+					setDialogGravity(root.getContext(), currentWindow, pref);
+					currentWindow.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				}
+				
+				Activity mParent = (Activity)XposedHelpers.getObjectField(param.thisObject, "mParent");
+				if (mParent != null) {
+					XposedBridge.log(String.format("CAP: Found parent activity: %s", mParent.getLocalClassName()));
+				}
 				
 				// default layout for long press
 				String longPressAction = pref.getString("LongPress", "Nothing");
+				String doubleTapAction = pref.getString("DoubleTap", "Nothing");
+				boolean keepButtons = pref.getBoolean("KeepButtons", false);
 				if (layoutStyle.equals("Default")) {
 					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
 						// set it
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
 						resGrid.setItemChecked(-1, true);
-						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);						
+						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);
+						if (keepButtons) {
+							setGesture(resGrid, doubleTapAction, mAlwaysUseOption, param.thisObject, pref);
+						}
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
 						ListView resList = (ListView)resolver.get(param.thisObject);
 						resList.setItemChecked(-1, true);
 						setLongPress(resList, longPressAction, mAlwaysUseOption, param.thisObject, pref);
+						if (keepButtons) {
+							setGesture(resList, doubleTapAction, mAlwaysUseOption, param.thisObject, pref);
+						}
 					}
 					
 					return;
@@ -508,12 +551,18 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
 						resGrid.setNumColumns(columns);
 						resGrid.setItemChecked(-1, true);
-						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);						
+						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);
+						if (keepButtons) {
+							setGesture(resGrid, doubleTapAction, mAlwaysUseOption, param.thisObject, pref);
+						}
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
 						ListView resList = (ListView)resolver.get(param.thisObject);
 						resList.setItemChecked(-1, true);
 						setLongPress(resList, longPressAction, mAlwaysUseOption, param.thisObject, pref);
+						if (keepButtons) {
+							setGesture(resList, doubleTapAction, mAlwaysUseOption, param.thisObject, pref);
+						}
 					}
 					
 					return;
@@ -529,6 +578,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					list.setItemChecked(-1, true);
 					list.setOnItemClickListener((OnItemClickListener)param.thisObject);
 					setLongPress(list, longPressAction, mAlwaysUseOption, param.thisObject, pref);
+					if (keepButtons) {
+						setGesture(list, doubleTapAction, mAlwaysUseOption, param.thisObject, pref);
+					}
 				} else if (layoutStyle.equals("Grid")) {
 					GridView grid = (GridView)frame.getChildAt(1);
 					int columns = getColumnsNumber(frame.getContext(), pref);
@@ -546,7 +598,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					grid.setAdapter(adapter);
 					grid.setItemChecked(-1, true);
 					grid.setOnItemClickListener((OnItemClickListener)param.thisObject);
-					setLongPress(grid, longPressAction, mAlwaysUseOption, param.thisObject, pref);						
+					setLongPress(grid, longPressAction, mAlwaysUseOption, param.thisObject, pref);		
+					if (keepButtons) {
+						setGesture(grid, doubleTapAction, mAlwaysUseOption, param.thisObject, pref);
+					}
 				}
 			}
 		});
@@ -792,10 +847,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						// TODO Auto-generated catch block
 						XposedBridge.log(e.getMessage());
 					}
-					
-					return true;
-				}
-				else if (action.equals("XHalo")) {
+				} else if (action.equals("XHalo")) {
 					// call activity directly
 					Object adapter = parent.getAdapter();
 					try {
@@ -811,10 +863,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						// TODO Auto-generated catch block
 						XposedBridge.log(e.getMessage());
 					}
-					
-					return true;
-				}
-				else if (action.equals("Default") && XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption")) {
+				} else if (action.equals("Default") && XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption")) {
 					boolean manageList = pref.getBoolean("ManageList", false);
 					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 					if (manageList && oldWayHide) {
@@ -823,8 +872,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 					// call activity directly
 					XposedHelpers.callMethod(param.thisObject, "startSelected", position, true);
-					
-					return true;
+				} else if (action.equals("Launch")) {
+					// call activity directly
+					XposedHelpers.callMethod(param.thisObject, "startSelected", position, false);
 				}
 				
 				return true;
@@ -1066,7 +1116,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		alwaysCheck.setMinHeight((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, metrics));
 		//alwaysCheck.setMinimumHeight(liparam.res.getDimensionPixelSize(liparam.res.getIdentifier("alert_dialog_button_bar_height", "dimen", "android")));
 		alwaysCheck.setGravity(Gravity.CENTER);
-		if (theme.equals("Light")) {
+		if (theme.equals("Light") || theme.equals("Transparent")) {
 			alwaysCheck.setTextColor(pref.getInt("TextColor", Color.BLACK));
 			alwaysCheck.setButtonDrawable(liparam.res.getIdentifier("btn_check_off_holo_light", "drawable", "android"));
 		} else if (theme.equals("Dark")) {
@@ -1082,7 +1132,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// get current configuration
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				String theme = pref.getString("LayoutTheme", "Default");
-				if (theme.equals("Light")) {
+				if (theme.equals("Light") || theme.equals("Transparent")) {
 					if (buttonView.isChecked()) {
 						buttonView.setButtonDrawable(buttonView.getResources().getIdentifier("btn_check_on_holo_light", "drawable", "android"));
 					} else {
@@ -1099,6 +1149,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		});
 		alwaysCheck.setOnTouchListener(new OnTouchListener() {
 			
+			@SuppressLint("ClickableViewAccessibility")
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
 				// get checkbox
@@ -1107,7 +1158,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// get current configuration
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				String theme = pref.getString("LayoutTheme", "Default");
-				if (theme.equals("Light")) {
+				if (theme.equals("Light") || theme.equals("Transparent")) {
 					if (buttonView.isChecked()) {
 						if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
 							buttonView.setButtonDrawable(buttonView.getResources().getIdentifier("btn_check_on_pressed_holo_light", "drawable", "android"));
@@ -1571,7 +1622,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));						
 					} else {
 						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
-								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
 					if (sibling != null) {
 						sibling.setBackgroundColor(titleColor);
@@ -1583,12 +1635,17 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
 					} else {
 						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
-								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
 					if (sibling != null) {
 						sibling.setBackgroundColor(titleColor);
 					}
-				}					
+				} else if (theme.equals("Transparent")) {
+					int titleColor = pref.getInt("TitleColor", Color.BLACK);
+					titleView.setTextColor(titleColor);				
+					setTransparentDialog((LinearLayout)bigParent.getParent());
+				}
 			}
 			
 			if (triggerStyle.equals("Wrench")) {
@@ -1667,7 +1724,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));						
 					} else {
 						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
-								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
 					if (sibling != null) {
 						sibling.setBackgroundColor(Color.BLACK);
@@ -1678,11 +1736,16 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
 					} else {
 						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
-								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics));
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
+								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
 					if (sibling != null) {
 						sibling.setBackgroundColor(Color.parseColor("#BEBEBE"));
 					}
+				} else if (theme.equals("Transparent")) {
+					int titleColor = pref.getInt("TitleColor", Color.BLACK);
+					titleView.setTextColor(titleColor);				
+					setTransparentDialog((LinearLayout)bigParent.getParent());
 				}					
 			}
 		} catch (Exception e) {
@@ -1736,198 +1799,138 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		}		
 	}
 	
-	private void setLongPress(ListView list, String action, boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
-		if (action.equals("AppInfo")) setAppInfo(list);
-		else if (action.equals("Default") && mAlwaysUseOption) {
+	private void setLongPress(ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+		if (action.equals("Nothing")) return;
+		if (action.equals("Default") && mAlwaysUseOption) {
 			boolean manageList = pref.getBoolean("ManageList", false);
 			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 			if (manageList && oldWayHide) {
 				// restore items
 				restoreListItems(thisObject, pref);
 			}
-			setDefault(list, thisObject);
 		}
-		else if (action.equals("XHalo")) setHaloWindow(list);
-	}
-	
-	private void setAppInfo(ListView list) {
-		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				// call activity directly
-				Object adapter = parent.getAdapter();
-				try {
-					ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
-					if (info != null) {
-						Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
-								.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
-								.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-						parent.getContext().startActivity(intent);
-						Activity a = (Activity)parent.getContext();
-						a.finish();
-					}
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					XposedBridge.log(e.getMessage());
-				}
-				
-				return true;
-			}
-			
-		});		
-	}
-
-	private void setDefault(ListView list, Object thisObject) {
-		list.setTag(thisObject);
-		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				// call activity directly
-				Object thisObject = parent.getTag();
-				XposedHelpers.callMethod(thisObject, "startSelected", position, true);
-				
-				return true;
-			}
-			
-		});		
-	}
-	
-	private void setHaloWindow(ListView list) {
-		
-		PackageManager pm = list.getContext().getPackageManager();
-		try {
-			if (pm.getPackageInfo("com.zst.xposed.halo.floatingwindow", PackageManager.GET_META_DATA) == null) {
-				return;
-			}
-		} catch (NameNotFoundException e1) {
-			// not found package
-			return;
-		}
+		list.setTag(thisObject);		
 		
 		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				// call activity directly
-				Object adapter = parent.getAdapter();
-				try {
-					Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
-					if (intent != null) {
-						intent.setFlags(0x00002000);
-						parent.getContext().startActivity(intent);
-						Activity a = (Activity)parent.getContext();
-						a.finish();
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				String longPress = pref.getString("LongPress", "Nothing");
+				if (longPress.equals("AppInfo")) {
+					// call activity directly
+					Object adapter = parent.getAdapter();
+					try {
+						ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
+						if (info != null) {
+							Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+									.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
+									.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+							parent.getContext().startActivity(intent);
+							Activity a = (Activity)parent.getContext();
+							a.finish();
+						}
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						XposedBridge.log(e.getMessage());
 					}
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					XposedBridge.log(e.getMessage());
+				} else if (longPress.equals("Default") && mAlwaysUseOption) {
+					// call activity directly
+					Object thisObject = parent.getTag();
+					XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+				} else if (longPress.equals("XHalo")) {
+					// call activity directly
+					Object adapter = parent.getAdapter();
+					try {
+						Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
+						if (intent != null) {
+							intent.setFlags(0x00002000);
+							parent.getContext().startActivity(intent);
+							Activity a = (Activity)parent.getContext();
+							a.finish();
+						}
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						XposedBridge.log(e.getMessage());
+					}
+				} else if (longPress.equals("Launch")) {
+					// call activity directly
+					Object thisObject = parent.getTag();
+					XposedHelpers.callMethod(thisObject, "startSelected", position, false);
 				}
 				
 				return true;
-			}
-			
-		});		
-	}	
-	
-	private void setLongPress(GridView grid, String action, boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
-		if (action.equals("AppInfo")) setAppInfo(grid);
-		else if (action.equals("Default") && mAlwaysUseOption) {
+			}			
+		});				
+	}
+		
+	private void setLongPress(GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+		if (action.equals("Nothing")) return;
+		if (action.equals("Default") && mAlwaysUseOption) {
 			boolean manageList = pref.getBoolean("ManageList", false);
 			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 			if (manageList && oldWayHide) {
 				// restore items
 				restoreListItems(thisObject, pref);
 			}
-			setDefault(grid, thisObject);
 		}
-		else if (action.equals("XHalo")) setHaloWindow(grid);
-	}
-	
-	private void setAppInfo(GridView grid) {
-		grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				// call activity directly
-				Object adapter = parent.getAdapter();
-				try {
-					ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
-					if (info != null) {
-						Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
-								.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
-								.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-						parent.getContext().startActivity(intent);
-						Activity a = (Activity)parent.getContext();
-						a.finish();
-					}
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					XposedBridge.log(e.getMessage());
-				}
-				
-				return true;
-			}
-			
-		});		
-	}
-	
-	private void setDefault(GridView grid, Object thisObject) {
 		grid.setTag(thisObject);
-		grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				// call activity directly
-				Object thisObject = parent.getTag();
-				XposedHelpers.callMethod(thisObject, "startSelected", position, true);
-				
-				return true;
-			}
-			
-		});		
-	}
-	
-	private void setHaloWindow(GridView grid) {
-		
-		PackageManager pm = grid.getContext().getPackageManager();
-		try {
-			if (pm.getPackageInfo("com.zst.xposed.halo.floatingwindow", PackageManager.GET_META_DATA) == null) {
-				return;
-			}
-		} catch (NameNotFoundException e1) {
-			// not found package
-			return;
-		}
 		
 		grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				// call activity directly
-				Object adapter = parent.getAdapter();
-				try {
-					Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
-					if (intent != null) {
-						intent.setFlags(0x00002000);
-						parent.getContext().startActivity(intent);
-						Activity a = (Activity)parent.getContext();
-						a.finish();
+				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+				String longPress = pref.getString("LongPress", "Nothing");
+				if (longPress.equals("AppInfo")) {
+					// call activity directly
+					Object adapter = parent.getAdapter();
+					try {
+						ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
+						if (info != null) {
+							Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+									.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
+									.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+							parent.getContext().startActivity(intent);
+							Activity a = (Activity)parent.getContext();
+							a.finish();
+						}
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						XposedBridge.log(e.getMessage());
 					}
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					XposedBridge.log(e.getMessage());
+				} else if (longPress.equals("Default") && mAlwaysUseOption) {
+					// call activity directly
+					Object thisObject = parent.getTag();
+					XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+				} else if (longPress.equals("XHalo")) {
+					// call activity directly
+					Object adapter = parent.getAdapter();
+					try {
+						Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
+						if (intent != null) {
+							intent.setFlags(0x00002000);
+							parent.getContext().startActivity(intent);
+							Activity a = (Activity)parent.getContext();
+							a.finish();
+						}
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						XposedBridge.log(e.getMessage());
+					}
+				} else if (longPress.equals("Launch")) {
+					// call activity directly
+					Object thisObject = parent.getTag();
+					XposedHelpers.callMethod(thisObject, "startSelected", position, false);
 				}
 				
 				return true;
-			}
-			
-		});		
+			}			
+		});				
 	}
 	
 	private int getColumnsNumber(Context context, XSharedPreferences pref) {
@@ -1967,7 +1970,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		else mWindow.setGravity(Gravity.CENTER);
 	}
 	
-	private void setRoundCorners(LinearLayout root, int color, int roundValue) {
+	@SuppressLint("NewApi")
+	private void setRoundCorners(LinearLayout root, int color, int roundValue, int border) {
 		// top round corners
 		GradientDrawable topBorder = new GradientDrawable(Orientation.BOTTOM_TOP, new int[] { color, color });
 		topBorder.setCornerRadii(new float[] { roundValue, roundValue, roundValue, roundValue, 0, 0, 0, 0 });
@@ -1997,6 +2001,164 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				m.setBackgroundColor(color);
 			}
 		}
+		
+		// remove padding
+		root.setPadding(0, 0, 0, 0);
+		FrameLayout.LayoutParams rParams = (FrameLayout.LayoutParams)root.getLayoutParams();
+		rParams.setMargins(border, border, border, border);
+		if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+			rParams.setMarginStart(border);
+			rParams.setMarginEnd(border);
+		}
+
+		// new round corner background black border
+		GradientDrawable blackBorder = new GradientDrawable(Orientation.TOP_BOTTOM, new int[] { Color.BLACK, Color.BLACK });
+		blackBorder.setCornerRadii(new float[] { roundValue, roundValue, roundValue, roundValue, 
+				roundValue, roundValue, roundValue, roundValue });
+		
+		// let's set black background
+		FrameLayout rootParent = (FrameLayout)root.getParent();
+		rootParent.setBackground(blackBorder);
+	}
+	
+	@SuppressLint("NewApi")
+	private void setTransparentDialog(LinearLayout root) {
+		// set first child
+		View first = root.getChildAt(0);
+		first.setBackgroundColor(Color.TRANSPARENT);
+		
+		// find bottom
+		int lastIndex = root.getChildCount() - 1;
+		while(root.getChildAt(lastIndex).getVisibility() != View.VISIBLE) {
+			lastIndex -= 1;
+		}
+		
+		// set bottom
+		View last = root.getChildAt(lastIndex);
+		last.setBackgroundColor(Color.TRANSPARENT);
+		
+		// set in between
+		if (lastIndex > 1) {
+			for (int i=1; i<lastIndex;i++) {
+				View m = root.getChildAt(i);
+				m.setBackgroundColor(Color.TRANSPARENT);
+			}
+		}
+		
+		// remove padding
+		root.setPadding(0, 0, 0, 0);
+		FrameLayout.LayoutParams rootParams = (FrameLayout.LayoutParams)root.getLayoutParams();
+		rootParams.setMargins(0, 0, 0, 0);		
+		if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+			rootParams.setMarginStart(0);
+			rootParams.setMarginEnd(0);
+		}
+		
+		// let's try to set root background
+		FrameLayout rootParent = (FrameLayout)root.getParent();
+//		rootParent.setBackgroundColor(Color.MAGENTA);
+		rootParent.setPadding(0, 0, 0, 0);
+		FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)rootParent.getLayoutParams();
+		params.setMargins(0, 0, 0, 0);
+		params.width = FrameLayout.LayoutParams.MATCH_PARENT;
+//		params.height = 1920;
+		
+		// add relative layout
+		final RelativeLayout relative = new RelativeLayout(root.getContext());
+		relative.setGravity(Gravity.CENTER);
+		FrameLayout.LayoutParams rParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1920);
+		relative.setLayoutParams(rParams);
+		rootParent.addView(relative);
+		rootParent.removeView(root);
+		relative.addView(root);
+		
+		// setup root gravity
+		root.setGravity(Gravity.CENTER);
+//		relative.setBackgroundColor(Color.YELLOW);
+		
+		if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+			blurBackground(relative);
+//			if (relative.getWidth() > 0) {
+//				blurBackground(relative);
+//			} else {
+//				relative.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+//					@Override
+//					public void onGlobalLayout() {
+//						blurBackground(relative);
+//					}
+//				});
+//			}
+		}
+        
+		// what is our parent?
+//		FrameLayout parentParent = (FrameLayout)rootParent.getParent();
+//		parentParent.setBackgroundColor(Color.YELLOW);
+//		parentParent.setPadding(0, 0, 0, 0);
+//		params = (FrameLayout.LayoutParams)parentParent.getLayoutParams();
+//		params.width = 1080;
+//		params.width = LayoutParams.MATCH_PARENT;
+//		params.setMargins(0, 0, 0, 0);
+//		XposedBridge.log(String.format("CAP: Parent Parent children count is: %d", parentParent.getChildCount()));		
+//		XposedBridge.log(String.format("CAP: Parent Parent Child 0 is: %s", parentParent.getChildAt(0).getClass().getName()));		
+//		XposedBridge.log(String.format("CAP: Parent Parent Child 1 is: %s", parentParent.getChildAt(1).getClass().getName()));		
+		
+		// decor view = com.android.internal.policy.impl.PhoneWindow$DecorView
+//		XposedBridge.log(String.format("CAP: Total Root Parent is: %s", parentParent.getParent().getClass().getName()));		
+//		XposedBridge.log(String.format("CAP: Total Root Parent Superclass is: %s", parentParent.getParent().getClass().getSuperclass().getName()));		
+//		Object decorView = parentParent.getParent();
+//		Object decorParam = XposedHelpers.callMethod(decorView, "getLayoutParams");
+//		XposedBridge.log(String.format("CAP: DecorView LayoutParams is: %s", decorParam.getClass().getName()));		
+//		decorView.setBackgroundColor(Color.CYAN);
+//		decorView.setPadding(0, 0, 0, 0);
+		
+//		params = (FrameLayout.LayoutParams)decorView.getLayoutParams();
+//		params.width = LayoutParams.MATCH_PARENT;
+//		params.setMargins(0, 0, 0, 0);
+//		XposedBridge.log(String.format("CAP: DecorView children count is: %d", decorView.getChildCount()));		
+//		XposedBridge.log(String.format("CAP: Total Root Parent is: %s", parentParent.getParent().getClass().getName()));		
+	}
+	
+	@SuppressLint("NewApi")
+	private void blurBackground(RelativeLayout relative) {
+		// create screenshot
+//		Bitmap bitmap = Bitmap.createBitmap(relative.getWidth(), relative.getHeight(), Bitmap.Config.ARGB_8888);
+//		Canvas c = new Canvas(bitmap);
+//		relative.draw(c);
+		
+		Bitmap bitmap = null;
+		try {
+			bitmap = (Bitmap)XposedHelpers.callStaticMethod(Class.forName("android.view.SurfaceControl"), 
+					"screenshot", 1080, 1920);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			XposedBridge.log(e.toString());
+		}
+		
+		// no screenshot
+		if (bitmap == null) {
+			XposedBridge.log("CAP: No screenshot.");
+			return;
+		}
+		
+		// prepare for blur
+		int bWidth = Math.round(bitmap.getWidth() * 0.4f);
+		int bHeight = Math.round(bitmap.getHeight() * 0.4f);
+		Bitmap inputBitmap = Bitmap.createScaledBitmap(bitmap, bWidth, bHeight, false);
+		Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+		
+		// render it
+		RenderScript rs = RenderScript.create(relative.getContext());
+		ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+		Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+        theIntrinsic.setRadius(7.5f);
+        theIntrinsic.setInput(tmpIn);
+        theIntrinsic.forEach(tmpOut);
+        tmpOut.copyTo(outputBitmap);
+		
+        // set it as background
+        relative.setBackground(new BitmapDrawable(relative.getContext().getResources(), outputBitmap));
 	}
 	
 	@SuppressLint("DefaultLocale")
@@ -2082,5 +2244,168 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void setGesture(final ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+		if (action.equals("Nothing")) return;
+		if (action.equals("Default") && mAlwaysUseOption) {
+			boolean manageList = pref.getBoolean("ManageList", false);
+			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+			if (manageList && oldWayHide) {
+				// restore items
+				restoreListItems(thisObject, pref);
+			}
+		}
+		list.setTag(thisObject);	
+		
+		list.setOnTouchListener(new OnTouchListener() {
+			private GestureDetector gestureDetector = new GestureDetector(list.getContext(), new GestureDetector.SimpleOnGestureListener() {
+				@Override
+				public boolean onDoubleTap(MotionEvent e) {
+					// report it
+					return true;
+				}
+			});
+			
+			@SuppressLint("ClickableViewAccessibility")
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// setup double tap
+				boolean doubleTap = gestureDetector.onTouchEvent(event);
+				if (doubleTap) {
+					XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+					String doubleTapAction = pref.getString("DoubleTap", "Nothing");
+					int position = list.getCheckedItemPosition();
+					if (position == ListView.INVALID_POSITION) {
+						Toast.makeText(v.getContext(), "No selection", Toast.LENGTH_SHORT).show();
+						return false;
+					}
+					if (doubleTapAction.equals("AppInfo")) {
+						// call activity directly
+						Object adapter = list.getAdapter();
+						try {
+							ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
+							if (info != null) {
+								Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+										.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
+										.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+								list.getContext().startActivity(intent);
+								Activity a = (Activity)list.getContext();
+								a.finish();
+							}							
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							XposedBridge.log(e.getMessage());
+						}
+					} else if (doubleTapAction.equals("Default") && mAlwaysUseOption) {
+						// call activity directly
+						Object thisObject = list.getTag();
+						XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+					} else if (doubleTapAction.equals("XHalo")) {
+						// xhalo
+						Object adapter = list.getAdapter();
+						try {
+							Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
+							if (intent != null) {
+								intent.setFlags(0x00002000);
+								list.getContext().startActivity(intent);
+								Activity a = (Activity)list.getContext();
+								a.finish();
+							}							
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							XposedBridge.log(e.getMessage());
+						}
+					} else if (doubleTapAction.equals("Launch")) {
+						// call activity directly
+						Object thisObject = list.getTag();
+						XposedHelpers.callMethod(thisObject, "startSelected", position, false);
+					}
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+	
+	private void setGesture(final GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+		if (action.equals("Nothing")) return;
+		if (action.equals("Default") && mAlwaysUseOption) {
+			boolean manageList = pref.getBoolean("ManageList", false);
+			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+			if (manageList && oldWayHide) {
+				// restore items
+				restoreListItems(thisObject, pref);
+			}
+		}
+		grid.setTag(thisObject);
+		
+		grid.setOnTouchListener(new OnTouchListener() {
+			private GestureDetector gestureDetector = new GestureDetector(grid.getContext(), new GestureDetector.SimpleOnGestureListener() {
+				@Override
+				public boolean onDoubleTap(MotionEvent e) {
+					// report it
+					return true;
+				}
+			});
+			
+			@SuppressLint("ClickableViewAccessibility")
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// setup double tap
+				boolean doubleTap = gestureDetector.onTouchEvent(event);
+				if (doubleTap) {
+					XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+					String doubleTapAction = pref.getString("DoubleTap", "Nothing");
+					int position = grid.getCheckedItemPosition();
+					if (position == GridView.INVALID_POSITION) {
+						return false;
+					}
+					if (doubleTapAction.equals("AppInfo")) {
+						// call activity directly
+						Object adapter = grid.getAdapter();
+						try {
+							ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", position);
+							if (info != null) {
+								Intent intent = new Intent().setAction("android.settings.APPLICATION_DETAILS_SETTINGS")
+										.setData(Uri.fromParts("package", info.activityInfo.packageName, null))
+										.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+								grid.getContext().startActivity(intent);
+								Activity a = (Activity)grid.getContext();
+								a.finish();
+							}							
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							XposedBridge.log(e.getMessage());
+						}
+					} else if (doubleTapAction.equals("Default") && mAlwaysUseOption) {
+						// call activity directly
+						Object thisObject = grid.getTag();
+						XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+					} else if (doubleTapAction.equals("XHalo")) {
+						// xhalo
+						Object adapter = grid.getAdapter();
+						try {
+							Intent intent = (Intent)XposedHelpers.callMethod(adapter, "intentForPosition", position);
+							if (intent != null) {
+								intent.setFlags(0x00002000);
+								grid.getContext().startActivity(intent);
+								Activity a = (Activity)grid.getContext();
+								a.finish();
+							}							
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							XposedBridge.log(e.getMessage());
+						}
+					} else if (doubleTapAction.equals("Launch")) {
+						// call activity directly
+						Object thisObject = grid.getTag();
+						XposedHelpers.callMethod(thisObject, "startSelected", position, false);
+					}
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 }

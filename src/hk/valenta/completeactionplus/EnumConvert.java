@@ -15,12 +15,14 @@ public class EnumConvert {
 	public static final int layouThemeIndex(String themeName) {
 		if (themeName.equals("Dark")) return 2;
 		else if (themeName.equals("Light")) return 1;
+		else if (themeName.equals("Transparent")) return 3;
 		else return 0;
 	}
 	
 	public static final String layoutThemeName(int index) {
 		if (index == 2) return "Dark";
 		else if (index == 1) return "Light";
+		else if (index == 3) return "Transparent";
 		else return "Default";
 	}	
 	
@@ -137,6 +139,8 @@ public class EnumConvert {
 			return "Default";
 		case 3:
 			return "XHalo";
+		case 4:
+			return "Launch";
 		default:
 			return "Nothing";
 		}
@@ -146,6 +150,7 @@ public class EnumConvert {
 		if (name.equals("AppInfo")) return 1;
 		else if (name.equals("Default")) return 2;
 		else if (name.equals("XHalo")) return 3;
+		else if (name.equals("Launch")) return 4;
 		else return 0;
 	}
 	
