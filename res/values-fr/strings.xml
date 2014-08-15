@@ -68,4 +68,8 @@
     <string name="round_corners">Arrondi des coins</string>
     <string name="autostart_timeout">Démarrage auto de la première appli en secondes</string>
     <string name="long_press_action">Action de l\'appui long</string>
+    <string name="doubletap_action">Double Tap app action</string>
+    <string name="developedby">Developed by Pavel Valenta</string>
+    <string name="visit_xda">Visit the thread at XDA for support!</string>
+    <string name="xda_link">http://forum.xda-developers.com/showthread.php?t=2588306</string>
 </resources>

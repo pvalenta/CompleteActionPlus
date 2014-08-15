@@ -65,7 +65,7 @@ public class MainPagerActivity extends FragmentActivity {
 	}	
 	
 	public void openButtonClick(View view) {
-		Intent showUrl = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.xda-developers.com/showthread.php?t=2588306"));
+		Intent showUrl = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.xda-developers.com/showthread.php?t=2588306&goto=newpost"));
 		startActivity(showUrl);
 	}
 	
@@ -74,7 +74,7 @@ public class MainPagerActivity extends FragmentActivity {
 		shareUrl.setType("text/plain");
 		shareUrl.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 		shareUrl.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-		shareUrl.putExtra(Intent.EXTRA_TEXT, "http://forum.xda-developers.com/showthread.php?t=2588306");
+		shareUrl.putExtra(Intent.EXTRA_TEXT, "http://forum.xda-developers.com/showthread.php?t=2588306&goto=newpost");
 		startActivity(Intent.createChooser(shareUrl, getString(R.string.activity_main_share_button)));
 	}
 	

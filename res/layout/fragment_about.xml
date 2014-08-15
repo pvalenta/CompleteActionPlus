@@ -48,8 +48,8 @@
             android:layout_toStartOf="@id/fragment_about_debug_checkbox"
             android:gravity="center_vertical"
             android:text="@string/debug_turn_on" />
-    </RelativeLayout>    
-    
+    </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
@@ -63,4 +63,25 @@
             android:text="@string/show_rule_manager" />
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:text="@string/developedby" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:text="@string/visit_xda" />
+    
+    <TextView android:id="@+id/fragment_about_xda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@android:color/holo_blue_dark"
+        android:text="@string/xda_link" />
 </LinearLayout>

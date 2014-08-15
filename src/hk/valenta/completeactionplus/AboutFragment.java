@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.TextView;
 
 public class AboutFragment extends Fragment {
 
@@ -76,6 +78,17 @@ public class AboutFragment extends Fragment {
 			public void onClick(View view) {
 				// start manager activity
 				startActivity(new Intent(getActivity(), ManagerPagerActivity.class));
+			}
+		});
+		
+		// setup XDA link
+		TextView xda = (TextView)layout.findViewById(R.id.fragment_about_xda);
+		xda.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// launch XDA				
+				Intent showUrl = new Intent(Intent.ACTION_VIEW, Uri.parse("http://forum.xda-developers.com/showthread.php?t=2588306&goto=newpost"));
+				startActivity(showUrl);
 			}
 		});
 		
