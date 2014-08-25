@@ -1553,30 +1553,16 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics));
-			if (titleView.getLayoutParams().getClass().equals(LinearLayout.LayoutParams.class)) {
-				LinearLayout.LayoutParams titleViewParams = (LinearLayout.LayoutParams)titleView.getLayoutParams();
-				int titleMargin = 0;
-				if (triggerStyle.equals("Title")) titleMargin = 15;
-				titleViewParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics),
-						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-				if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-					titleViewParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics));
-					titleViewParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-				}
-			} else if (titleView.getLayoutParams().getClass().equals(FrameLayout.LayoutParams.class)) {
-				FrameLayout.LayoutParams titleViewParams = (FrameLayout.LayoutParams)titleView.getLayoutParams();
-				int titleMargin = 0;
-				if (triggerStyle.equals("Title")) titleMargin = 15;
-				titleViewParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics),
-						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-				if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-					titleViewParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics));
-					titleViewParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-				}
+			ViewGroup.MarginLayoutParams titleViewParams = (ViewGroup.MarginLayoutParams)titleView.getLayoutParams();
+			int titleMargin = 0;
+			if (triggerStyle.equals("Title")) titleMargin = 15;
+			titleViewParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics),
+					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
+					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
+					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+			if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+				titleViewParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics));
+				titleViewParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
 			}
 			
 			// let's Assemble list of items
@@ -1630,12 +1616,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 			
 			// set title parent layout
-			LinearLayout titleParent = (LinearLayout)titleView.getParent();
+			ViewGroup titleParent = (ViewGroup)titleView.getParent();
 			titleParent.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-			LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams)titleParent.getLayoutParams();
+			ViewGroup.MarginLayoutParams titleParams = (ViewGroup.MarginLayoutParams)titleParent.getLayoutParams();
 			titleParams.setMargins(0, 0, 0, 0);
 			if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
 				titleParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
@@ -1643,7 +1629,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 			if (changeLayout) {
 				// get divider
-				LinearLayout bigParent = (LinearLayout)titleParent.getParent();
+				ViewGroup bigParent = (ViewGroup)titleParent.getParent();
 				View sibling = null;
 				if (bigParent.getChildCount() > 2) {
 					sibling = bigParent.getChildAt(2);
@@ -1661,7 +1647,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (roundCorners == 0) {
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));						
 					} else {
-						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
+						setRoundCorners((ViewGroup)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
@@ -1674,7 +1660,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (roundCorners == 0) {
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
 					} else {
-						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
+						setRoundCorners((ViewGroup)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
@@ -1732,13 +1718,13 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			
 			// get title view
 			TextView titleView = (TextView)XposedHelpers.getObjectField(aControl, "mTitleView");
-			LinearLayout titleParent = (LinearLayout)titleView.getParent();
+			ViewGroup titleParent = (ViewGroup)titleView.getParent();
 			DisplayMetrics metrics = titleParent.getContext().getResources().getDisplayMetrics();
 			titleParent.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-			LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams)titleParent.getLayoutParams();
+			ViewGroup.MarginLayoutParams titleParams = (ViewGroup.MarginLayoutParams)titleParent.getLayoutParams();
 			titleParams.setMargins(0, 0, 0, 0);
 			if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
 				titleParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
@@ -1746,7 +1732,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 			if (changeLayout) {
 				// get divider
-				LinearLayout bigParent = (LinearLayout)titleParent.getParent();
+				ViewGroup bigParent = (ViewGroup)titleParent.getParent();
 				View sibling = null;
 				if (bigParent.getChildCount() > 2) {
 					sibling = bigParent.getChildAt(2);
@@ -1763,7 +1749,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (roundCorners == 0) {
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));						
 					} else {
-						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
+						setRoundCorners((ViewGroup)bigParent.getParent(), pref.getInt("BackgroundColor", Color.WHITE), 
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
@@ -1775,7 +1761,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (roundCorners == 0) {
 						titleParent.setBackgroundColor(pref.getInt("BackgroundColor", Color.parseColor("#101214")));
 					} else {
-						setRoundCorners((LinearLayout)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
+						setRoundCorners((ViewGroup)bigParent.getParent(), pref.getInt("BackgroundColor", Color.parseColor("#101214")), 
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, roundCorners, metrics),
 								(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
 					}
@@ -2011,7 +1997,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	}
 	
 	@SuppressLint("NewApi")
-	private void setRoundCorners(LinearLayout root, int color, int roundValue, int border) {
+	private void setRoundCorners(ViewGroup root, int color, int roundValue, int border) {
 		// top round corners
 		GradientDrawable topBorder = new GradientDrawable(Orientation.BOTTOM_TOP, new int[] { color, color });
 		topBorder.setCornerRadii(new float[] { roundValue, roundValue, roundValue, roundValue, 0, 0, 0, 0 });
@@ -2044,7 +2030,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		
 		// remove padding
 		root.setPadding(0, 0, 0, 0);
-		FrameLayout.LayoutParams rParams = (FrameLayout.LayoutParams)root.getLayoutParams();
+		ViewGroup.MarginLayoutParams rParams = (ViewGroup.MarginLayoutParams)root.getLayoutParams();
 		rParams.setMargins(border, border, border, border);
 		if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
 			rParams.setMarginStart(border);
@@ -2057,7 +2043,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				roundValue, roundValue, roundValue, roundValue });
 		
 		// let's set black background
-		FrameLayout rootParent = (FrameLayout)root.getParent();
+		ViewGroup rootParent = (ViewGroup)root.getParent();
 		rootParent.setBackground(blackBorder);
 	}
 	

@@ -91,7 +91,8 @@ public class IntentRecorderActivity extends Activity {
 					notBuilder.setContentIntent(PendingIntent.getActivity(
 							buttonView.getContext(), 0,
 							new Intent(buttonView.getContext(),IntentRecorderActivity.class),
-							0));
+							Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+//							0));
 //							Intent.FLAG_ACTIVITY_NO_HISTORY));
 
 					// show it
