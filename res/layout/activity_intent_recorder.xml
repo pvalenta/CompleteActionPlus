@@ -1,0 +1,99 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="0dip"
+    android:paddingRight="0dip"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".IntentRecorderActivity" >
+
+    <ImageView
+        android:id="@+id/intent_recorder_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/activity_main_logo"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/intent_recorder_logo"
+        android:layout_toEndOf="@id/intent_recorder_logo"
+        android:layout_toRightOf="@id/intent_recorder_logo"
+        android:paddingLeft="20dp"
+        android:paddingStart="20dp"
+        android:text="@string/intent_recorder"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/intent_recorder_line1"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/intent_recorder_logo"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray" />
+
+    <RelativeLayout
+        android:id="@+id/intent_recorder_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intent_recorder_line1"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" >
+
+        <ToggleButton
+            android:id="@+id/intent_recorder_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:textOff="@string/intent_record_start"
+            android:textOn="@string/intent_record_stop" />
+
+        <Button
+            android:id="@+id/intent_recorder_refresh"
+            style="@android:style/Widget.Button.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:text="@string/intent_recording_refresh" />
+
+        <TextView
+            android:id="@+id/intent_recorder_stats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/intent_recorder_toggle"
+            android:layout_toLeftOf="@id/intent_recorder_refresh"
+            android:layout_toRightOf="@id/intent_recorder_toggle"
+            android:layout_toStartOf="@id/intent_recorder_refresh"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:text="@string/intent_record_note" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/intent_recorder_items"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/intent_recorder_buttons"
+        android:paddingEnd="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingStart="0dp"
+        android:paddingTop="10dp" />
+
+</RelativeLayout>

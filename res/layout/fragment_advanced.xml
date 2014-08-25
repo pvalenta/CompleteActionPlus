@@ -51,7 +51,8 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <CheckBox
             android:id="@+id/fragment_advanced_old_hide_checkbox"
@@ -66,34 +67,6 @@
             android:layout_toStartOf="@id/fragment_advanced_old_hide_checkbox"
             android:gravity="center_vertical"
             android:text="@string/advanced_no_package_manager_hook" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/fragment_advanced_share_set"
-            style="@android:style/Widget.Button.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/advanced_share_set" />
-
-        <Spinner
-            android:id="@+id/fragment_advanced_share_spinner"
-            style="@style/DropDown"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="60dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="60dp"
-            android:layout_marginStart="0dp"
-            android:layout_toLeftOf="@id/fragment_advanced_share_set"
-            android:layout_toStartOf="@id/fragment_advanced_share_set"
-            android:minWidth="40dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -153,6 +126,19 @@
             android:layout_toStartOf="@id/fragment_advanced_position_landscape_spinner"
             android:gravity="center_vertical"
             android:text="@string/dialog_gravity" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/fragment_advanced_indent_recorder"
+            style="@android:style/Widget.Button.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/intent_recorder" />
     </RelativeLayout>
 
 </LinearLayout>

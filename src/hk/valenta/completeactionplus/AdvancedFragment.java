@@ -1,14 +1,9 @@
 package hk.valenta.completeactionplus;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,7 +24,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class AdvancedFragment extends Fragment {
 
-	Spinner shareSpinner;
 	TextView autostartValue;
 	
 	@SuppressWarnings("deprecation")
@@ -77,46 +71,6 @@ public class AdvancedFragment extends Fragment {
 				pref.edit().putBoolean("OldWayHide", buttonView.isChecked()).commit();
 			}
 		});
-		
-		// populate share spinner
-		shareSpinner = (Spinner)layout.findViewById(R.id.fragment_advanced_share_spinner);
-		ArrayAdapter<CharSequence> shareAdapter = ArrayAdapter.createFromResource(this.getActivity(), R.array.appShare, android.R.layout.simple_spinner_item);
-		shareAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);		
-		shareSpinner.setAdapter(shareAdapter);
-		
-		// share set
-		Button shareSet = (Button)layout.findViewById(R.id.fragment_advanced_share_set);
-		shareSet.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View v) {
-				// gallery intent
-				Intent target = getShareIntent();
-				
-				// find activities
-				PackageManager pm = getActivity().getPackageManager();
-				List<ResolveInfo> list = pm.queryIntentActivities(target, 0);
-				
-				// let's get array of packages
-				ArrayList<String> items = new ArrayList<String>();
-				int count = list.size();
-				for (int i=0; i<count; i++) {
-					if (!items.contains(list.get(i).activityInfo.packageName)) {
-						items.add(list.get(i).activityInfo.packageName);
-					}
-				}
-				
-				// let's assemble intent
-				Intent manage = new Intent(getActivity(), ManageListActivity.class);
-				manage.putExtra("action", target.getAction());
-				manage.putExtra("type", target.getType());
-				String[] aItems = new String[items.size()];
-				manage.putExtra("items", items.toArray(aItems));
-				manage.putExtra("nofavorite", true);
-				
-				// let's go there
-				startActivity(manage);
-			}
-		});		
 		
 		// autostart
 		autostartValue = (TextView)layout.findViewById(R.id.fragment_advanced_timeout_value);
@@ -196,36 +150,18 @@ public class AdvancedFragment extends Fragment {
 		TextView positionLandscapeLabel = (TextView)layout.findViewById(R.id.fragment_advanced_position_landscape_label);
 		positionLandscapeLabel.setText(String.format(getString(R.string.dialog_gravity), getString(R.string.landscape)));
 		
-		return layout;
-	}
-	
-	private Intent getShareIntent() {
-		int shareIndex = shareSpinner.getSelectedItemPosition();
+		// indent recorder
+		Button indentRecorder = (Button)layout.findViewById(R.id.fragment_advanced_indent_recorder);
+		indentRecorder.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				// launch recorder
+				Intent recorder = new Intent(v.getContext(), IntentRecorderActivity.class);
+				//recorder.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				startActivity(recorder);
+			}
+		});
 		
-		// continue by index
-		switch (shareIndex) {
-		case 0:
-			// single photo intent
-			Intent photo1 = new Intent(Intent.ACTION_SEND);
-			photo1.setType("image/jpeg");
-			return photo1;
-		case 1:
-			// multiple photo intent
-			Intent multiple1 = new Intent(Intent.ACTION_SEND_MULTIPLE);
-			multiple1.setType("image/*");
-			return multiple1;
-		case 2:
-			// multiple photo intent
-			Intent multiple2 = new Intent(Intent.ACTION_SEND_MULTIPLE);
-			multiple2.setType("image/jpeg");
-			return multiple2;
-		case 3:
-			// single photo intent
-			Intent photo2 = new Intent(Intent.ACTION_SEND);
-			photo2.setType("image/*");
-			return photo2;
-		default:
-			return null;
-		}
+		return layout;
 	}
 }

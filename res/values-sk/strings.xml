@@ -61,15 +61,24 @@
     <string name="manager_restore_intent">Chcete obnoviť pravidlá z %s ?</string>
     <string name="advanced_share_set">Nastaviť</string>
     <string name="debug_turn_on">Povoliť ďalšie chybové správy v zázname</string>
-    <string name="advanced_no_package_manager_hook">Skryť aplikácie spôsobom použitým vo verzii 1.9\n(Len ak máte problémy so zaškrtávacím polom pre možnosť \'Vždy\'.)</string>
-    <string name="keep_bottom_buttons">Ponechať tlačidlá \Raz\' a \'Vždy\'</string>
+    <string name="advanced_no_package_manager_hook">Skryť aplikácie spôsobom použitým vo verzii 1.9\n(Len ak máte problémy so zaškrtávacím poľom pre možnosť \'Vždy\'.)</string>
+    <string name="keep_bottom_buttons">Ponechať tlačidlá \'Raz\' a \'Vždy\'</string>
     <string name="transparency">Priehľadnosť</string>
     <string name="title_color">Farba názvu</string>
-    <string name="round_corners">Guľaté rohy</string>
+    <string name="round_corners">Okrúhle rohy</string>
     <string name="autostart_timeout">Automaticky spustiť prvú aplikáciu v sekundách</string>
     <string name="long_press_action">Akcia dlhého stlačenia aplikácie</string>
-    <string name="doubletap_action">Double Tap app action</string>
-    <string name="developedby">Developed by Pavel Valenta</string>
-    <string name="visit_xda">Visit the thread at XDA for support!</string>
+    <string name="doubletap_action">Akcia dvojitého klepnutia na aplikácii</string>
+    <string name="developedby">Vyvinul Pavel Valenta</string>
+    <string name="visit_xda">Navštívte tému na XDA fóre pre podporu!</string>
     <string name="xda_link">http://forum.xda-developers.com/showthread.php?t=2588306</string>
+    <string name="xposed_description">Vylepšenia pre Android diálogy otvorenia a zdieľania. Spustenie jedným dotykom, správa aplikácií, zmena rozloženia a oveľa viac.</string>
+    <string name="intent_recorder">Intent Recorder</string>
+    <string name="intent_record_start">Record</string>
+    <string name="intent_record_stop">Stop</string>
+    <string name="intent_recording_refresh">Refresh</string>
+    <string name="intent_record_note">Hit \'Record\' to start recording.</string>
+    <string name="intent_record_captured">%d intents captured</string>
+    <string name="intent_recording">Intent recording active</string>   
+    <string name="intent_record_number_apps">%d default apps</string> 
 </resources>

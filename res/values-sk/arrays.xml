@@ -63,8 +63,8 @@
 	<string-array name="long_press_actions">
 	    <item>Žiadna akcia</item>
 	    <item>Informácie o aplikácií</item>
-	    <item>Nastaviť ako predvolené</item>
+	    <item>Nastaviť ako predvolenú</item>
 	    <item>Okno XHalo</item>
-	    <item>Launch It</item>
+	    <item>Spustiť aplikáciu</item>
 	</string-array>
 </resources>

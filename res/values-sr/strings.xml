@@ -68,8 +68,17 @@
     <string name="round_corners">Заобљени углови</string>
     <string name="autostart_timeout">Ауто старт прве апликације у секундама</string>
     <string name="long_press_action">Акција дугог притиска апликације</string>
-    <string name="doubletap_action">Double Tap app action</string>
-    <string name="developedby">Developed by Pavel Valenta</string>
-    <string name="visit_xda">Visit the thread at XDA for support!</string>
+    <string name="doubletap_action">Акција за дупли притисак</string>
+    <string name="developedby">Развија Павел Валента</string>
+    <string name="visit_xda">Посетите нит на ЕксДеА форуму за подршку</string>
     <string name="xda_link">http://forum.xda-developers.com/showthread.php?t=2588306</string>
+    <string name="xposed_description">Tweaks Open and Share android dialog. One click launch, manage apps, change layout and much more.</string>
+    <string name="intent_recorder">Intent Recorder</string>
+    <string name="intent_record_start">Record</string>
+    <string name="intent_record_stop">Stop</string>
+    <string name="intent_recording_refresh">Refresh</string>
+    <string name="intent_record_note">Hit \'Record\' to start recording.</string>
+    <string name="intent_record_captured">%d intents captured</string>
+    <string name="intent_recording">Intent recording active</string>   
+    <string name="intent_record_number_apps">%d default apps</string> 
 </resources>

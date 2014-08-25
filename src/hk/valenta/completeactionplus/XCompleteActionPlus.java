@@ -86,8 +86,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.3.0");
-					return "2.3.0";
+					param.setResult("2.4.0");
+					return "2.4.0";
 				}
 			});
 		}
@@ -736,12 +736,13 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// any items back?
 				List<ResolveInfo> list = (List<ResolveInfo>)param.getResult();
 				if (list == null || list.size() == 0) return;
+				int size = list.size();
 
 				// get current configuration
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				boolean manageList = pref.getBoolean("ManageList", false);
 				boolean debugOn = pref.getBoolean("DebugLog", false);
-				if (!manageList) return;
+				if (!manageList) return;							
 				
 				String scheme = myIntent.getScheme();
 				if (pref.getBoolean("RulePerWebDomain", false) && scheme != null && (scheme.equals("http") || scheme.equals("https"))) {
@@ -750,7 +751,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} 
 				String type = myIntent.getType();
 				if (scheme == null && type == null) return;
-				String intentId = String.format("%s;%s;%s", myIntent.getAction(), type, scheme);
+				String action = myIntent.getAction();
+				String intentId = String.format("%s;%s;%s", action, type, scheme);
 				
 				// do it old way?
 				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
@@ -765,6 +767,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						}
 						return;
 					}
+				}	
+				
+				// intent recording?
+				if (pref.getBoolean("IntentRecord", false) &&
+					!action.equals("android.intent.action.MAIN") &&
+					size > 1) {
+					// collect all packages
+					ArrayList<String> items = new ArrayList<String>();
+					StringBuilder builder = new StringBuilder();
+					builder.append(intentId);
+					for (int i=0; i<size; i++) {
+						ResolveInfo info = list.get(i);
+						if (!items.contains(info.activityInfo.packageName)) {
+							items.add(info.activityInfo.packageName);
+							builder.append(";");
+							builder.append(info.activityInfo.packageName);							
+						}
+					}
+					
+					// broadcast it
+					Intent intent = new Intent();
+					intent.setAction("hk.valenta.completeactionplus.INTENT");
+					intent.putExtra("Intent", builder.toString());					
+					Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
+					mContext.sendBroadcast(intent);
 				}				
 				
 				// get hidden
@@ -792,7 +819,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 				
 				// loop & remove
-				int size = list.size();
 				int removed = 0;
 				if (debugOn) {
 					XposedBridge.log(String.format("CAP: Before removal: %d", size));
@@ -1527,16 +1553,30 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
 					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics));
-			LinearLayout.LayoutParams titleViewParams = (LinearLayout.LayoutParams)titleView.getLayoutParams();
-			int titleMargin = 0;
-			if (triggerStyle.equals("Title")) titleMargin = 15;
-			titleViewParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
-					(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
-			if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-				titleViewParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics));
-				titleViewParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+			if (titleView.getLayoutParams().getClass().equals(LinearLayout.LayoutParams.class)) {
+				LinearLayout.LayoutParams titleViewParams = (LinearLayout.LayoutParams)titleView.getLayoutParams();
+				int titleMargin = 0;
+				if (triggerStyle.equals("Title")) titleMargin = 15;
+				titleViewParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics),
+						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
+						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
+						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+				if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+					titleViewParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics));
+					titleViewParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+				}
+			} else if (titleView.getLayoutParams().getClass().equals(FrameLayout.LayoutParams.class)) {
+				FrameLayout.LayoutParams titleViewParams = (FrameLayout.LayoutParams)titleView.getLayoutParams();
+				int titleMargin = 0;
+				if (triggerStyle.equals("Title")) titleMargin = 15;
+				titleViewParams.setMargins((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics),
+						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
+						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics),
+						(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+				if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+					titleViewParams.setMarginStart((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, titleMargin, metrics));
+					titleViewParams.setMarginEnd((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, metrics));
+				}
 			}
 			
 			// let's Assemble list of items
