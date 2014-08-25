@@ -160,12 +160,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (showAlways) {
 					// get view
 					boolean always = isAlwaysChecked((View)param.args[0]);
-					boolean manageList = pref.getBoolean("ManageList", false);
-					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-					if (always && manageList && oldWayHide) {
-						// restore items
-						restoreListItems(param.thisObject, pref);
-					}
+//					boolean manageList = pref.getBoolean("ManageList", false);
+//					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//					if (always && manageList && oldWayHide) {
+//						// restore items
+//						restoreListItems(param.thisObject, pref);
+//					}
 					startSelected(param.thisObject, position, always);
 				} else {
 					// call it
@@ -278,12 +278,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				boolean always = (button.getId() == mAlwaysButton.getId());
 
 				// restore items?
-				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-				boolean manageList = pref.getBoolean("ManageList", false);
-				if (always && manageList && oldWayHide) {
-					// restore items
-					restoreListItems(param.thisObject, pref);
-				}
+//				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//				boolean manageList = pref.getBoolean("ManageList", false);
+//				if (always && manageList && oldWayHide) {
+//					// restore items
+//					restoreListItems(param.thisObject, pref);
+//				}
 				
 				// call it
 				startSelected(param.thisObject, selectedIndex, always);
@@ -622,61 +622,61 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
 				} 
 				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), scheme);
-				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 				boolean debugOn = pref.getBoolean("DebugLog", false);
 				int removed = myIntent.getIntExtra("CAP-Removed", 0);
 				int favorited = 0;
-				if (oldWayHide) {
-					String cHidden = pref.getString(intentId, null);
-					if (cHidden != null && cHidden.length() > 0) {
-						// split by ;
-						String[] hI = cHidden.split(";");
-						ArrayList<String> hiddenItems = new ArrayList<String>();
-						for (String h : hI) {
-							if (!hiddenItems.contains(h)) {							
-								hiddenItems.add(h);
-							}
-						}
-						
-						// get list
-						List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
-						
-						// get original list to solve 4.3 issue
-						List<ResolveInfo> baseList = null;
-						try {
-							baseList = (List<ResolveInfo>)XposedHelpers.getObjectField(param.thisObject, "mBaseResolveList");
-							if (baseList == null) {
-								baseList = new ArrayList<ResolveInfo>();
-							}
-						} catch (Exception ex) { }
-						
-						// let's try to find
-						for (String h : hiddenItems) {
-							int count = items.size();
-							for (int i=0; i<count; i++) {
-								// get resolve info
-								ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(items.get(i), "ri");
-								
-								// match?
-								if (info.activityInfo.packageName.equals(h)) {
-									// store in original list for KitKat
-									if (baseList != null) {
-										baseList.add(info);
-									}
-									
-									// remove it
-									items.remove(i);
-									i -= 1;
-									count -= 1;
-									removed += 1;
-								}
-							}
-						}
-						if (debugOn && removed > 0) {
-							XposedBridge.log(String.format("CAP: Removed %d from %s", removed, intentId));
-						}
-					}					
-				}
+//				if (oldWayHide) {
+//					String cHidden = pref.getString(intentId, null);
+//					if (cHidden != null && cHidden.length() > 0) {
+//						// split by ;
+//						String[] hI = cHidden.split(";");
+//						ArrayList<String> hiddenItems = new ArrayList<String>();
+//						for (String h : hI) {
+//							if (!hiddenItems.contains(h)) {							
+//								hiddenItems.add(h);
+//							}
+//						}
+//						
+//						// get list
+//						List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
+//						
+//						// get original list to solve 4.3 issue
+//						List<ResolveInfo> baseList = null;
+//						try {
+//							baseList = (List<ResolveInfo>)XposedHelpers.getObjectField(param.thisObject, "mBaseResolveList");
+//							if (baseList == null) {
+//								baseList = new ArrayList<ResolveInfo>();
+//							}
+//						} catch (Exception ex) { }
+//						
+//						// let's try to find
+//						for (String h : hiddenItems) {
+//							int count = items.size();
+//							for (int i=0; i<count; i++) {
+//								// get resolve info
+//								ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(items.get(i), "ri");
+//								
+//								// match?
+//								if (info.activityInfo.packageName.equals(h)) {
+//									// store in original list for KitKat
+//									if (baseList != null) {
+//										baseList.add(info);
+//									}
+//									
+//									// remove it
+//									items.remove(i);
+//									i -= 1;
+//									count -= 1;
+//									removed += 1;
+//								}
+//							}
+//						}
+//						if (debugOn && removed > 0) {
+//							XposedBridge.log(String.format("CAP: Removed %d from %s", removed, intentId));
+//						}
+//					}					
+//				}
 				
 				// favourites
 				String cFavorites = pref.getString(intentId + "_fav", null);
@@ -755,19 +755,19 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				String intentId = String.format("%s;%s;%s", action, type, scheme);
 				
 				// do it old way?
-				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-				if (oldWayHide) {
-					// one of ours?
-					if (!intentId.equals("android.intent.action.SEND;image/jpeg;null") &&
-						!intentId.equals("android.intent.action.SEND;image/*;null") &&
-						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/*;null") &&
-						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/jpeg;null")) {
-						if (debugOn) {
-							XposedBridge.log("CAP: Hiding app old way.");
-						}
-						return;
-					}
-				}	
+//				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//				if (oldWayHide) {
+//					// one of ours?
+//					if (!intentId.equals("android.intent.action.SEND;image/jpeg;null") &&
+//						!intentId.equals("android.intent.action.SEND;image/*;null") &&
+//						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/*;null") &&
+//						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/jpeg;null")) {
+//						if (debugOn) {
+//							XposedBridge.log("CAP: Hiding app old way.");
+//						}
+//						return;
+//					}
+//				}	
 				
 				// intent recording?
 				if (pref.getBoolean("IntentRecord", false) &&
@@ -890,12 +890,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						XposedBridge.log(e.getMessage());
 					}
 				} else if (action.equals("Default") && XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption")) {
-					boolean manageList = pref.getBoolean("ManageList", false);
-					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-					if (manageList && oldWayHide) {
-						// restore items
-						restoreListItems(param.thisObject, pref);
-					}
+//					boolean manageList = pref.getBoolean("ManageList", false);
+//					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//					if (manageList && oldWayHide) {
+//						// restore items
+//						restoreListItems(param.thisObject, pref);
+//					}
 					// call activity directly
 					XposedHelpers.callMethod(param.thisObject, "startSelected", position, true);
 				} else if (action.equals("Launch")) {
@@ -1841,14 +1841,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	
 	private void setLongPress(ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-		if (action.equals("Default") && mAlwaysUseOption) {
-			boolean manageList = pref.getBoolean("ManageList", false);
-			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-			if (manageList && oldWayHide) {
-				// restore items
-				restoreListItems(thisObject, pref);
-			}
-		}
+//		if (action.equals("Default") && mAlwaysUseOption) {
+//			boolean manageList = pref.getBoolean("ManageList", false);
+//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//			if (manageList && oldWayHide) {
+//				// restore items
+//				restoreListItems(thisObject, pref);
+//			}
+//		}
 		list.setTag(thisObject);		
 		
 		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -1908,14 +1908,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		
 	private void setLongPress(GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-		if (action.equals("Default") && mAlwaysUseOption) {
-			boolean manageList = pref.getBoolean("ManageList", false);
-			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-			if (manageList && oldWayHide) {
-				// restore items
-				restoreListItems(thisObject, pref);
-			}
-		}
+//		if (action.equals("Default") && mAlwaysUseOption) {
+//			boolean manageList = pref.getBoolean("ManageList", false);
+//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//			if (manageList && oldWayHide) {
+//				// restore items
+//				restoreListItems(thisObject, pref);
+//			}
+//		}
 		grid.setTag(thisObject);
 		
 		grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -2288,14 +2288,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 
 	private void setGesture(final ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-		if (action.equals("Default") && mAlwaysUseOption) {
-			boolean manageList = pref.getBoolean("ManageList", false);
-			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-			if (manageList && oldWayHide) {
-				// restore items
-				restoreListItems(thisObject, pref);
-			}
-		}
+//		if (action.equals("Default") && mAlwaysUseOption) {
+//			boolean manageList = pref.getBoolean("ManageList", false);
+//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//			if (manageList && oldWayHide) {
+//				// restore items
+//				restoreListItems(thisObject, pref);
+//			}
+//		}
 		list.setTag(thisObject);	
 		
 		list.setOnTouchListener(new OnTouchListener() {
@@ -2370,14 +2370,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	
 	private void setGesture(final GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-		if (action.equals("Default") && mAlwaysUseOption) {
-			boolean manageList = pref.getBoolean("ManageList", false);
-			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-			if (manageList && oldWayHide) {
-				// restore items
-				restoreListItems(thisObject, pref);
-			}
-		}
+//		if (action.equals("Default") && mAlwaysUseOption) {
+//			boolean manageList = pref.getBoolean("ManageList", false);
+//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//			if (manageList && oldWayHide) {
+//				// restore items
+//				restoreListItems(thisObject, pref);
+//			}
+//		}
 		grid.setTag(thisObject);
 		
 		grid.setOnTouchListener(new OnTouchListener() {
