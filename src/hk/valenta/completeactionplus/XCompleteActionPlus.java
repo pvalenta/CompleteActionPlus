@@ -159,7 +159,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 								mAllowButton.setEnabled(true);
 							}
 						} catch (Exception e) {
-							XposedBridge.log("CAP: No LG G3");
+							//XposedBridge.log("CAP: No LG G3");
 						}
 					} else {
 						// start it
@@ -297,7 +297,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						always = mAlwaysUse.isChecked();
 					}
 				} catch (Exception e) {
-					XposedBridge.log("CAP: No LG G3");					
+					//XposedBridge.log("CAP: No LG G3");					
 				}
 				
 				// restore items?
@@ -794,32 +794,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //						return;
 //					}
 //				}	
-				
-				// intent recording?
-				if (pref.getBoolean("IntentRecord", false) &&
-					!action.equals("android.intent.action.MAIN") &&
-					size > 1) {
-					// collect all packages
-					ArrayList<String> items = new ArrayList<String>();
-					StringBuilder builder = new StringBuilder();
-					builder.append(intentId);
-					for (int i=0; i<size; i++) {
-						ResolveInfo info = list.get(i);
-						if (!items.contains(info.activityInfo.packageName)) {
-							items.add(info.activityInfo.packageName);
-							builder.append(";");
-							builder.append(info.activityInfo.packageName);							
-						}
-					}
-					
-					// broadcast it
-					Intent intent = new Intent();
-					intent.setAction("hk.valenta.completeactionplus.INTENT");
-					intent.putExtra("Intent", builder.toString());					
-					Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
-					mContext.sendBroadcast(intent);
-				}				
-				
+											
 				// get hidden
 				String cHidden = pref.getString(intentId, null);
 				if (cHidden == null || cHidden.length() == 0) {
@@ -827,6 +802,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (debugOn) {
 						XposedBridge.log(String.format("CAP: Found no match: %s", intentId));
 					}
+										
+					// intent recording?
+					if (pref.getBoolean("IntentRecord", false) &&
+						!action.equals("android.intent.action.MAIN") &&
+						size > 1) {
+						// collect all packages
+						ArrayList<String> items = new ArrayList<String>();
+						StringBuilder builder = new StringBuilder();
+						builder.append(intentId);
+						for (int i=0; i<size; i++) {
+							ResolveInfo info = list.get(i);
+							if (!items.contains(info.activityInfo.packageName)) {
+								items.add(info.activityInfo.packageName);
+								builder.append(";");
+								builder.append(info.activityInfo.packageName);							
+							}
+						}
+						
+						// broadcast it
+						Intent intent = new Intent();
+						intent.setAction("hk.valenta.completeactionplus.INTENT");
+						intent.putExtra("Intent", builder.toString());					
+						Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
+						mContext.sendBroadcast(intent);
+					}						
 					return;
 				}
 				
@@ -864,6 +864,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						myIntent.putExtra("CAP-Removed", removed);						
 					}
 				}
+				
+				// intent recording?
+				if (pref.getBoolean("IntentRecord", false) &&
+					!action.equals("android.intent.action.MAIN") &&
+					size > 1) {
+					// collect all packages
+					ArrayList<String> items = new ArrayList<String>();
+					StringBuilder builder = new StringBuilder();
+					builder.append(intentId);
+					for (int i=0; i<size; i++) {
+						ResolveInfo info = list.get(i);
+						if (!items.contains(info.activityInfo.packageName)) {
+							items.add(info.activityInfo.packageName);
+							builder.append(";");
+							builder.append(info.activityInfo.packageName);							
+						}
+					}
+					
+					// broadcast it
+					Intent intent = new Intent();
+					intent.setAction("hk.valenta.completeactionplus.INTENT");
+					intent.putExtra("Intent", builder.toString());					
+					Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
+					mContext.sendBroadcast(intent);
+				}					
 				
 				// set it back
 				param.setResult(list);
