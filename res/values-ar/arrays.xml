@@ -54,12 +54,6 @@
 	    <item>أيقونة مفتاح ربط</item>
 	    <item>الضغط المطول على العنوان</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>مشاركة صورة واحدة من ألبوم الصور</item>
-	    <item>مشاركة عدة صور من الألبوم</item>
-	    <item>QuickPic Multiple Photos Share</item>
-	    <item>Galaxy S4 Gallery Single Photo Share</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>لا إجراء</item>
 	    <item>معلومات البرنامج</item>

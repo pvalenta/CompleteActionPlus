@@ -9,7 +9,6 @@ package hk.valenta.completeactionplus;
 
 public final class R {
     public static final class array {
-        public static final int appShare=0x7f040009;
         public static final int change_layout_styles=0x7f040000;
         public static final int dialog_gravity=0x7f040007;
         public static final int dialog_theme=0x7f040006;
@@ -17,7 +16,7 @@ public final class R {
         public static final int grid_layout_columns_landscape=0x7f040002;
         public static final int grid_text_size=0x7f040004;
         public static final int list_text_size=0x7f040003;
-        public static final int long_press_actions=0x7f04000a;
+        public static final int long_press_actions=0x7f040009;
         public static final int manageTrigger=0x7f040008;
         public static final int theme=0x7f040005;
     }

@@ -54,12 +54,6 @@
 	    <item>Bouton \'Outil\'</item>
 	    <item>Appui long sur le titre</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Partage d\'une photo (Galerie)</item>
-	    <item>Partage de photos multiples (Galerie)</item>
-	    <item>Partage de photos multiples (QuickPic)</item>
-	    <item>Partage photo galerie Galaxy S4</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>Aucune action</item>
 	    <item>Informations Appli</item>

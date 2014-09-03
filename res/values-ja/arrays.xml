@@ -54,12 +54,6 @@
 	    <item>スパナボタン</item>
 	    <item>タイトルの長押し</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>ギャラリー/QuickPic単体画像共有</item>
-	    <item>ギャラリー複数画像共有</item>
-	    <item>QuickPic複数画像共有</item>
-	    <item>Galaxy S4ギャラリー単体画像共有</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>アクションなし</item>
 	    <item>アプリ情報</item>

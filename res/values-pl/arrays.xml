@@ -54,12 +54,6 @@
 	    <item>Przycisk - klucz</item>
 	    <item>Przytrzymaj pasek tytułowy</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Udostępnianie pojedynczego zdjęcia galerii</item>
-	    <item>Udostępnianie wielu zdjęć galerii</item>
-	    <item>Udostępnianie wielu zdjęć galerii QuickPic</item>
-	    <item>Udostępnianie pojedynczego zdjęcia galerii S4</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>Brak akcji</item>
 	    <item>Informacje o aplikacji</item>

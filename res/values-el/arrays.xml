@@ -54,12 +54,6 @@
 	    <item>Κλειδί</item>
 	    <item>Παρατετεμένο πάτημα τίτλου</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Διαμοιρασμός μίας φωτογραφίας από τη συλλογή</item>
-	    <item>Διαμοιρασμός πολλών φωτογραφιών από τη συλλογή</item>
-	    <item>Διαμοιρασμός πολλών φωτογραφιών από την εφαρμογή QuickPic</item>
-	    <item>Διαμοιρασμός μία φωτογραφίας από τη συλλογή του Galaxy S4</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>No action</item>
 	    <item>App Information</item>

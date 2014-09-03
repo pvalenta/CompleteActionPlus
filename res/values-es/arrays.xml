@@ -54,12 +54,6 @@
 	    <item>Llave Inglesa</item>
 	    <item>Pulsación larga (título)</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Foto Individual (Galería)</item>
-	    <item>Fotos Múltiples (Galería)</item>
-	    <item>Fotos Múltiples (QuickPic)</item>
-	    <item>Foto Individual (Galería Galaxy S4)</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>No action</item>
 	    <item>App Information</item>

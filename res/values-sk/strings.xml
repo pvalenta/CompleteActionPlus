@@ -74,10 +74,10 @@
     <string name="xda_link">http://forum.xda-developers.com/showthread.php?t=2588306</string>
     <string name="xposed_description">Vylepšenia pre Android diálogy otvorenia a zdieľania. Spustenie jedným dotykom, správa aplikácií, zmena rozloženia a oveľa viac.</string>
     <string name="intent_recorder">Intent Recorder</string>
-    <string name="intent_record_start">Record</string>
-    <string name="intent_record_stop">Stop</string>
-    <string name="intent_recording_refresh">Refresh</string>
-    <string name="intent_record_note">Hit \'Record\' to start recording.</string>
+    <string name="intent_record_start">Nahrať</string>
+    <string name="intent_record_stop">Zastaviť </string>
+    <string name="intent_recording_refresh">Obnoviť</string>
+    <string name="intent_record_note">Stlačte \'Nahrať\' pre začatie nahrávania.</string>
     <string name="intent_record_captured">%d intents captured</string>
     <string name="intent_recording">Intent recording active</string>   
     <string name="intent_record_number_apps">%d default apps</string> 

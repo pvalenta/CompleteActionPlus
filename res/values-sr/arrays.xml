@@ -54,12 +54,6 @@
 	    <item>Обртно дугме</item>
 	    <item>Дуги клик наслова</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Поделити фотографију Галерије</item>
-	    <item>Поделити фотографије галерије</item>
-	    <item>QuickPic Поделити више фотографија</item>
-	    <item>Галакси С4 дељење Једне фотографије галерије</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>Без акције</item>
 	    <item>Инфо апликације</item>

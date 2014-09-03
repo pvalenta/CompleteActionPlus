@@ -54,12 +54,6 @@
 	    <item>Tombol Kunci</item>
 	    <item>Tekan Lama Judul</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Berbagi Photo Tunggal Galeri</item>
-	    <item>Berbagi Multiple Photo Galeri</item>
-	    <item>Berbagi Multiple Photo Quickpic</item>
-	    <item>Berbagi Photo Tunggal Galeri Galaxy S4</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>Tdk ada aksi</item>
 	    <item>Informasi Aplikasi</item>

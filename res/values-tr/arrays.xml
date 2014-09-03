@@ -54,12 +54,6 @@
 	    <item>İngiliz anahtarı Butonu</item>
 	    <item>Uzun Başlığa Tıklayın</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Galeriden bir Fotoğraf paylaş</item>
-	    <item>Galeriden Birden fazla Fotoğraf Paylaş</item>
-	    <item>Quickpic Birden fazla Fotoğraf Paylaş</item>
-	    <item>Galaxy S4 Galerisinden Bir Fotoğraf paylaş</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>No action</item>
 	    <item>App Information</item>

@@ -54,12 +54,6 @@
 	    <item>Chiave Inglese</item>
 	    <item>Click Lungo sul Titolo</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>Condiv. Singola Foto Galleria</item>
-	    <item>Condiv. Multiple Foto Galleria</item>
-	    <item>Condiv. Multiple Foto QuickPic</item>
-	    <item>Condiv. Foto Singola Galleria Galaxy S4</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>Nessuna Azione</item>
 	    <item>Informazioni App</item>

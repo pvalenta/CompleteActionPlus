@@ -86,8 +86,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.4.0");
-					return "2.4.0";
+					param.setResult("2.4.2");
+					return "2.4.2";
 				}
 			});
 		}
@@ -149,6 +149,17 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 							} else if (theme.equals("Dark")) {
 								mOnceButton.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
 							}
+						}
+						// LG G3 OK button
+						try {
+							Field mAllowButtonField = param.thisObject.getClass().getDeclaredField("mAllowButton");
+							mAllowButtonField.setAccessible(true);
+							Button mAllowButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mAllowButton");
+							if (mAllowButton != null) {
+								mAllowButton.setEnabled(true);
+							}
+						} catch (Exception e) {
+							XposedBridge.log("CAP: No LG G3");
 						}
 					} else {
 						// start it
@@ -276,7 +287,19 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				Button button = (Button)param.args[0];
 				Button mAlwaysButton = (Button)XposedHelpers.getObjectField(param.thisObject, "mAlwaysButton");
 				boolean always = (button.getId() == mAlwaysButton.getId());
-
+				
+				try {
+					// LG G3 checkbox
+					Field mAlwaysUseField = param.thisObject.getClass().getDeclaredField("mAlwaysUse");
+					mAlwaysUseField.setAccessible(true);
+					CheckBox mAlwaysUse = (CheckBox)XposedHelpers.getObjectField(param.thisObject, "mAlwaysUse");
+					if (mAlwaysUse != null) {
+						always = mAlwaysUse.isChecked();
+					}
+				} catch (Exception e) {
+					XposedBridge.log("CAP: No LG G3");					
+				}
+				
 				// restore items?
 //				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 //				boolean manageList = pref.getBoolean("ManageList", false);
@@ -439,6 +462,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						}
 					}
 				}				
+				
+				// get application context				
+				//XposedBridge.log(String.format("CAP: AppContext - %s", AndroidAppHelper.currentApplication().getPackageName()));
 				
 //				LG doesn't support always for NFC dialog				
 //				else if (showAlways && buttonBar.getVisibility() != View.VISIBLE) {

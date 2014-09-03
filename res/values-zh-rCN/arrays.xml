@@ -54,12 +54,6 @@
 	    <item>设置按钮</item>
 	    <item>长按标题打开</item>
 	</string-array>
-	<string-array name="appShare">
-	    <item>相册单图分享</item>
-	    <item>相册多图分享</item>
-	    <item>快图浏览多图分享</item>
-	    <item>Galaxy S4 相册单图分享</item>
-	</string-array>
 	<string-array name="long_press_actions">
 	    <item>无动作</item>
 	    <item>应用信息</item>
