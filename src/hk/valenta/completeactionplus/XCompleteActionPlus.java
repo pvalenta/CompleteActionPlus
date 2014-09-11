@@ -86,8 +86,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.4.2");
-					return "2.4.2";
+					param.setResult("2.4.3");
+					return "2.4.3";
 				}
 			});
 		}
@@ -456,7 +456,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						if (!showAlways && buttonBar.getVisibility() != View.GONE) {
 							// make sure it's gone
 							hideElement(buttonBar);
-						} else if (showAlways && buttonBar.getVisibility() == View.VISIBLE && buttonBar.getChildCount() == 3) {
+						} else if (showAlways && buttonBar.getVisibility() == View.VISIBLE && buttonBar.getChildCount() >= 3) {
 							// make sure buttons are gone
 							hideButtonBarButtons(buttonBar);
 						}
@@ -1061,6 +1061,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		Button button_always = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_always", "id", framework));
 		Button button_once = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_once", "id", framework));
 		LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
+		
+		// hide them
 		boolean keepButtons = pref.getBoolean("KeepButtons", false);
 		if (!keepButtons) {
 			if (button_always != null) {
@@ -1283,6 +1285,17 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	}
 	
 	private void hideButtonBarButtons(LinearLayout buttonBar) {
+		// LG G3
+		if (buttonBar.getChildCount() == 4 && buttonBar.getChildAt(1).getClass().equals(CheckBox.class) &&
+				buttonBar.getChildAt(2).getClass().equals(TextView.class) &&
+				buttonBar.getChildAt(3).getClass().equals(LinearLayout.class)) {
+			// hide rest elements
+			hideElement(buttonBar.getChildAt(1));
+			hideElement(buttonBar.getChildAt(2));
+			hideElement(buttonBar.getChildAt(3));
+			return;
+		}
+		
 		// just to make sure we have correct layout
 		if (buttonBar.getChildCount() != 3 || !buttonBar.getChildAt(1).getClass().equals(Button.class) || 
 			!buttonBar.getChildAt(2).getClass().equals(Button.class)) return;

@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.valenta.completeactionplus"
-    android:versionCode="72"
-    android:versionName="2.4.2" >
+    android:versionCode="73"
+    android:versionName="2.4.3" >
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="20" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
