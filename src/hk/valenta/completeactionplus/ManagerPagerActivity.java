@@ -354,7 +354,7 @@ public class ManagerPagerActivity extends FragmentActivity {
 	        	String key = e.getAttribute("key");
 	        	String value = r.getChildNodes().item(0).getNodeValue();
 	        	if (key != null &&  value != null) {
-		        	pref.edit().putString(key, value).commit();
+		        	pref.edit().putString(key, value).apply();
 	        	}
 	        }
 	        
@@ -400,6 +400,8 @@ public class ManagerPagerActivity extends FragmentActivity {
 				return getString(R.string.fragment_hidden);
 			} else if (position == 1) {
 				return getString(R.string.fragment_favorite);
+			} else if (position == 2) {
+				return getString(R.string.fragment_added);
 			} else {
 				return null;
 			}
@@ -412,6 +414,8 @@ public class ManagerPagerActivity extends FragmentActivity {
 				return new HiddenFragment();
 			} else if (position == 1) {
 				return new FavoriteFragment();
+			} else if (position == 2) {
+				return new AddedFragment();
 			} else {
 				return null;
 			}
@@ -420,7 +424,7 @@ public class ManagerPagerActivity extends FragmentActivity {
 		@Override
 		public int getCount() {
 			// number of pages
-			return 2;
+			return 3;
 		}		
 	}
 }

@@ -43,7 +43,7 @@ public class AboutFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("AppTheme", EnumConvert.themeName(pos)).commit();
+				pref.edit().putString("AppTheme", EnumConvert.themeName(pos)).apply();
 			}
 
 			@Override
@@ -66,7 +66,7 @@ public class AboutFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = buttonView.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("DebugLog", buttonView.isChecked()).commit();
+				pref.edit().putBoolean("DebugLog", buttonView.isChecked()).apply();
 			}
 		});
 		

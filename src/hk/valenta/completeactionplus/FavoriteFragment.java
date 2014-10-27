@@ -87,6 +87,7 @@ public class FavoriteFragment extends Fragment {
 			return position;
 		}
 
+		@SuppressLint({ "ViewHolder", "InflateParams" })
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -144,7 +145,7 @@ public class FavoriteFragment extends Fragment {
 									// delete
 									String key = keys.get(selectedIndex);
 									SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-									pref.edit().remove(key).commit();
+									pref.edit().remove(key).apply();
 									keys.remove(selectedIndex);
 									values.remove(selectedIndex);
 									FavoriteFragment.this.list.removeViews(selectedIndex, 1);					

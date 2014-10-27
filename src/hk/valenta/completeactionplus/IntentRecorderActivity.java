@@ -101,7 +101,7 @@ public class IntentRecorderActivity extends Activity {
 					// close notification if exists
 					mngr.cancelAll();
 				}
-				pref.edit().putBoolean("IntentRecord", record).commit();
+				pref.edit().putBoolean("IntentRecord", record).apply();
 
 				// refresh
 				onResume();

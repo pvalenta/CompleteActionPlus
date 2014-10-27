@@ -59,7 +59,7 @@ public class DialogFragment extends Fragment {
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
 				int layoutThemeIndex = EnumConvert.layouThemeIndex(pref.getString("LayoutTheme", "Default"));
 				boolean defaultColors = layoutThemeIndex != pos;
-				pref.edit().putString("LayoutTheme", EnumConvert.layoutThemeName(pos)).commit();				
+				pref.edit().putString("LayoutTheme", EnumConvert.layoutThemeName(pos)).apply();				
 				showColorBlock(pos, defaultColors);
 			}
 
@@ -95,7 +95,7 @@ public class DialogFragment extends Fragment {
 						titleColor = color;
 						titleColorView.setBackgroundColor(color);
 						SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-						pref.edit().putInt("TitleColor", titleColor).commit();
+						pref.edit().putInt("TitleColor", titleColor).apply();
 					}
 					
 					@Override
@@ -116,7 +116,7 @@ public class DialogFragment extends Fragment {
 						textColor = color;
 						textColorView.setBackgroundColor(color);
 						SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-						pref.edit().putInt("TextColor", textColor).commit();
+						pref.edit().putInt("TextColor", textColor).apply();
 					}
 					
 					@Override
@@ -137,7 +137,7 @@ public class DialogFragment extends Fragment {
 						backgroundColor = color;
 						backgroundColorView.setBackgroundColor(color);
 						SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-						pref.edit().putInt("BackgroundColor", backgroundColor).commit();
+						pref.edit().putInt("BackgroundColor", backgroundColor).apply();
 					}
 					
 					@Override
@@ -170,7 +170,7 @@ public class DialogFragment extends Fragment {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// set it in preferences
 				SharedPreferences pref = seekBar.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putInt("RoundCorner", seekBar.getProgress()).commit();
+				pref.edit().putInt("RoundCorner", seekBar.getProgress()).apply();
 			}
 			
 			@Override
@@ -193,7 +193,7 @@ public class DialogFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("ManageTriggerStyle", EnumConvert.manageTriggerName(pos)).commit();
+				pref.edit().putString("ManageTriggerStyle", EnumConvert.manageTriggerName(pos)).apply();
 			}
 
 			@Override
@@ -220,7 +220,7 @@ public class DialogFragment extends Fragment {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// set it in preferences
 				SharedPreferences pref = seekBar.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putInt("Transparency", seekBar.getProgress()).commit();
+				pref.edit().putInt("Transparency", seekBar.getProgress()).apply();
 			}
 			
 			@Override
@@ -244,7 +244,7 @@ public class DialogFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("ShowAlways", buttonView.isChecked()).commit();
+				pref.edit().putBoolean("ShowAlways", buttonView.isChecked()).apply();
 				if (buttonView.isChecked()) {
 					// cannot be both at same time
 					keepButtonsCheckbox.setChecked(false);
@@ -262,7 +262,7 @@ public class DialogFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("KeepButtons", buttonView.isChecked()).commit();
+				pref.edit().putBoolean("KeepButtons", buttonView.isChecked()).apply();
 				if (buttonView.isChecked()) {
 					// cannot be both at same time
 					alwaysCheckbox.setChecked(false);
@@ -280,7 +280,7 @@ public class DialogFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("DoubleTap", EnumConvert.longPressName(pos)).commit();				
+				pref.edit().putString("DoubleTap", EnumConvert.longPressName(pos)).apply();				
 			}
 
 			@Override
@@ -305,7 +305,7 @@ public class DialogFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("LongPress", EnumConvert.longPressName(pos)).commit();				
+				pref.edit().putString("LongPress", EnumConvert.longPressName(pos)).apply();				
 			}
 
 			@Override
@@ -335,7 +335,7 @@ public class DialogFragment extends Fragment {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
 				boolean checked = buttonView.isChecked();
-				pref.edit().putBoolean("ManageList", checked).commit();
+				pref.edit().putBoolean("ManageList", checked).apply();
 				showManageTriggerStyle(checked);
 			}
 		});
@@ -372,7 +372,7 @@ public class DialogFragment extends Fragment {
 				backgroundColorView.setBackgroundColor(backgroundColor);
 				pref.edit().putInt("TitleColor", titleColor)
 					.putInt("TextColor", textColor)
-					.putInt("BackgroundColor", backgroundColor).commit();
+					.putInt("BackgroundColor", backgroundColor).apply();
 			} else {
 				// get current one
 				titleColor = pref.getInt("TitleColor", Color.BLACK);
@@ -395,7 +395,7 @@ public class DialogFragment extends Fragment {
 				backgroundColorView.setBackgroundColor(backgroundColor);
 				pref.edit().putInt("TitleColor", titleColor)
 					.putInt("TextColor", textColor)
-					.putInt("BackgroundColor", backgroundColor).commit();
+					.putInt("BackgroundColor", backgroundColor).apply();
 			} else {
 				// get current one
 				titleColor = pref.getInt("TitleColor", Color.parseColor("#BEBEBE"));
@@ -418,7 +418,7 @@ public class DialogFragment extends Fragment {
 				backgroundColorView.setBackgroundColor(backgroundColor);
 				pref.edit().putInt("TitleColor", titleColor)
 					.putInt("TextColor", textColor)
-					.putInt("BackgroundColor", backgroundColor).commit();
+					.putInt("BackgroundColor", backgroundColor).apply();
 			} else {
 				// get current one
 				titleColor = pref.getInt("TitleColor", Color.BLACK);

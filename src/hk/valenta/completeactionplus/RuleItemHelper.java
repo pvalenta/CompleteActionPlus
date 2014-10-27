@@ -1,5 +1,7 @@
 package hk.valenta.completeactionplus;
 
+import android.content.ComponentName;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -28,6 +30,16 @@ public class RuleItemHelper {
 				int index = mActivity.cachePackage.indexOf(pkg);
 				name = mActivity.cacheNames.get(index);
 				icon = mActivity.cacheIcons.get(index);
+			} else if (pkg.contains("/")) {
+				// get activity info
+				ActivityInfo aInfo = pm.getActivityInfo(ComponentName.unflattenFromString(pkg), PackageManager.GET_ACTIVITIES);
+				name = aInfo.loadLabel(pm).toString();
+				icon = aInfo.loadIcon(pm);
+				
+				// add to cache
+				mActivity.cachePackage.add(pkg);
+				mActivity.cacheNames.add(name);
+				mActivity.cacheIcons.add(icon);
 			} else {
 				// get info
 				PackageInfo info = pm.getPackageInfo(pkg, PackageManager.GET_ACTIVITIES);

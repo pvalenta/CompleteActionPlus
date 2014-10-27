@@ -6,10 +6,10 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".ManageListActivity" >
+    tools:context=".SelectListActivity" >
 
     <ImageView
-        android:id="@+id/manage_list_logo"
+        android:id="@+id/select_list_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/activity_main_logo"
@@ -20,20 +20,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/manage_list_logo"
-        android:layout_toEndOf="@id/manage_list_logo"
-        android:layout_toRightOf="@id/manage_list_logo"
+        android:layout_alignBottom="@id/select_list_logo"
+        android:layout_toEndOf="@id/select_list_logo"
+        android:layout_toRightOf="@id/select_list_logo"
         android:paddingLeft="20dp"
         android:paddingStart="20dp"
-        android:text="@string/manage_list_title"
+        android:text="@string/add_activity"
         android:textSize="22sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/manage_list_line1"
+        android:id="@+id/select_list_line1"
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/manage_list_logo"
+        android:layout_below="@id/select_list_logo"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="15dp"
         android:layout_marginLeft="15dp"
@@ -43,10 +43,10 @@
         android:background="@android:color/darker_gray" />
 
     <HorizontalScrollView
-        android:id="@+id/manage_list_scroll"
+        android:id="@+id/select_list_scroll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/manage_list_line1"
+        android:layout_below="@id/select_list_line1"
         android:layout_marginEnd="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
@@ -59,7 +59,7 @@
             android:paddingBottom="5dp" >
 
             <TextView
-                android:id="@+id/manage_list_action_label"
+                android:id="@+id/select_list_action_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/manage_list_action"
@@ -67,7 +67,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/manage_list_action_value"
+                android:id="@+id/select_list_action_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -75,7 +75,7 @@
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/manage_list_type_label"
+                android:id="@+id/select_list_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -85,7 +85,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/manage_list_type_value"
+                android:id="@+id/select_list_type_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -93,7 +93,7 @@
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/manage_list_scheme_label"
+                android:id="@+id/select_list_scheme_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -103,7 +103,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/manage_list_scheme_value"
+                android:id="@+id/select_list_scheme_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -113,10 +113,10 @@
     </HorizontalScrollView>
 
     <TextView
-        android:id="@+id/manage_list_warning"
+        android:id="@+id/select_list_warning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/manage_list_scroll"
+        android:layout_below="@id/select_list_scroll"
         android:layout_marginEnd="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
@@ -124,36 +124,57 @@
         android:layout_marginTop="10dp"
         android:background="@android:color/background_light"
         android:padding="5dp"
-        android:text="@string/manage_list_warning"
+        android:text="@string/add_activity_note"
         android:textAppearance="@android:style/TextAppearance.Small"
         android:textSize="16sp" />
-
-    <RelativeLayout
-        android:id="@+id/manage_list_bottom_bar"
-        android:layout_width="match_parent"
+    
+    <LinearLayout android:id="@+id/select_list_button_bar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingTop="5dp"
-        android:layout_alignParentBottom="true" >
-
-        <Button
-            android:id="@+id/manage_list_add"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true">
+        
+        <Button android:id="@+id/select_list_cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="80dp"
             style="@android:style/Widget.Button.Small"
-            android:text="@string/add_activity"
-            android:layout_centerHorizontal="true" />
-    </RelativeLayout>
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@android:string/cancel"/>
+        
+        <Button android:id="@+id/select_list_ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="80dp"
+            style="@android:style/Widget.Button.Small"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="@android:string/ok"/>
+        
+    </LinearLayout>
 
     <ListView
-        android:id="@+id/manage_list_items"
+        android:id="@+id/select_list_items"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/manage_list_warning"
-        android:layout_above="@id/manage_list_bottom_bar"
+        android:layout_below="@id/select_list_warning"
+        android:layout_above="@id/select_list_button_bar"
         android:paddingEnd="15dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingStart="15dp"
         android:paddingTop="10dp" />
+
+    <ProgressBar
+        android:id="@+id/select_list_progress"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/select_list_warning"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="40dp" />
 
 </RelativeLayout>

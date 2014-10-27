@@ -44,7 +44,7 @@ public class AdvancedFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("OnlyOneRule", buttonView.isChecked()).commit();
+				pref.edit().putBoolean("OnlyOneRule", buttonView.isChecked()).apply();
 			}
 		});
 		
@@ -56,7 +56,7 @@ public class AdvancedFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("RulePerWebDomain", buttonView.isChecked()).commit();
+				pref.edit().putBoolean("RulePerWebDomain", buttonView.isChecked()).apply();
 			}
 		});
 		
@@ -68,7 +68,7 @@ public class AdvancedFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("OldWayHide", buttonView.isChecked()).commit();
+				pref.edit().putBoolean("OldWayHide", buttonView.isChecked()).apply();
 			}
 		});
 		
@@ -83,7 +83,7 @@ public class AdvancedFragment extends Fragment {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// set it in preferences
 				SharedPreferences pref = seekBar.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putInt("AutoStart", seekBar.getProgress()).commit();
+				pref.edit().putInt("AutoStart", seekBar.getProgress()).apply();
 			}
 			
 			@Override
@@ -106,7 +106,7 @@ public class AdvancedFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("PositionPortrait", EnumConvert.positionName(pos)).commit();
+				pref.edit().putString("PositionPortrait", EnumConvert.positionName(pos)).apply();
 			}
 
 			@Override
@@ -132,7 +132,7 @@ public class AdvancedFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("PositionLandscape", EnumConvert.positionName(pos)).commit();
+				pref.edit().putString("PositionLandscape", EnumConvert.positionName(pos)).apply();
 			}
 
 			@Override
@@ -149,6 +149,18 @@ public class AdvancedFragment extends Fragment {
 		positionLandscapeSpinner.setSelection(EnumConvert.positionIndex(pref.getString("PositionLandscape", "Center")));				
 		TextView positionLandscapeLabel = (TextView)layout.findViewById(R.id.fragment_advanced_position_landscape_label);
 		positionLandscapeLabel.setText(String.format(getString(R.string.dialog_gravity), getString(R.string.landscape)));
+		
+		// web domain
+		CheckBox addFeature = (CheckBox)layout.findViewById(R.id.fragment_advanced_add_feature);
+		addFeature.setChecked(pref.getBoolean("AddFeature", false));
+		addFeature.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("AddFeature", buttonView.isChecked()).apply();
+			}
+		});
 		
 		// indent recorder
 		Button indentRecorder = (Button)layout.findViewById(R.id.fragment_advanced_indent_recorder);

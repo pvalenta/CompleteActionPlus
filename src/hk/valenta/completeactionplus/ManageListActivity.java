@@ -1,11 +1,15 @@
 package hk.valenta.completeactionplus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -17,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
@@ -41,6 +46,7 @@ public class ManageListActivity extends Activity {
 	private int remain;
 	private int minLimit = 2;
 	private boolean noFavorite;
+	private ArrayList<String> added;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -73,9 +79,9 @@ public class ManageListActivity extends Activity {
 		
 		// get intent
 		myIntent = getIntent();
-		String action = myIntent.getStringExtra("action");
-		String type = myIntent.getStringExtra("type");
-		String scheme = myIntent.getStringExtra("scheme");
+		final String action = myIntent.getStringExtra("action");
+		final String type = myIntent.getStringExtra("type");
+		final String scheme = myIntent.getStringExtra("scheme");
 		intentId = String.format("%s;%s;%s", action, type, scheme);
 		items = myIntent.getStringArrayExtra("items");
 		names = new String[items.length];
@@ -112,6 +118,7 @@ public class ManageListActivity extends Activity {
 		// get current configuration
 		String cHidden = pref.getString(intentId, null);
 		String cFavourite = pref.getString(intentId + "_fav", null);
+		String cAdd = pref.getString(intentId + "_add", null);
 		
 		// Initialise 
 		hiddenItems = new ArrayList<String>();
@@ -136,8 +143,15 @@ public class ManageListActivity extends Activity {
 			// add first current one in
 			for (int i=0; i<names.length; i++) {
 				try {
-					PackageInfo info = pManager.getPackageInfo(items[i], PackageManager.GET_ACTIVITIES);
-					rNames.add(info.applicationInfo.loadLabel(pManager).toString());
+					if (items[i].contains("/")) {
+						// activity
+						ActivityInfo info = pManager.getActivityInfo(ComponentName.unflattenFromString(items[i]), PackageManager.GET_ACTIVITIES);
+						rNames.add(info.loadLabel(pManager).toString());
+					} else {
+						// package
+						PackageInfo info = pManager.getPackageInfo(items[i], PackageManager.GET_ACTIVITIES);
+						rNames.add(info.applicationInfo.loadLabel(pManager).toString());
+					}
 					rItems.add(items[i]);
 					rHidden.add(false);
 				} catch (NameNotFoundException e) {
@@ -148,8 +162,15 @@ public class ManageListActivity extends Activity {
 			// let's add old one
 			for (int i=0; i<hiddenItems.size(); i++) {
 				try {
-					PackageInfo info = pManager.getPackageInfo(hiddenItems.get(i), PackageManager.GET_ACTIVITIES);
-					rNames.add(info.applicationInfo.loadLabel(pManager).toString());
+					if (hiddenItems.get(i).contains("/")) {
+						// activity
+						ActivityInfo info = pManager.getActivityInfo(ComponentName.unflattenFromString(hiddenItems.get(i)), PackageManager.GET_ACTIVITIES);
+						rNames.add(info.loadLabel(pManager).toString());
+					} else {
+						// package
+						PackageInfo info = pManager.getPackageInfo(hiddenItems.get(i), PackageManager.GET_ACTIVITIES);
+						rNames.add(info.applicationInfo.loadLabel(pManager).toString());
+					}
 					rItems.add(hiddenItems.get(i));
 					rHidden.add(true);
 				} catch (NameNotFoundException e) {
@@ -169,8 +190,15 @@ public class ManageListActivity extends Activity {
 			// add first current one in
 			for (int i=0; i<items.length; i++) {
 				try {
-					PackageInfo info = pManager.getPackageInfo(items[i], PackageManager.GET_ACTIVITIES);
-					names[i] = info.applicationInfo.loadLabel(pManager).toString();
+					if (items[i].contains("/")) {
+						// activity
+						ActivityInfo info = pManager.getActivityInfo(ComponentName.unflattenFromString(items[i]), PackageManager.GET_ACTIVITIES);
+						names[i] = info.loadLabel(pManager).toString();
+					} else {
+						// package
+						PackageInfo info = pManager.getPackageInfo(items[i], PackageManager.GET_ACTIVITIES);
+						names[i] = info.applicationInfo.loadLabel(pManager).toString();
+					}
 				} catch (NameNotFoundException e) {
 					// not care
 				}
@@ -190,13 +218,43 @@ public class ManageListActivity extends Activity {
 			// preselect array
 			for (int i=0; i<items.length; i++) {
 				favourites[i] = (favouriteItems.contains(items[i]));
+				if (!favourites[i] && items[i].contains("/")) {
+					// try match only package name
+					int slashIndex = items[i].indexOf('/');
+					favourites[i] = favouriteItems.contains(items[i].substring(0, slashIndex));
+				}
 			}
+		}
+		if (cAdd != null && cAdd.length() > 0) {
+			// split by ;
+			added = new ArrayList<String>(Arrays.asList(cAdd.split(";")));
 		}
 		
 		// get list
 		ListView manageList = (ListView)findViewById(R.id.manage_list_items);
 		ResolveListAdapter adapter = new ResolveListAdapter(this);
 		manageList.setAdapter(adapter);
+		
+		// add to list
+		boolean addFeature = pref.getBoolean("AddFeature", false);
+		Button add = (Button)findViewById(R.id.manage_list_add);
+		if (addFeature && !noFavorite) {
+			add.setOnClickListener(new OnClickListener() {			
+				@Override
+				public void onClick(View v) {
+					// select activity
+					Intent select = new Intent(getApplicationContext(), SelectListActivity.class);
+					select.putExtra("action", action);
+					select.putExtra("type", type);
+					select.putExtra("scheme", scheme);
+					select.putExtra("items", items);
+					startActivity(select);
+					finish();
+				}
+			});
+		} else {
+			add.setVisibility(View.GONE);
+		}
 	}
 	
 	private final class ResolveListAdapter extends BaseAdapter {
@@ -223,6 +281,7 @@ public class ManageListActivity extends Activity {
 			return position;
 		}
 
+		@SuppressLint("ViewHolder")
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			// inflate list item
@@ -231,12 +290,22 @@ public class ManageListActivity extends Activity {
 			// get controls
 			ImageView icon = (ImageView)item.findViewById(R.id.list_item_icon);
 			try {
-				icon.setImageDrawable(pManager.getApplicationIcon(items[position]));
+				if (items[position].contains("/")) {
+					// activity
+					icon.setImageDrawable(pManager.getActivityIcon(ComponentName.unflattenFromString(items[position])));
+				} else {
+					// package
+					icon.setImageDrawable(pManager.getApplicationIcon(items[position]));
+				}
 			} catch (NameNotFoundException e) {
 				// should not happen
 			}
 			TextView text1 = (TextView)item.findViewById(R.id.list_item_title);
 			text1.setText(names[position]);
+			if (added != null && added.contains(items[position])) {
+				// let's make it red
+				text1.setTextColor(Color.RED);
+			}
 			ToggleButton button = (ToggleButton)item.findViewById(R.id.list_item_hide_button);
 			button.setChecked(hidden[position] == false);
 			button.setTag(position);
@@ -259,7 +328,7 @@ public class ManageListActivity extends Activity {
 			// on clicks
 			button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				
-				@SuppressWarnings("deprecation")
+				@SuppressWarnings({ "deprecation", "unchecked" })
 				@SuppressLint("WorldReadableFiles")
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -280,13 +349,24 @@ public class ManageListActivity extends Activity {
 						}
 						return;
 					} 
-					hidden[position] = !buttonView.isChecked();
+					hidden[position] = !buttonView.isChecked();					
+					ArrayList<String> configAdd = (ArrayList<String>) added.clone();
+					int index;
 					
 					// remove or add to list & config
 					if (!buttonView.isChecked()) {
 						// add to list
 						remain -= 1;
-						hiddenItems.add(items[position]);
+						if (added != null && added.contains(items[position])) {
+							// remove from added
+							index = added.indexOf(items[position]);
+							if (index >= 0) {
+								configAdd.remove(index);
+							}
+						} else {
+							// add to hidden
+							hiddenItems.add(items[position]);
+						}
 						
 						// hide favourites button
 						favourites[position] = false;
@@ -294,10 +374,12 @@ public class ManageListActivity extends Activity {
 					} else {
 						// remove from list
 						remain += 1;
-						int index = hiddenItems.indexOf(items[position]);
-						if (index >= 0) {
-							hiddenItems.remove(index);
-						} 
+						if (added == null || !added.contains(items[position])) {
+							index = hiddenItems.indexOf(items[position]);
+							if (index >= 0) {
+								hiddenItems.remove(index);
+							} 
+						}
 						
 						// remove from list
 						index = favouriteItems.indexOf(items[position]);
@@ -307,9 +389,9 @@ public class ManageListActivity extends Activity {
 						
 						// save in config
 						if (favouriteItems.size() > 0) {
-							pref.edit().putString(intentId + "_fav", TextUtils.join(";", favouriteItems)).commit();					
+							pref.edit().putString(intentId + "_fav", TextUtils.join(";", favouriteItems)).apply();					
 						} else {
-							pref.edit().remove(intentId + "_fav").commit();
+							pref.edit().remove(intentId + "_fav").apply();
 						}
 						
 						// enable favourites button
@@ -321,9 +403,18 @@ public class ManageListActivity extends Activity {
 					
 					// save it in config
 					if (hiddenItems.size() > 0) {
-						pref.edit().putString(intentId, TextUtils.join(";", hiddenItems)).commit();					
+						pref.edit().putString(intentId, TextUtils.join(";", hiddenItems)).apply();					
 					} else {
-						pref.edit().remove(intentId).commit();
+						pref.edit().remove(intentId).apply();
+					}
+					
+					// added?
+					if (added != null) {
+						if (configAdd.size() > 0) {
+							pref.edit().putString(intentId + "_add", TextUtils.join(";", configAdd)).apply();
+						} else {
+							pref.edit().remove(intentId + "_add").apply();
+						}
 					}
 				}
 			});
@@ -355,9 +446,9 @@ public class ManageListActivity extends Activity {
 					// save it in config
 					SharedPreferences pref = favButton.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
 					if (favouriteItems.size() > 0) {
-						pref.edit().putString(intentId + "_fav", TextUtils.join(";", favouriteItems)).commit();					
+						pref.edit().putString(intentId + "_fav", TextUtils.join(";", favouriteItems)).apply();					
 					} else {
-						pref.edit().remove(intentId + "_fav").commit();
+						pref.edit().remove(intentId + "_fav").apply();
 					}
 				}
 			});			

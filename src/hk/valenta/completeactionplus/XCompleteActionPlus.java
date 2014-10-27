@@ -8,8 +8,12 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -86,8 +90,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.4.3");
-					return "2.4.3";
+					param.setResult("2.5.0");
+					return "2.5.0";
 				}
 			});
 		}
@@ -177,6 +181,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //						// restore items
 //						restoreListItems(param.thisObject, pref);
 //					}
+					if (always) {
+						XposedBridge.log("CAP: Application set as default.");
+					}
 					startSelected(param.thisObject, position, always);
 				} else {
 					// call it
@@ -307,6 +314,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //					// restore items
 //					restoreListItems(param.thisObject, pref);
 //				}
+				if (always) {
+					XposedBridge.log("CAP: Application set as default.");
+				}
 				
 				// call it
 				startSelected(param.thisObject, selectedIndex, always);
@@ -450,15 +460,27 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// make sure we got buttons hidden
 				FrameLayout frame = (FrameLayout)rControl.getParent();
 				LinearLayout root = (LinearLayout)frame.getParent();
+				Context context = root.getContext();
 				if (root.getChildCount() == 2 && pref.getBoolean("KeepButtons", false) == false) {
-					LinearLayout buttonBar = (LinearLayout)root.getChildAt(1);
-					if (buttonBar != null) {
+					int buttonBarId = context.getResources().getIdentifier("button_bar", "id", context.getPackageName());
+					if (buttonBarId > 0) {
+						LinearLayout buttonBar = (LinearLayout)root.findViewById(buttonBarId);								
 						if (!showAlways && buttonBar.getVisibility() != View.GONE) {
 							// make sure it's gone
 							hideElement(buttonBar);
 						} else if (showAlways && buttonBar.getVisibility() == View.VISIBLE && buttonBar.getChildCount() >= 3) {
 							// make sure buttons are gone
 							hideButtonBarButtons(buttonBar);
+							
+							// any LG G3 element?
+							int alwaysUseId = context.getResources().getIdentifier("alwaysUse", "id", context.getPackageName());
+							if (alwaysUseId > 0) {
+								hideElement(root.findViewById(alwaysUseId));
+							}
+							int clearDefaultHintId = context.getResources().getIdentifier("clearDefaultHint", "id", context.getPackageName());
+							if (clearDefaultHintId > 0) {
+								hideElement(root.findViewById(clearDefaultHintId));
+							}
 						}
 					}
 				}				
@@ -703,6 +725,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //						}
 //					}					
 //				}
+								
+				// add custom
+				String cAdd = pref.getString(intentId + "_add", null);
+				boolean addFeature = pref.getBoolean("AddFeature", false);
+				if (addFeature && cAdd != null && cAdd.length() > 0) {
+					// get list
+					List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
+					LayoutInflater mInflater = (LayoutInflater)XposedHelpers.getObjectField(param.thisObject, "mInflater");
+					PackageManager pm = mInflater.getContext().getPackageManager();
+										
+					// get DisplayResolveInfo class
+					Class<?> DisplayResolveInfo = items.get(0).getClass();
+					Constructor<?> driCon = DisplayResolveInfo.getDeclaredConstructors()[0];
+					driCon.setAccessible(true);
+					
+					String[] aI = cAdd.split(";");
+					for (String a : aI) {
+						ResolveInfo info = new ResolveInfo();
+						info.activityInfo = (ActivityInfo)pm.getActivityInfo(ComponentName.unflattenFromString(a), 0x00002000);
+						XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
+						info.filter = info.activityInfo.metaData.getParcelable("filter");
+						info.match = IntentFilter.MATCH_ADJUSTMENT_NORMAL;												
+						items.add(driCon.newInstance(mInflater.getContext(), info, info.loadLabel(pm), "", null));
+					}
+				}				
 				
 				// favourites
 				String cFavorites = pref.getString(intentId + "_fav", null);
@@ -727,8 +774,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						Object o = items.get(i);
 						ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(o, "ri");
 						
-						// match?
-						if (favItems.contains(info.activityInfo.packageName) && favIndex < i) {
+						// match package or activity?
+						if ((favItems.contains(info.activityInfo.packageName) || 
+							favItems.contains(info.activityInfo.packageName + "/" + info.activityInfo.name))&& favIndex < i) {
 							// take out
 							items.remove(o);
 							items.add(favIndex, o);
@@ -794,6 +842,23 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //						return;
 //					}
 //				}	
+//				
+//				// add custom
+//				int flags = (Integer)param.args[2];
+//				String cAdd = pref.getString(intentId + "_add", null);
+//				if ((flags&PackageManager.MATCH_DEFAULT_ONLY) != 0 && cAdd != null && cAdd.length() > 0) {
+//					String[] aI = cAdd.split(";");
+//					for (String a : aI) {
+//						
+//						ResolveInfo info = new ResolveInfo();
+//						info.activityInfo = (ActivityInfo)XposedHelpers.callMethod(param.thisObject, "getActivityInfo", 
+//								ComponentName.unflattenFromString(a), 0x00002000, param.args[3]);
+//						XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
+//						info.filter = info.activityInfo.metaData.getParcelable("filter");
+//						info.match = IntentFilter.MATCH_ADJUSTMENT_NORMAL;												
+//						list.add(info);
+//					}
+//				}
 											
 				// get hidden
 				String cHidden = pref.getString(intentId, null);
@@ -806,18 +871,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					// intent recording?
 					if (pref.getBoolean("IntentRecord", false) &&
 						!action.equals("android.intent.action.MAIN") &&
-						size > 1) {
+						(size > 1 || size == 0)) {
 						// collect all packages
-						ArrayList<String> items = new ArrayList<String>();
 						StringBuilder builder = new StringBuilder();
 						builder.append(intentId);
 						for (int i=0; i<size; i++) {
 							ResolveInfo info = list.get(i);
-							if (!items.contains(info.activityInfo.packageName)) {
-								items.add(info.activityInfo.packageName);
-								builder.append(";");
-								builder.append(info.activityInfo.packageName);							
-							}
+							builder.append(";");
+							builder.append(info.activityInfo.packageName + "/" + info.activityInfo.name);							
 						}
 						
 						// broadcast it
@@ -850,7 +911,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					XposedBridge.log(String.format("CAP: Before removal: %d", size));
 				}
 				for (int i=0; i<size; i++) {
-					if (hiddenItems.contains(list.get(i).activityInfo.packageName)) {
+					ResolveInfo info = list.get(i);
+					if (hiddenItems.contains(info.activityInfo.packageName) ||
+						hiddenItems.contains(info.activityInfo.packageName + "/" + info.activityInfo.name)) {
 						// remove it
 						list.remove(i);
 						i-=1;
@@ -868,18 +931,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// intent recording?
 				if (pref.getBoolean("IntentRecord", false) &&
 					!action.equals("android.intent.action.MAIN") &&
-					size > 1) {
+					(size > 1 || size == 0)) {
 					// collect all packages
-					ArrayList<String> items = new ArrayList<String>();
 					StringBuilder builder = new StringBuilder();
 					builder.append(intentId);
 					for (int i=0; i<size; i++) {
 						ResolveInfo info = list.get(i);
-						if (!items.contains(info.activityInfo.packageName)) {
-							items.add(info.activityInfo.packageName);
-							builder.append(";");
-							builder.append(info.activityInfo.packageName);							
-						}
+						builder.append(";");
+						builder.append(info.activityInfo.packageName + "/" + info.activityInfo.name);							
 					}
 					
 					// broadcast it
@@ -961,6 +1020,92 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// not found
 			XposedBridge.log("CAP: ItemLongClickListener not found.");
 		}
+		XposedHelpers.findAndHookMethod("com.android.server.pm.PackageManagerService", null, "getActivityInfo",
+				ComponentName.class, int.class, int.class, new XC_MethodHook() {
+			@SuppressWarnings("unchecked")
+			@Override
+			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+				// our custom flag?
+				int flags = (Integer)param.args[1];
+				if ((flags&0x00002000) != 0 && param.getResult() != null) {
+					// 1) let's get it again 
+					// PackageParser.Activity a = mActivities.mActivities.get(component);
+					Object mActivities = XposedHelpers.getObjectField(param.thisObject, "mActivities");
+					if (mActivities == null) return; 
+					Object mmActivities = XposedHelpers.getObjectField(mActivities, "mActivities");
+					if (mmActivities == null) return; 
+					Object activity = XposedHelpers.callMethod(mmActivities, "get", param.args[0]);
+					if (activity == null) return; 
+					
+					// 2) check if any intent filters
+					Object intents = XposedHelpers.getObjectField(activity, "intents");
+					if (intents == null) {
+						// no filter, let's return null
+						param.setResult(null);
+						return;
+					} else {
+						// a.intents is ArrayList<II> intents
+						ArrayList<IntentFilter> filters = (ArrayList<IntentFilter>)intents; 
+						ArrayList<String> actions = new ArrayList<String>();
+						ArrayList<String> dataTypes = new ArrayList<String>();
+						ArrayList<String> schemes = new ArrayList<String>();
+						int totalActions = 0;
+						int size = filters.size();
+						if (size == 0) {
+							// we don't want such activities
+							param.setResult(null);
+							return;
+						}
+						IntentFilter idealFilter = null;
+						for (int i=0; i<size; i++) {
+							IntentFilter f = filters.get(i);
+							int actionSize = f.countActions();
+							int dataTypeSize = f.countDataTypes();
+							int dataSchemeSize = f.countDataSchemes();
+							totalActions += dataTypeSize + dataSchemeSize;
+							
+							// build lists
+							if (actionSize > 0) {
+								for (int a=0; a<actionSize; a++) {
+									actions.add(f.getAction(a));
+								}
+							}
+							if (dataTypeSize > 0) {
+								for (int d=0; d<dataTypeSize; d++) {
+									dataTypes.add(f.getDataType(d));
+								}
+							}
+							if (dataSchemeSize > 0) {
+								for (int d=0; d<dataSchemeSize; d++) {
+									schemes.add(f.getDataScheme(d));
+								}
+							}
+							if ((dataTypeSize > 0 || dataSchemeSize > 0) && idealFilter == null) {
+								idealFilter = f;
+							}
+						}
+						
+						// any data types?
+						if (totalActions == 0 || idealFilter == null) {
+							// we don't want such activities
+							param.setResult(null);
+							return;
+						}
+								
+						// store lists in bundle
+						ActivityInfo result = (ActivityInfo)param.getResult();
+						result.metaData = new Bundle();
+						result.metaData.putStringArrayList("actions", actions);
+						result.metaData.putStringArrayList("dataTypes", dataTypes);
+						result.metaData.putStringArrayList("schemes", schemes);
+						result.metaData.putParcelable("filter", idealFilter);
+//						result.metaData.putParcelableArrayList("filters", filters);
+						param.setResult(result);
+						return;
+					}
+				}
+			}
+		});
 	}
 
 	@Override
@@ -1180,10 +1325,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	}
 	
 	private void hideElement(View element) {
-		element.setVisibility(View.GONE);
-		element.setMinimumHeight(0);
-		LayoutParams params = element.getLayoutParams();
-		params.height = 0;		
+		if (element != null) {
+			element.setVisibility(View.GONE);
+			element.setMinimumHeight(0);
+			LayoutParams params = element.getLayoutParams();
+			params.height = 0;		
+		}
 	}
 	
 	@SuppressLint("NewApi")
@@ -1285,35 +1432,21 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	}
 	
 	private void hideButtonBarButtons(LinearLayout buttonBar) {
-		// LG G3
-		if (buttonBar.getChildCount() == 4 && buttonBar.getChildAt(1).getClass().equals(CheckBox.class) &&
-				buttonBar.getChildAt(2).getClass().equals(TextView.class) &&
-				buttonBar.getChildAt(3).getClass().equals(LinearLayout.class)) {
-			// hide rest elements
-			hideElement(buttonBar.getChildAt(1));
-			hideElement(buttonBar.getChildAt(2));
-			hideElement(buttonBar.getChildAt(3));
-			return;
-		}
-		
-		// just to make sure we have correct layout
-		if (buttonBar.getChildCount() != 3 || !buttonBar.getChildAt(1).getClass().equals(Button.class) || 
-			!buttonBar.getChildAt(2).getClass().equals(Button.class)) return;
-		
 		// make sure buttons are gone
 		Button button_always = (Button)buttonBar.getChildAt(1);
-		if (button_always == null) {
-			return;
-		}
-		if (button_always.getVisibility() != View.GONE) {
+		if (button_always != null && button_always.getVisibility() != View.GONE) {
 			hideElement(button_always);
 		}
 		Button button_once = (Button)buttonBar.getChildAt(2);
-		if (button_once == null) {
-			return;
-		}
-		if (button_once.getVisibility() != View.GONE) {
+		if (button_once != null && button_once.getVisibility() != View.GONE) {
 			hideElement(button_once); 
+		}
+		if (buttonBar.getChildCount() > 3) {
+			// LG G3
+			Button extraButton = (Button)buttonBar.getChildAt(3);
+			if (extraButton != null && extraButton.getVisibility() != View.GONE) {
+				hideElement(extraButton);				
+			}
 		}
 	}
 	
@@ -1635,9 +1768,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			ArrayList<String> items = new ArrayList<String>();
 			for (int i=0; i<count; i++) {
 				ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(adapter, "resolveInfoForPosition", i);
-				if (!items.contains(info.activityInfo.packageName)) {
-					items.add(info.activityInfo.packageName);
-				}
+				items.add(info.activityInfo.packageName + "/" + info.activityInfo.name);
 			}
 			
 			// let's assemble intent
@@ -1858,13 +1989,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			return false;
 		}
 		LinearLayout root = (LinearLayout)frame.getParent();
-
-		// get button bar
-		if (root.getChildCount() < 2 || !root.getChildAt(1).getClass().equals(LinearLayout.class)) {
-			XposedBridge.log("CAP: Wrong number of children.");
+		int buttonBarId = root.getContext().getResources().getIdentifier("button_bar", "id", root.getContext().getPackageName());
+		if (buttonBarId == 0) {
+			XposedBridge.log("CAP: Cannot find button bar id.");
 			return false;
 		}
-		LinearLayout buttonBar = (LinearLayout)root.getChildAt(1);
+		
+		// get button bar
+		LinearLayout buttonBar = (LinearLayout)root.findViewById(buttonBarId);
 		if (buttonBar.getChildCount() == 0) {
 			XposedBridge.log("CAP: There is no button bar with checkbox.");
 			return false;
@@ -1879,10 +2011,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		return alwaysCheck.isChecked();
 	}
 	
+	@SuppressLint("DefaultLocale")
 	private void startSelected(Object thisObject, int position, boolean always) {
 		try {
 			// call selected value
 			XposedHelpers.callMethod(thisObject, "startSelected", position, always);
+			XposedBridge.log(String.format("CAP: StartSelect position %d with %b", position, always));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			XposedBridge.log("CAP: StartSelected method failed: " + e.toString());

@@ -73,12 +73,12 @@
     <string name="visit_xda">Visitez le sujet sur XDA pour le support technique !</string>
     <string name="xda_link">http://forum.xda-developers.com/showthread.php?t=2588306</string>
     <string name="xposed_description">Améliore les boîtes de dialogue Ouvrir et Partager. Un clic suffit pour lancer, gérer les applis, gérer leur présentation et bien plus encore.</string>
-    <string name="intent_recorder">Intent Recorder</string>
-    <string name="intent_record_start">Record</string>
+    <string name="intent_recorder">Capture d\'actions</string>
+    <string name="intent_record_start">Capturer</string>
     <string name="intent_record_stop">Stop</string>
-    <string name="intent_recording_refresh">Refresh</string>
-    <string name="intent_record_note">Hit \'Record\' to start recording.</string>
-    <string name="intent_record_captured">%d intents captured</string>
-    <string name="intent_recording">Intent recording active</string>   
-    <string name="intent_record_number_apps">%d default apps</string> 
+    <string name="intent_recording_refresh">Actualiser</string>
+    <string name="intent_record_note">Appuyez sur \'Capturer\' pour lancer l\'enregistrement.</string>
+    <string name="intent_record_captured">%d actions capturées</string>
+    <string name="intent_recording">Enregitrement en cours</string>   
+    <string name="intent_record_number_apps">%d applis par défaut</string> 
 </resources>

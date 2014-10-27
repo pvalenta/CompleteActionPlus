@@ -127,8 +127,28 @@
             android:gravity="center_vertical"
             android:text="@string/dialog_gravity" />
     </RelativeLayout>
-
+    
     <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <CheckBox
+            android:id="@+id/fragment_advanced_add_feature"
+            style="@style/Checkbox"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            style="@style/LabelTextView"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/fragment_advanced_add_feature"
+            android:layout_toStartOf="@id/fragment_advanced_add_feature"
+            android:gravity="center_vertical"
+            android:text="@string/add_activity_feature" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_marginTop="5dip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 

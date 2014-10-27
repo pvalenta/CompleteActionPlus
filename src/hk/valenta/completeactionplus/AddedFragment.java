@@ -23,12 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class HiddenFragment extends Fragment {
+public class AddedFragment extends Fragment {
 
 	ListView list;
 	List<String> keys;
 	List<String> values;
-	HiddenAdapter adapter;
+	AddedAdapter adapter;
 	int selectedIndex = -1;
 	
 	@SuppressWarnings("deprecation")
@@ -36,7 +36,7 @@ public class HiddenFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// get view
-		View layout = inflater.inflate(R.layout.fragment_hidden, container, false);
+		View layout = inflater.inflate(R.layout.fragment_added, container, false);
 
 		// get current configuration
 		SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
@@ -47,7 +47,7 @@ public class HiddenFragment extends Fragment {
 		// loop and add
 		for (Map.Entry<String, ?> entry : all.entrySet()) {
 			String key = entry.getKey(); 
-			if (key.contains(";") && !key.endsWith("_fav") && !key.endsWith("_add")) {
+			if (key.contains(";") && key.endsWith("_add")) {
 				// add to list
 				keys.add(key);
 				values.add((String)entry.getValue());
@@ -55,20 +55,20 @@ public class HiddenFragment extends Fragment {
 		}
 		
 		// find list
-		list = (ListView)layout.findViewById(R.id.fragment_hidden_list);
+		list = (ListView)layout.findViewById(R.id.fragment_added_list);
 		
 		// setup adapter
-		adapter = new HiddenAdapter(getActivity().getPackageManager());
+		adapter = new AddedAdapter(getActivity().getPackageManager());
 		list.setAdapter(adapter);
 		
 		return layout;
 	}
 	
-	public class HiddenAdapter extends BaseAdapter {
+	public class AddedAdapter extends BaseAdapter {
 	
 		final PackageManager pm;
 		
-		public HiddenAdapter(PackageManager pm) {
+		public AddedAdapter(PackageManager pm) {
 			this.pm = pm;
 		}
 		
@@ -94,7 +94,7 @@ public class HiddenFragment extends Fragment {
 			View view = inflater.inflate(R.layout.list_rule_item, null);
 			
 			// split key into pairs
-			String[] pairs = keys.get(position).split(";");
+			String[] pairs = keys.get(position).substring(0, keys.get(position).length() - 4).split(";");
 			
 			// display info
 			TextView tvAction = (TextView)view.findViewById(R.id.rule_item_action);
@@ -148,7 +148,7 @@ public class HiddenFragment extends Fragment {
 									pref.edit().remove(key).apply();
 									keys.remove(selectedIndex);
 									values.remove(selectedIndex);
-									HiddenFragment.this.list.removeViews(selectedIndex, 1);					
+									AddedFragment.this.list.removeViews(selectedIndex, 1);					
 									dialog.dismiss();
 								}
 							})

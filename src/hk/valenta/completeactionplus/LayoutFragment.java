@@ -48,7 +48,7 @@ public class LayoutFragment extends Fragment {
 				
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("LayoutStyle", EnumConvert.layoutName(pos)).commit();
+				pref.edit().putString("LayoutStyle", EnumConvert.layoutName(pos)).apply();
 			}
 
 			@Override
@@ -74,7 +74,7 @@ public class LayoutFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("ListTextSize", EnumConvert.listTextSizeName(pos)).commit();
+				pref.edit().putString("ListTextSize", EnumConvert.listTextSizeName(pos)).apply();
 			}
 
 			@Override
@@ -99,7 +99,7 @@ public class LayoutFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("GridColumns", parent.getItemAtPosition(pos).toString()).commit();
+				pref.edit().putString("GridColumns", parent.getItemAtPosition(pos).toString()).apply();
 			}
 
 			@Override
@@ -128,7 +128,7 @@ public class LayoutFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("GridColumnsLandscape", parent.getItemAtPosition(pos).toString()).commit();
+				pref.edit().putString("GridColumnsLandscape", parent.getItemAtPosition(pos).toString()).apply();
 			}
 
 			@Override
@@ -151,7 +151,7 @@ public class LayoutFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("GridTextSize", EnumConvert.gridTextSizeName(pos)).commit();
+				pref.edit().putString("GridTextSize", EnumConvert.gridTextSizeName(pos)).apply();
 			}
 
 			@Override
@@ -176,7 +176,7 @@ public class LayoutFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putBoolean("DontReduceColumns", buttonView.isChecked()).commit();
+				pref.edit().putBoolean("DontReduceColumns", buttonView.isChecked()).apply();
 			}
 		});
 		
