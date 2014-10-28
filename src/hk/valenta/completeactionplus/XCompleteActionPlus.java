@@ -461,7 +461,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				FrameLayout frame = (FrameLayout)rControl.getParent();
 				LinearLayout root = (LinearLayout)frame.getParent();
 				Context context = root.getContext();
-				if (root.getChildCount() == 2 && pref.getBoolean("KeepButtons", false) == false) {
+				boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
+				if (root.getChildCount() == 2 && pref.getBoolean("KeepButtons", false) == false && mAlwaysUseOption) {
 					int buttonBarId = context.getResources().getIdentifier("button_bar", "id", context.getPackageName());
 					if (buttonBarId > 0) {
 						LinearLayout buttonBar = (LinearLayout)root.findViewById(buttonBarId);								
@@ -507,7 +508,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// timeout only for view dialog
 				DisplayMetrics metrics = frame.getContext().getResources().getDisplayMetrics();
 				int autoStart = pref.getInt("AutoStart", 0);
-				boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
 				ProgressBar progress = null;
 				if (autoStart > 0 && mAlwaysUseOption) {
 					// add progress bar
@@ -1206,6 +1206,13 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		Button button_always = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_always", "id", framework));
 		Button button_once = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_once", "id", framework));
 		LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
+		int g3AlwaysUse = liparam.res.getIdentifier("alwaysUse", "id", framework);
+		int g3DefaultHint = liparam.res.getIdentifier("clearDefaultHint", "id", framework);
+		if (g3AlwaysUse > 0 && g3DefaultHint > 0) {
+			// hide both LG G3 elements
+			hideElement(liparam.view.findViewById(g3AlwaysUse));
+			hideElement(liparam.view.findViewById(g3DefaultHint));
+		}
 		
 		// hide them
 		boolean keepButtons = pref.getBoolean("KeepButtons", false);
