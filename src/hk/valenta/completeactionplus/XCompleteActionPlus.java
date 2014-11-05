@@ -743,11 +743,13 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					String[] aI = cAdd.split(";");
 					for (String a : aI) {
 						ResolveInfo info = new ResolveInfo();
-						info.activityInfo = (ActivityInfo)pm.getActivityInfo(ComponentName.unflattenFromString(a), 0x00002000);
-						XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
-						info.filter = info.activityInfo.metaData.getParcelable("filter");
-						info.match = IntentFilter.MATCH_ADJUSTMENT_NORMAL;												
-						items.add(driCon.newInstance(mInflater.getContext(), info, info.loadLabel(pm), "", null));
+						info.activityInfo = pm.getActivityInfo(ComponentName.unflattenFromString(a), 0x00002000);
+						if (info.activityInfo != null) {
+							XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
+							info.filter = info.activityInfo.metaData.getParcelable("filter");
+							info.match = IntentFilter.MATCH_ADJUSTMENT_NORMAL;												
+							items.add(driCon.newInstance(mInflater.getContext(), info, info.loadLabel(pm), "", null));
+						}
 					}
 				}				
 				

@@ -26,16 +26,16 @@
     <string name="activity_main_xhalo">Lang Indrukken Zal App Starten In XHalo</string>
     <string name="portrait">Staand</string>
     <string name="landscape">Liggend</string>
-    <string name="activity_main_layout_theme">Layout theme</string>
-    <string name="fragment_about">About</string>
-    <string name="fragment_dialog">Dialog</string>
-    <string name="fragment_layout">Layout</string>
-    <string name="app_version">Version</string>
-    <string name="grid_dont_reduce_columns">Don\'t reduce columns for less apps</string>
-    <string name="dialog_gravity">Dialog position (%s)</string>
-    <string name="manage_trigger_style">Manage trigger style</string>
-    <string name="text_color">Text color</string>
-    <string name="background_color">Background color</string>
+    <string name="activity_main_layout_theme">Weergave Thema</string>
+    <string name="fragment_about">Over</string>
+    <string name="fragment_dialog">Dialoog</string>
+    <string name="fragment_layout">Weergave</string>
+    <string name="app_version">Versie</string>
+    <string name="grid_dont_reduce_columns">Verwijder geen kolommen voor minder apps</string>
+    <string name="dialog_gravity">Dialoog Positie (%s)</string>
+    <string name="manage_trigger_style">Beheer trigger stijl</string>
+    <string name="text_color">Tekst Kleur</string>
+    <string name="background_color">Achtergrond Kleur</string>
     <string name="xposed_not_installed">Xposed Framework is not installed.\nContinue to Xposed Framework thread?</string>
     <string name="mod_not_activated">This mod is not activated or device didn\'t restart yet.</string>
     <string name="not_yet_restarted">Please restart first.</string>
@@ -43,6 +43,7 @@
     <string name="activity_manager_title">Rule Manager</string>
     <string name="fragment_hidden">Verborgen</string>
     <string name="fragment_favorite">Favorite</string>
+    <string name="fragment_added">Added</string>
     <string name="manager_rule_delete">Delete rule</string>
     <string name="manager_rule_delete_confirm">Are you sure to delete this rule?</string>
     <string name="advanced_allow_one_item">Allow to keep only one app remain</string>
@@ -80,5 +81,10 @@
     <string name="intent_record_note">Hit \'Record\' to start recording.</string>
     <string name="intent_record_captured">%d intents captured</string>
     <string name="intent_recording">Intent recording active</string>   
-    <string name="intent_record_number_apps">%d default apps</string> 
+    <string name="intent_record_number_apps">%d default apps</string>
+    <string name="add_activity_feature">Enable to add custom activity\n(experimental feature)</string>
+    <string name="add_activity">Add Activity</string> 
+    <string name="add_activity_note">Select activity which have similar action or type or scheme as these could possibly work.</string>
+    <string name="add_no_activity">None of activities is selected.</string>
+    <string name="test_intent">Test Intent</string>
 </resources>

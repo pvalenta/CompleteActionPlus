@@ -43,6 +43,7 @@
     <string name="activity_manager_title">Διαχειριστής κανόνων</string>
     <string name="fragment_hidden">Κρυμμένο</string>
     <string name="fragment_favorite">Αγαπημένο</string>
+    <string name="fragment_added">Added</string>
     <string name="manager_rule_delete">Διαγραφή κανόνα</string>
     <string name="manager_rule_delete_confirm">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το κανόνα?</string>
     <string name="advanced_allow_one_item">Διατήρηση μιας μόνο επιλογής</string>
@@ -80,5 +81,10 @@
     <string name="intent_record_note">Hit \'Record\' to start recording.</string>
     <string name="intent_record_captured">%d intents captured</string>
     <string name="intent_recording">Intent recording active</string>   
-    <string name="intent_record_number_apps">%d default apps</string> 
+    <string name="intent_record_number_apps">%d default apps</string>
+    <string name="add_activity_feature">Enable to add custom activity\n(experimental feature)</string>
+    <string name="add_activity">Add Activity</string> 
+    <string name="add_activity_note">Select activity which have similar action or type or scheme as these could possibly work.</string>
+    <string name="add_no_activity">None of activities is selected.</string>
+    <string name="test_intent">Test Intent</string>
 </resources>
