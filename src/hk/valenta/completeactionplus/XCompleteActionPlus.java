@@ -90,8 +90,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.5.0");
-					return "2.5.0";
+					param.setResult("2.5.1");
+					return "2.5.1";
 				}
 			});
 		}
@@ -465,22 +465,25 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				if (root.getChildCount() == 2 && pref.getBoolean("KeepButtons", false) == false && mAlwaysUseOption) {
 					int buttonBarId = context.getResources().getIdentifier("button_bar", "id", context.getPackageName());
 					if (buttonBarId > 0) {
-						LinearLayout buttonBar = (LinearLayout)root.findViewById(buttonBarId);								
-						if (!showAlways && buttonBar.getVisibility() != View.GONE) {
-							// make sure it's gone
-							hideElement(buttonBar);
-						} else if (showAlways && buttonBar.getVisibility() == View.VISIBLE && buttonBar.getChildCount() >= 3) {
-							// make sure buttons are gone
-							hideButtonBarButtons(buttonBar);
-							
-							// any LG G3 element?
-							int alwaysUseId = context.getResources().getIdentifier("alwaysUse", "id", context.getPackageName());
-							if (alwaysUseId > 0) {
-								hideElement(root.findViewById(alwaysUseId));
-							}
-							int clearDefaultHintId = context.getResources().getIdentifier("clearDefaultHint", "id", context.getPackageName());
-							if (clearDefaultHintId > 0) {
-								hideElement(root.findViewById(clearDefaultHintId));
+						View buttonBar = root.findViewById(buttonBarId);	
+						if (buttonBar != null) {
+							if (!showAlways && buttonBar.getVisibility() != View.GONE) {
+								// make sure it's gone
+								hideElement(buttonBar);
+							} else if (showAlways && buttonBar.getVisibility() == View.VISIBLE && 
+									((ViewGroup)buttonBar).getChildCount() >= 3) {
+								// make sure buttons are gone
+								hideButtonBarButtons((LinearLayout)buttonBar);
+								
+								// any LG G3 element?
+								int alwaysUseId = context.getResources().getIdentifier("alwaysUse", "id", context.getPackageName());
+								if (alwaysUseId > 0) {
+									hideElement(root.findViewById(alwaysUseId));
+								}
+								int clearDefaultHintId = context.getResources().getIdentifier("clearDefaultHint", "id", context.getPackageName());
+								if (clearDefaultHintId > 0) {
+									hideElement(root.findViewById(clearDefaultHintId));
+								}
 							}
 						}
 					}

@@ -43,7 +43,7 @@
     <string name="activity_manager_title">Менеджер правил</string>
     <string name="fragment_hidden">Нет</string>
     <string name="fragment_favorite">Избранные</string>
-    <string name="fragment_added">Added</string>
+    <string name="fragment_added">Добавлено</string>
     <string name="manager_rule_delete">Удалить правило</string>
     <string name="manager_rule_delete_confirm">Вы уверены, что хотите удалить это правило?</string>
     <string name="advanced_allow_one_item">Разрешить держать только один пункт рабочим</string>

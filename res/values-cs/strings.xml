@@ -43,7 +43,7 @@
     <string name="activity_manager_title">Seznam pravidel</string>
     <string name="fragment_hidden">Neaktivní</string>
     <string name="fragment_favorite">Oblíbené</string>
-    <string name="fragment_added">Added</string>
+    <string name="fragment_added">Přidáno</string>
     <string name="manager_rule_delete">Smazat pravidlo</string>
     <string name="manager_rule_delete_confirm">Opravdu smazat toto pravidlo?</string>
     <string name="advanced_allow_one_item">Umožnit ponechat jedinou položku aktivní</string>
@@ -82,9 +82,9 @@
     <string name="intent_record_captured">nahráno %d intentů</string>
     <string name="intent_recording">Záznam intentů je aktivní</string>   
     <string name="intent_record_number_apps">%d výchozích aplikací</string>
-    <string name="add_activity_feature">Enable to add custom activity\n(experimental feature)</string>
-    <string name="add_activity">Add Activity</string> 
-    <string name="add_activity_note">Select activity which have similar action or type or scheme as these could possibly work.</string>
-    <string name="add_no_activity">None of activities is selected.</string>
-    <string name="test_intent">Test Intent</string>
+    <string name="add_activity_feature">Umožnit přidat vlastní aktivitu\n(experimentální funkce)</string>
+    <string name="add_activity">Přidat aktivitu</string> 
+    <string name="add_activity_note">Zvolte aktivitu, která má podobnou akci nebo typ nebo schéma, aby to mohlo fungovat.</string>
+    <string name="add_no_activity">Žádná z aktivit nebyla vybrána.</string>
+    <string name="test_intent">Test intentu</string>
 </resources>

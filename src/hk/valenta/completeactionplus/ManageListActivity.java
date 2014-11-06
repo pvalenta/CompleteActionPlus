@@ -349,8 +349,11 @@ public class ManageListActivity extends Activity {
 						}
 						return;
 					} 
-					hidden[position] = !buttonView.isChecked();					
-					ArrayList<String> configAdd = (ArrayList<String>) added.clone();
+					hidden[position] = !buttonView.isChecked();		
+					ArrayList<String> configAdd = new ArrayList<String>();
+					if (added != null) {
+						configAdd = (ArrayList<String>) added.clone();
+					}
 					int index;
 					
 					// remove or add to list & config

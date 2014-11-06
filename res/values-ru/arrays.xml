@@ -55,7 +55,7 @@
 	    <item>Долгое нажатие на заголовок</item>
 	</string-array>
 	<string-array name="long_press_actions">
-	    <item>No action</item>
+	    <item>Нет действия</item>
 	    <item>О приложении</item>
 	    <item>Set as default</item>
 	    <item>Halo Window</item>
