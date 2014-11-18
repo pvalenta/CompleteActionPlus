@@ -90,8 +90,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.5.1");
-					return "2.5.1";
+					param.setResult("2.5.2");
+					return "2.5.2";
 				}
 			});
 		}
@@ -120,6 +120,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// auto start?
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				int autoStart = pref.getInt("AutoStart", 0);
+				boolean debugOn = pref.getBoolean("DebugLog", false);
 				boolean mAlwaysUseOption = XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption");
 				if (autoStart > 0 && mAlwaysUseOption) {
 					// make sure we got buttons hidden
@@ -181,7 +182,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //						// restore items
 //						restoreListItems(param.thisObject, pref);
 //					}
-					if (always) {
+					if (always && debugOn) {
 						XposedBridge.log("CAP: Application set as default.");
 					}
 					startSelected(param.thisObject, position, always);
@@ -244,28 +245,37 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				int selectedIndex = -1;
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				String layoutStyle = pref.getString("LayoutStyle", "Default");
+				boolean debugOn = pref.getBoolean("DebugLog", false);
 				FrameLayout frame = (FrameLayout)rControl.getParent();
 				if (layoutStyle.equals("Default")) {				
 					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
 						// set it
-						XposedBridge.log("CAP: Grid found.");
+						if (debugOn) {
+							XposedBridge.log("CAP: Grid found.");
+						}
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
 						selectedIndex = resGrid.getCheckedItemPosition();
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
-						XposedBridge.log("CAP: List found.");
+						if (debugOn) {
+							XposedBridge.log("CAP: List found.");
+						}
 						ListView resList = (ListView)resolver.get(param.thisObject);
 						selectedIndex = resList.getCheckedItemPosition();
 					}
 				} else if (frame.getChildCount() < 2) {
 					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
 						// set it
-						XposedBridge.log("CAP: Grid found.");
+						if (debugOn) {
+							XposedBridge.log("CAP: Grid found.");						
+						}
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
 						selectedIndex = resGrid.getCheckedItemPosition();
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
-						XposedBridge.log("CAP: List found.");
+						if (debugOn) {
+							XposedBridge.log("CAP: List found.");
+						}
 						ListView resList = (ListView)resolver.get(param.thisObject);
 						selectedIndex = resList.getCheckedItemPosition();
 					}
@@ -274,19 +284,25 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (layoutStyle.equals("List")) {
 						ListView list = (ListView)frame.getChildAt(1);
 						if (list != null) {
-							XposedBridge.log("CAP: List found.");
+							if (debugOn) {
+								XposedBridge.log("CAP: List found.");
+							}
 							selectedIndex = list.getCheckedItemPosition();
 						}
 					} else if (layoutStyle.equals("Grid")) {
 						GridView grid = (GridView)frame.getChildAt(1);
 						if (grid != null) {
-							XposedBridge.log("CAP: Grid found.");
+							if (debugOn) {
+								XposedBridge.log("CAP: Grid found.");
+							}
 							selectedIndex = grid.getCheckedItemPosition();
 						}
 					}
 				}
 				if (selectedIndex == -1) {
-					XposedBridge.log("CAP: Nothing selected.");
+					if (debugOn) {
+						XposedBridge.log("CAP: Nothing selected.");
+					}
 					return null;
 				}
 				
@@ -314,7 +330,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 //					// restore items
 //					restoreListItems(param.thisObject, pref);
 //				}
-				if (always) {
+				if (always && debugOn) {
 					XposedBridge.log("CAP: Application set as default.");
 				}
 				
@@ -456,6 +472,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// get current configuration
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				boolean showAlways = pref.getBoolean("ShowAlways", false);
+				boolean debugOn = pref.getBoolean("DebugLog", false);
 				
 				// make sure we got buttons hidden
 				FrameLayout frame = (FrameLayout)rControl.getParent();
@@ -562,7 +579,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 				
 				Activity mParent = (Activity)XposedHelpers.getObjectField(param.thisObject, "mParent");
-				if (mParent != null) {
+				if (mParent != null && debugOn) {
 					XposedBridge.log(String.format("CAP: Found parent activity: %s", mParent.getLocalClassName()));
 				}
 				
@@ -748,7 +765,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						ResolveInfo info = new ResolveInfo();
 						info.activityInfo = pm.getActivityInfo(ComponentName.unflattenFromString(a), 0x00002000);
 						if (info.activityInfo != null) {
-							XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
+							if (debugOn) {
+								XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
+							}
 							info.filter = info.activityInfo.metaData.getParcelable("filter");
 							info.match = IntentFilter.MATCH_ADJUSTMENT_NORMAL;												
 							items.add(driCon.newInstance(mInflater.getContext(), info, info.loadLabel(pm), "", null));
@@ -1445,21 +1464,29 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	
 	private void hideButtonBarButtons(LinearLayout buttonBar) {
 		// make sure buttons are gone
-		Button button_always = (Button)buttonBar.getChildAt(1);
-		if (button_always != null && button_always.getVisibility() != View.GONE) {
-			hideElement(button_always);
-		}
-		Button button_once = (Button)buttonBar.getChildAt(2);
-		if (button_once != null && button_once.getVisibility() != View.GONE) {
-			hideElement(button_once); 
-		}
-		if (buttonBar.getChildCount() > 3) {
-			// LG G3
-			Button extraButton = (Button)buttonBar.getChildAt(3);
-			if (extraButton != null && extraButton.getVisibility() != View.GONE) {
-				hideElement(extraButton);				
+		int childCount = buttonBar.getChildCount();
+		for (int i=1; i<childCount; i++) {
+			View child = buttonBar.getChildAt(i);
+			if (child.getVisibility() != View.GONE) {
+				hideElement(child);
 			}
 		}
+		
+//		Button button_always = (Button)buttonBar.getChildAt(1);
+//		if (button_always != null && button_always.getVisibility() != View.GONE) {
+//			hideElement(button_always);
+//		}
+//		Button button_once = (Button)buttonBar.getChildAt(2);
+//		if (button_once != null && button_once.getVisibility() != View.GONE) {
+//			hideElement(button_once); 
+//		}
+//		if (buttonBar.getChildCount() > 3) {
+//			// LG G3
+//			Button extraButton = (Button)buttonBar.getChildAt(3);
+//			if (extraButton != null && extraButton.getVisibility() != View.GONE) {
+//				hideElement(extraButton);				
+//			}
+//		}
 	}
 	
 	private void createGridLayout(LayoutInflatedParam liparam, View oldList, int numberOfColumns, String theme, XSharedPreferences pref) {
@@ -2028,7 +2055,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		try {
 			// call selected value
 			XposedHelpers.callMethod(thisObject, "startSelected", position, always);
-			XposedBridge.log(String.format("CAP: StartSelect position %d with %b", position, always));
+			//XposedBridge.log(String.format("CAP: StartSelect position %d with %b", position, always));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			XposedBridge.log("CAP: StartSelected method failed: " + e.toString());
