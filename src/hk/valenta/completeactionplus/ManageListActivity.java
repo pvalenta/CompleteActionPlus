@@ -162,16 +162,17 @@ public class ManageListActivity extends Activity {
 			// let's add old one
 			for (int i=0; i<hiddenItems.size(); i++) {
 				try {
-					if (hiddenItems.get(i).contains("/")) {
+					String item = hiddenItems.get(i);
+					if (item.contains("/") && !rItems.contains(item)) {
 						// activity
-						ActivityInfo info = pManager.getActivityInfo(ComponentName.unflattenFromString(hiddenItems.get(i)), PackageManager.GET_ACTIVITIES);
+						ActivityInfo info = pManager.getActivityInfo(ComponentName.unflattenFromString(item), PackageManager.GET_ACTIVITIES);
 						rNames.add(info.loadLabel(pManager).toString());
-					} else {
+					} else if (!rItems.contains(item)) {
 						// package
-						PackageInfo info = pManager.getPackageInfo(hiddenItems.get(i), PackageManager.GET_ACTIVITIES);
+						PackageInfo info = pManager.getPackageInfo(item, PackageManager.GET_ACTIVITIES);
 						rNames.add(info.applicationInfo.loadLabel(pManager).toString());
 					}
-					rItems.add(hiddenItems.get(i));
+					rItems.add(item);
 					rHidden.add(true);
 				} catch (NameNotFoundException e) {
 					// not exist packages skip

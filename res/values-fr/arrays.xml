@@ -61,4 +61,9 @@
 	    <item>Fenêtre XHalo</item>
 	    <item>La lancer</item>
 	</string-array>
+	<string-array name="button_theme">
+	    <item>Default</item>
+		<item>Light</item>
+	    <item>Dark</item>
+	</string-array>	
 </resources>

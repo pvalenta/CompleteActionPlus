@@ -87,4 +87,7 @@
     <string name="add_activity_note">同じアクションかタイプ、スキームのアクティビティを選んでください。</string>
     <string name="add_no_activity">アクティビティが選択されていません。</string>
     <string name="test_intent">インテントのテスト</string>
+    <string name="button_theme">Buttons theme</string>
+    <string name="grid_flip_left_right">Flip items from left to right</string>
+    <string name="flip_top_bottom">Flip items from top to bottom</string>
 </resources>

@@ -87,4 +87,7 @@
     <string name="add_activity_note">Изаберите активност која има сличну акцију или шему јер би оне могле да функциоишу.</string>
     <string name="add_no_activity">Ни једна активност није изабрана</string>
     <string name="test_intent">Испробај активност</string>
+    <string name="button_theme">Buttons theme</string>
+    <string name="grid_flip_left_right">Flip items from left to right</string>
+    <string name="flip_top_bottom">Flip items from top to bottom</string>
 </resources>
