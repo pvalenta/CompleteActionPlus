@@ -180,6 +180,32 @@ public class LayoutFragment extends Fragment {
 			}
 		});
 		
+		// flip left to right
+		CheckBox flipRight = (CheckBox)layout.findViewById(R.id.fragment_layout_flip_right);
+		flipRight.setChecked(pref.getBoolean("FlipRight", false));
+		flipRight.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("FlipRight", buttonView.isChecked()).apply();
+			}
+		});
+		
+		// flip top to bottom
+		CheckBox flipBottom = (CheckBox)layout.findViewById(R.id.fragment_layout_flip_bottom);
+		flipBottom.setChecked(pref.getBoolean("FlipBottom", false));
+		flipBottom.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("FlipBottom", buttonView.isChecked()).apply();
+			}
+		});
+		
 		return layout;
 	}
 	

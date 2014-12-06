@@ -200,13 +200,28 @@
             android:layout_height="wrap_content" >
 
             <Spinner
-                android:id="@+id/fragment_dialog_doubletap_spinner"
+                android:id="@+id/fragment_dialog_buttontheme_spinner"
                 style="@style/DropDown"
                 android:layout_alignParentEnd="true" />
 
             <TextView
                 style="@style/LabelDropDown"
                 android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_dialog_buttontheme_spinner"
+                android:layout_toStartOf="@id/fragment_dialog_buttontheme_spinner"
+                android:gravity="center_vertical"
+                android:text="@string/button_theme" />
+
+            <Spinner
+                android:id="@+id/fragment_dialog_doubletap_spinner"
+                style="@style/DropDown"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_dialog_buttontheme_spinner" />
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_dialog_doubletap_spinner"
                 android:layout_toLeftOf="@id/fragment_dialog_doubletap_spinner"
                 android:layout_toStartOf="@id/fragment_dialog_doubletap_spinner"
                 android:gravity="center_vertical"

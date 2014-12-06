@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -90,8 +91,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.5.2");
-					return "2.5.2";
+					param.setResult("2.6.0");
+					return "2.6.0";
 				}
 			});
 		}
@@ -587,10 +588,15 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				String longPressAction = pref.getString("LongPress", "Nothing");
 				String doubleTapAction = pref.getString("DoubleTap", "Nothing");
 				boolean keepButtons = pref.getBoolean("KeepButtons", false);
+				boolean flipBottom = pref.getBoolean("FlipBottom", false);
 				if (layoutStyle.equals("Default")) {
 					if (resolver.get(param.thisObject).getClass().equals(GridView.class)) {
 						// set it
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
+						if (flipBottom) {
+							resGrid.setTranscriptMode(GridView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+							resGrid.setStackFromBottom(true);
+						}
 						resGrid.setItemChecked(-1, true);
 						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);
 						if (keepButtons) {
@@ -599,6 +605,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
 						ListView resList = (ListView)resolver.get(param.thisObject);
+						if (flipBottom) {
+							resList.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+							resList.setStackFromBottom(true);
+						}
 						resList.setItemChecked(-1, true);
 						setLongPress(resList, longPressAction, mAlwaysUseOption, param.thisObject, pref);
 						if (keepButtons) {
@@ -617,6 +627,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 
 						// set it
 						GridView resGrid = (GridView)resolver.get(param.thisObject);
+						if (flipBottom) {
+							resGrid.setTranscriptMode(GridView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+							resGrid.setStackFromBottom(true);
+						}
 						resGrid.setNumColumns(columns);
 						resGrid.setItemChecked(-1, true);
 						setLongPress(resGrid, longPressAction, mAlwaysUseOption, param.thisObject, pref);
@@ -626,6 +640,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					} else if (resolver.get(param.thisObject).getClass().equals(ListView.class)) {
 						// set it
 						ListView resList = (ListView)resolver.get(param.thisObject);
+						if (flipBottom) {
+							resList.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+							resList.setStackFromBottom(true);
+						}
 						resList.setItemChecked(-1, true);
 						setLongPress(resList, longPressAction, mAlwaysUseOption, param.thisObject, pref);
 						if (keepButtons) {
@@ -642,6 +660,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// let's get new layout
 				if (layoutStyle.equals("List")) {
 					ListView list = (ListView)frame.getChildAt(1);
+					if (flipBottom) {
+						list.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+						list.setStackFromBottom(true);
+					}
 					list.setAdapter(adapter);
 					list.setItemChecked(-1, true);
 					list.setOnItemClickListener((OnItemClickListener)param.thisObject);
@@ -653,11 +675,15 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					GridView grid = (GridView)frame.getChildAt(1);
 					int columns = getColumnsNumber(frame.getContext(), pref);
 					int itemCounts = adapter.getCount();
+					if (flipBottom) {
+						grid.setTranscriptMode(GridView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+						grid.setStackFromBottom(true);
+					}
 					if (columns > itemCounts) {
 						// reduce columns?
 						columns = itemCounts;
 						if (pref.getBoolean("DontReduceColumns", false)) {
-							grid.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+							grid.setGravity(Gravity.LEFT | Gravity.START | Gravity.CENTER_VERTICAL);
 							grid.setColumnWidth((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, metrics));
 							grid.setStretchMode(GridView.NO_STRETCH);
 						}
@@ -680,7 +706,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				// get current configuration
 				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
 				boolean manageList = pref.getBoolean("ManageList", false);
-				if (!manageList) return;
+				boolean flipBottom = pref.getBoolean("FlipBottom", false);
+				if (!manageList && !flipBottom) return;
 				
 				// let's get intent
 				Intent myIntent = (Intent)XposedHelpers.getObjectField(param.thisObject, "mIntent");
@@ -813,6 +840,15 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (debugOn && favorited > 0) {
 						XposedBridge.log(String.format("CAP: Favorited %d from %s", favorited, intentId));
 					}
+				}
+				
+				// reverse order?
+				if (flipBottom) {
+					// get list
+					List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
+
+					// reverse order
+					Collections.reverse(items);
 				}
 				
 				// debug on for toast?
@@ -1227,8 +1263,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		
 		// hide buttons
 		XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
-		Button button_always = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_always", "id", framework));
-		Button button_once = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_once", "id", framework));
+//		Button button_always = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_always", "id", framework));
+//		Button button_once = (Button)liparam.view.findViewById(liparam.res.getIdentifier("button_once", "id", framework));
 		LinearLayout buttonBar = (LinearLayout)liparam.view.findViewById(liparam.res.getIdentifier("button_bar", "id", framework));
 		int g3AlwaysUse = liparam.res.getIdentifier("alwaysUse", "id", framework);
 		int g3DefaultHint = liparam.res.getIdentifier("clearDefaultHint", "id", framework);
@@ -1241,12 +1277,17 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		// hide them
 		boolean keepButtons = pref.getBoolean("KeepButtons", false);
 		if (!keepButtons) {
-			if (button_always != null) {
-				hideElement(button_always);
-			}		
-			if (button_once != null) {
-				hideElement(button_once);
+			// hide all buttons inside
+			int buttonCount = buttonBar.getChildCount();
+			for (int i=0; i<buttonCount; i++) {
+				hideElement(buttonBar.getChildAt(i));
 			}
+//			if (button_always != null) {
+//				hideElement(button_always);
+//			}		
+//			if (button_once != null) {
+//				hideElement(button_once);
+//			}
 		}
 		
 		// get current configuration
@@ -1255,7 +1296,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		if (showAlways) {			
 			// add check box
 			if (buttonBar != null) {
-				addAlwaysCheckbox(liparam, buttonBar, button_always.getText(), theme, pref);
+				addAlwaysCheckbox(liparam, buttonBar, 
+						liparam.view.getContext().getString(
+								liparam.res.getIdentifier("activity_resolver_use_always", "string", framework)), theme, pref);
 				if (pref.getInt("RoundCorner", 0) == 0) {
 					if (theme.equals("Light")) {
 						buttonBar.setBackgroundColor(pref.getInt("BackgroundColor", Color.WHITE));
@@ -1273,42 +1316,64 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		if (keepButtons) {
 			// transparent button bar
 			buttonBar.setBackgroundColor(Color.TRANSPARENT);
+
+			// button theme
+			String buttonThemePref = pref.getString("ButtonTheme", "");
+			if (buttonThemePref == "") buttonThemePref = theme;
 			
-			// change color
-			if (theme.equals("Light")) {				
-				if (button_always != null) {
-					button_always.setBackgroundResource(button_always.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
-					//button_always.setBackgroundColor(Color.TRANSPARENT);
-					button_always.setTextColor(pref.getInt("TextColor", Color.BLACK));
-				}		
-				if (button_once != null) {
-					button_once.setBackgroundResource(button_once.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
-					//button_once.setBackgroundColor(Color.TRANSPARENT);
-					button_once.setTextColor(pref.getInt("TextColor", Color.BLACK));
-				}
-			}
-			if (theme.equals("Dark")) {
-				if (button_always != null) {
-					button_always.setBackgroundResource(button_always.getResources().getIdentifier("btn_default_holo_dark", "drawable", "android"));
-					//button_always.setBackgroundColor(Color.TRANSPARENT);
-					button_always.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
-				}		
-				if (button_once != null) {
-					button_once.setBackgroundResource(button_once.getResources().getIdentifier("btn_default_holo_dark", "drawable", "android"));
-					//button_once.setBackgroundColor(Color.TRANSPARENT);
-					button_once.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+			// change buttons
+			int buttonCount = buttonBar.getChildCount();
+			for (int i=0; i<buttonCount; i++) {
+				if (buttonBar.getChildAt(i).getClass().equals(Button.class)) {
+					Button button = (Button)buttonBar.getChildAt(i);
+					if (buttonThemePref.equals("Light")) {				
+						button.setBackgroundResource(button.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
+						button.setTextColor(pref.getInt("TextColor", Color.BLACK));
+					}
+					if (buttonThemePref.equals("Dark")) {
+						button.setBackgroundResource(button.getResources().getIdentifier("btn_default_holo_dark", "drawable", "android"));
+						button.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+					}
+					LinearLayout.LayoutParams buttonParams = (LinearLayout.LayoutParams)button.getLayoutParams();
+					buttonParams.setMargins(0, 0, 0, 0);
 				}
 			}
 			
-			// make sure no extra margin
-			if (button_always != null) {
-				LinearLayout.LayoutParams buttonParams = (LinearLayout.LayoutParams)button_always.getLayoutParams();
-				buttonParams.setMargins(0, 0, 0, 0);
-			}
-			if (button_once != null) {
-				LinearLayout.LayoutParams buttonParams = (LinearLayout.LayoutParams)button_once.getLayoutParams();
-				buttonParams.setMargins(0, 0, 0, 0);
-			}
+//			// change color
+//			if (buttonThemePref.equals("Light")) {				
+//				if (button_always != null) {
+//					button_always.setBackgroundResource(button_always.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
+//					//button_always.setBackgroundColor(Color.TRANSPARENT);
+//					button_always.setTextColor(pref.getInt("TextColor", Color.BLACK));
+//				}		
+//				if (button_once != null) {
+//					button_once.setBackgroundResource(button_once.getResources().getIdentifier("btn_default_holo_light", "drawable", "android"));
+//					//button_once.setBackgroundColor(Color.TRANSPARENT);
+//					button_once.setTextColor(pref.getInt("TextColor", Color.BLACK));
+//				}
+//			}
+//			if (buttonThemePref.equals("Dark")) {
+//				if (button_always != null) {
+//					button_always.setBackgroundResource(button_always.getResources().getIdentifier("btn_default_holo_dark", "drawable", "android"));
+//					//button_always.setBackgroundColor(Color.TRANSPARENT);
+//					button_always.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+//				}		
+//				if (button_once != null) {
+//					button_once.setBackgroundResource(button_once.getResources().getIdentifier("btn_default_holo_dark", "drawable", "android"));
+//					//button_once.setBackgroundColor(Color.TRANSPARENT);
+//					button_once.setTextColor(pref.getInt("TextColor", Color.parseColor("#BEBEBE")));
+//				}
+//			}
+//			
+//			// make sure no extra margin
+//			if (button_always != null) {
+//				LinearLayout.LayoutParams buttonParams = (LinearLayout.LayoutParams)button_always.getLayoutParams();
+//				buttonParams.setMargins(0, 0, 0, 0);
+//			}
+//			if (button_once != null) {
+//				LinearLayout.LayoutParams buttonParams = (LinearLayout.LayoutParams)button_once.getLayoutParams();
+//				buttonParams.setMargins(0, 0, 0, 0);
+//			}
 		}
 		
 		// get element
@@ -1493,6 +1558,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		FrameLayout parent = (FrameLayout)oldList.getParent();
 		
 		GridView grid = new GridView(liparam.view.getContext());
+		if (pref.getBoolean("FlipRight", false)) {
+			grid.setRotationY(180);
+		}		
 		grid.setNumColumns(numberOfColumns);
 		DisplayMetrics metrics = liparam.view.getContext().getResources().getDisplayMetrics();
 		grid.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, metrics),
@@ -1697,6 +1765,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	@SuppressLint("DefaultLocale")
 	private void convertToGridItem(LayoutInflatedParam liparam, LinearLayout parent, String textSize, String theme, String framework, XSharedPreferences pref) {
 		// setup parent
+		if (pref.getBoolean("FlipRight", false)) {
+			parent.setRotationY(180);
+		}		
 		parent.setOrientation(1); // vertical
 		parent.setGravity(Gravity.CENTER);
 		DisplayMetrics metrics = parent.getContext().getResources().getDisplayMetrics();
@@ -1906,6 +1977,9 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					titleView.setTextColor(titleColor);				
 					setTransparentDialog((LinearLayout)bigParent.getParent());
 				}
+				
+				// set no margin
+//				setNoMargin((ViewGroup)bigParent.getParent());
 			}
 			
 			if (triggerStyle.equals("Wrench")) {
@@ -1940,7 +2014,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			XposedBridge.log("CAP: makeManageListButton exception: " + e.getMessage());
+			XposedBridge.log("CAP: makeManageListButton exception: " + e.toString());
 		}		
 	}
 	
@@ -2670,5 +2744,37 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				return false;
 			}
 		});
+	}
+	
+	@SuppressLint("NewApi")
+	private void setNoMargin(ViewGroup view) {
+		// loop up to root and set zero padding and zero margin
+		ViewGroup parent = view;
+		while (parent != null) {
+			parent.setPadding(0, 0, 0, 0);
+			if (parent.getLayoutParams().getClass().isAssignableFrom(FrameLayout.LayoutParams.class)) {
+				FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)parent.getLayoutParams();
+//				params.width = LayoutParams.MATCH_PARENT;
+				params.width = 1080;
+				params.setMargins(0, 0, 0, 0);
+				if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+					params.setMarginStart(0);
+					params.setMarginEnd(0);
+				}
+			} else if (parent.getLayoutParams().getClass().isAssignableFrom(ViewGroup.MarginLayoutParams.class)) {
+				ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams)parent.getLayoutParams();
+//				params.width = LayoutParams.MATCH_PARENT;
+				params.width = 1080;
+				params.setMargins(0, 0, 0, 0);
+				if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+					params.setMarginStart(0);
+					params.setMarginEnd(0);
+				}
+			}
+			
+			if (parent.getParent() == null) break;
+			else if (!parent.getParent().getClass().isAssignableFrom(ViewGroup.class)) break;
+			parent = (ViewGroup)parent.getParent();
+		}
 	}
 }

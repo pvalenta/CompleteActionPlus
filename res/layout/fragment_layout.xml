@@ -76,8 +76,8 @@
             <Spinner
                 android:id="@+id/fragment_layout_gridColumnsLandscape_spinner"
                 style="@style/DropDown"
-                android:layout_below="@id/fragment_layout_gridColumns_spinner"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_layout_gridColumns_spinner" />
 
             <TextView
                 android:id="@+id/fragment_layout_gridColumnsLandscape_label"
@@ -92,8 +92,8 @@
             <Spinner
                 android:id="@+id/fragment_layout_gridTextSize_spinner"
                 style="@style/DropDown"
-                android:layout_below="@id/fragment_layout_gridColumnsLandscape_spinner"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_layout_gridColumnsLandscape_spinner" />
 
             <TextView
                 style="@style/LabelDropDown"
@@ -107,8 +107,8 @@
             <CheckBox
                 android:id="@+id/fragment_layout_reduce_columns_checkbox"
                 style="@style/Checkbox"
-                android:layout_below="@id/fragment_layout_gridTextSize_spinner"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_layout_gridTextSize_spinner" />
 
             <TextView
                 style="@style/LabelTextView"
@@ -118,6 +118,39 @@
                 android:layout_toStartOf="@id/fragment_layout_reduce_columns_checkbox"
                 android:gravity="center_vertical"
                 android:text="@string/grid_dont_reduce_columns" />
+
+            <CheckBox
+                android:id="@+id/fragment_layout_flip_right"
+                style="@style/Checkbox"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/fragment_layout_reduce_columns_checkbox" />
+
+            <TextView
+                style="@style/LabelTextView"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@id/fragment_layout_flip_right"
+                android:layout_toLeftOf="@id/fragment_layout_flip_right"
+                android:layout_toStartOf="@id/fragment_layout_flip_right"
+                android:gravity="center_vertical"
+                android:text="@string/grid_flip_left_right" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <CheckBox
+                android:id="@+id/fragment_layout_flip_bottom"
+                style="@style/Checkbox"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                style="@style/LabelDropDown"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@id/fragment_layout_flip_bottom"
+                android:layout_toStartOf="@id/fragment_layout_flip_bottom"
+                android:gravity="center_vertical"
+                android:text="@string/flip_top_bottom" />
         </RelativeLayout>
     </LinearLayout>
 

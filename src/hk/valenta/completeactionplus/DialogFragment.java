@@ -272,6 +272,33 @@ public class DialogFragment extends Fragment {
 			}
 		});
 
+		// populate buttons theme
+		Spinner buttonThemeSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_buttontheme_spinner);
+		buttonThemeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				// set it in preferences
+				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putString("ButtonTheme", EnumConvert.layoutThemeName(position)).apply();				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// nothing to do				
+			}
+			
+		});
+		ArrayAdapter<CharSequence> buttonThemeAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.button_theme, android.R.layout.simple_spinner_item);
+		buttonThemeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		buttonThemeSpinner.setAdapter(buttonThemeAdapter);
+		
+		// preselect (default same as layout)
+		int buttonThemeIndex = layoutThemeIndex;
+		String buttonThemePref = pref.getString("ButtonTheme", "");
+		if (buttonThemePref != "") buttonThemeIndex = EnumConvert.layouThemeIndex(buttonThemePref);
+		buttonThemeSpinner.setSelection(buttonThemeIndex);
+		
 		// populate double tap
 		Spinner doubleTapSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_doubletap_spinner);
 		doubleTapSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
