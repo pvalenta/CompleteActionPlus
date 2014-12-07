@@ -61,7 +61,7 @@ public class SelectListActivity extends Activity {
 		setContentView(R.layout.activity_select_list);
 
 		if (theme.equals("Dark")) {
-			TextView warning = (TextView)findViewById(R.id.manage_list_warning);
+			TextView warning = (TextView)findViewById(R.id.select_list_warning);
 			warning.setBackgroundColor(Color.parseColor("#303030"));
 		}
 			
