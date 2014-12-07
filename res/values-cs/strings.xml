@@ -87,7 +87,7 @@
     <string name="add_activity_note">Zvolte aktivitu, která má podobnou akci nebo typ nebo schéma, aby to mohlo fungovat.</string>
     <string name="add_no_activity">Žádná z aktivit nebyla vybrána.</string>
     <string name="test_intent">Test intentu</string>
-    <string name="button_theme">Buttons theme</string>
-    <string name="grid_flip_left_right">Flip items from left to right</string>
-    <string name="flip_top_bottom">Flip items from top to bottom</string>
+    <string name="button_theme">Téma tlačítek</string>
+    <string name="grid_flip_left_right">Prohodit položky zleva doprava</string>
+    <string name="flip_top_bottom">Prohodit položky shora dolů</string>
 </resources>

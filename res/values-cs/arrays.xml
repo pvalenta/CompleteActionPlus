@@ -62,8 +62,8 @@
 	    <item>Spustit</item>
 	</string-array>
 	<string-array name="button_theme">
-	    <item>Default</item>
-		<item>Light</item>
-	    <item>Dark</item>
+	    <item>Výchozí</item>
+		<item>Světlé</item>
+	    <item>Tmavé</item>
 	</string-array>	
 </resources>
