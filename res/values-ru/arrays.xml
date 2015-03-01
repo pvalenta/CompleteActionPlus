@@ -57,7 +57,7 @@
 	<string-array name="long_press_actions">
 	    <item>Нет действия</item>
 	    <item>О приложении</item>
-	    <item>Set as default</item>
+	    <item>Задать по умолчанию</item>
 	    <item>Halo Window</item>
 	    <item>Запустить</item>
 	</string-array>

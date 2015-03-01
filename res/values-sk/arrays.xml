@@ -62,8 +62,8 @@
 	    <item>Spustiť aplikáciu</item>
 	</string-array>
 	<string-array name="button_theme">
-	    <item>Default</item>
-		<item>Light</item>
-	    <item>Dark</item>
+	    <item>Predvolená</item>
+		<item>Svetlá</item>
+	    <item>Tmavé</item>
 	</string-array>	
 </resources>

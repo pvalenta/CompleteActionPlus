@@ -55,7 +55,7 @@
     <string name="manager_backup_success">Záloha dokončená.</string>
     <string name="manager_backup_send">Chcete odoslať túto zálohu?</string>
     <string name="manager_no_backup">Nenájdená žiadna záloha.</string>
-    <string name="manager_choose_backup">Vyberte zálohu na obnovu</string>
+    <string name="manager_choose_backup">Vyberte zálohu na obnovenie</string>
     <string name="manager_invalid_backup">Neplatná záloha</string>
     <string name="manager_restore_failed">Obnova zlyhala.</string>
     <string name="manager_restore_success">Obnova dokončená.</string>
@@ -87,7 +87,7 @@
     <string name="add_activity_note">Vyberte aktivitu, ktorá majú podobnú akciu, typ alebo schému ako tieto, a možno by mohla fungovať.</string>
     <string name="add_no_activity">Žiadna z aktivít nebola vybraná.</string>
     <string name="test_intent">Skúšobný intent</string>
-    <string name="button_theme">Buttons theme</string>
-    <string name="grid_flip_left_right">Flip items from left to right</string>
-    <string name="flip_top_bottom">Flip items from top to bottom</string>
+    <string name="button_theme">Téma tlačidiel</string>
+    <string name="grid_flip_left_right">Prevrátiť položky zľava doprava</string>
+    <string name="flip_top_bottom">Prevrátiť položky zhora nadol</string>
 </resources>

@@ -96,6 +96,247 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 			});
 		}
+		if (lpparam.packageName.equals("android")) {
+			XposedHelpers.findAndHookMethod("com.android.server.pm.PackageManagerService", lpparam.classLoader, "queryIntentActivities", 
+					Intent.class, String.class, int.class, int.class, new XC_MethodHook() {
+				@SuppressLint("DefaultLocale")
+				@SuppressWarnings("unchecked")
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+					// let's get intent
+					Intent myIntent = (Intent)param.args[0];
+					if (myIntent == null) return;
+					
+					// any items back?
+					List<ResolveInfo> list = (List<ResolveInfo>)param.getResult();
+					if (list == null || list.size() == 0) return;
+					int size = list.size();
+
+					// get current configuration
+					XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+					boolean manageList = pref.getBoolean("ManageList", false);
+					boolean debugOn = pref.getBoolean("DebugLog", false);
+					if (!manageList) return;							
+					
+					String scheme = myIntent.getScheme();
+					if (pref.getBoolean("RulePerWebDomain", false) && scheme != null && (scheme.equals("http") || scheme.equals("https"))) {
+						// add domain
+						scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
+					} 
+					String type = myIntent.getType();
+					if (scheme == null && type == null) return;
+					String action = myIntent.getAction();
+					String intentId = String.format("%s;%s;%s", action, type, scheme);
+					
+					// do it old way?
+//					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
+//					if (oldWayHide) {
+//						// one of ours?
+//						if (!intentId.equals("android.intent.action.SEND;image/jpeg;null") &&
+//							!intentId.equals("android.intent.action.SEND;image/*;null") &&
+//							!intentId.equals("android.intent.action.SEND_MULTIPLE;image/*;null") &&
+//							!intentId.equals("android.intent.action.SEND_MULTIPLE;image/jpeg;null")) {
+//							if (debugOn) {
+//								XposedBridge.log("CAP: Hiding app old way.");
+//							}
+//							return;
+//						}
+//					}	
+//					
+//					// add custom
+//					int flags = (Integer)param.args[2];
+//					String cAdd = pref.getString(intentId + "_add", null);
+//					if ((flags&PackageManager.MATCH_DEFAULT_ONLY) != 0 && cAdd != null && cAdd.length() > 0) {
+//						String[] aI = cAdd.split(";");
+//						for (String a : aI) {
+//							
+//							ResolveInfo info = new ResolveInfo();
+//							info.activityInfo = (ActivityInfo)XposedHelpers.callMethod(param.thisObject, "getActivityInfo", 
+//									ComponentName.unflattenFromString(a), 0x00002000, param.args[3]);
+//							XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
+//							info.filter = info.activityInfo.metaData.getParcelable("filter");
+//							info.match = IntentFilter.MATCH_ADJUSTMENT_NORMAL;												
+//							list.add(info);
+//						}
+//					}
+												
+					// get hidden
+					String cHidden = pref.getString(intentId, null);
+					if (cHidden == null || cHidden.length() == 0) {
+						// found
+						if (debugOn) {
+							XposedBridge.log(String.format("CAP: Found no match: %s", intentId));
+						}
+											
+						// intent recording?
+						if (pref.getBoolean("IntentRecord", false) &&
+							!action.equals("android.intent.action.MAIN") &&
+							(size > 1 || size == 0)) {
+							// collect all packages
+							StringBuilder builder = new StringBuilder();
+							builder.append(intentId);
+							for (int i=0; i<size; i++) {
+								ResolveInfo info = list.get(i);
+								builder.append(";");
+								builder.append(info.activityInfo.packageName + "/" + info.activityInfo.name);							
+							}
+							
+							// broadcast it
+							Intent intent = new Intent();
+							intent.setAction("hk.valenta.completeactionplus.INTENT");
+							intent.putExtra("Intent", builder.toString());					
+							Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
+							mContext.sendBroadcast(intent);
+						}						
+						return;
+					}
+					
+					// found
+					if (debugOn) {
+						XposedBridge.log(String.format("CAP: Found match: %s", intentId));
+					}
+					
+					// split by ;
+					String[] hI = cHidden.split(";");
+					ArrayList<String> hiddenItems = new ArrayList<String>();
+					for (String h : hI) {
+						if (!hiddenItems.contains(h)) {							
+							hiddenItems.add(h);
+						}
+					}
+					
+					// loop & remove
+					int removed = 0;
+					if (debugOn) {
+						XposedBridge.log(String.format("CAP: Before removal: %d", size));
+					}
+					for (int i=0; i<size; i++) {
+						ResolveInfo info = list.get(i);
+						if (hiddenItems.contains(info.activityInfo.packageName) ||
+							hiddenItems.contains(info.activityInfo.packageName + "/" + info.activityInfo.name)) {
+							// remove it
+							list.remove(i);
+							i-=1;
+							size-=1;
+							removed+=1;
+						}
+					}
+					if (debugOn) {
+						XposedBridge.log(String.format("CAP: After removal: %d, removed: %d", size, removed));
+					}
+					
+					// intent recording?
+					if (pref.getBoolean("IntentRecord", false) &&
+						!action.equals("android.intent.action.MAIN") &&
+						(size > 1 || size == 0)) {
+						// collect all packages
+						StringBuilder builder = new StringBuilder();
+						builder.append(intentId);
+						for (int i=0; i<size; i++) {
+							ResolveInfo info = list.get(i);
+							builder.append(";");
+							builder.append(info.activityInfo.packageName + "/" + info.activityInfo.name);							
+						}
+						
+						// broadcast it
+						Intent intent = new Intent();
+						intent.setAction("hk.valenta.completeactionplus.INTENT");
+						intent.putExtra("Intent", builder.toString());					
+						Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
+						mContext.sendBroadcast(intent);
+					}					
+					
+					// set it back
+					param.setResult(list);
+				}
+			});
+			XposedHelpers.findAndHookMethod("com.android.server.pm.PackageManagerService", lpparam.classLoader, "getActivityInfo",
+					ComponentName.class, int.class, int.class, new XC_MethodHook() {
+				@SuppressWarnings("unchecked")
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+					// our custom flag?
+					int flags = (Integer)param.args[1];
+					if ((flags&0x00002000) != 0 && param.getResult() != null) {
+						// 1) let's get it again 
+						// PackageParser.Activity a = mActivities.mActivities.get(component);
+						Object mActivities = XposedHelpers.getObjectField(param.thisObject, "mActivities");
+						if (mActivities == null) return; 
+						Object mmActivities = XposedHelpers.getObjectField(mActivities, "mActivities");
+						if (mmActivities == null) return; 
+						Object activity = XposedHelpers.callMethod(mmActivities, "get", param.args[0]);
+						if (activity == null) return; 
+						
+						// 2) check if any intent filters
+						Object intents = XposedHelpers.getObjectField(activity, "intents");
+						if (intents == null) {
+							// no filter, let's return null
+							param.setResult(null);
+							return;
+						} else {
+							// a.intents is ArrayList<II> intents
+							ArrayList<IntentFilter> filters = (ArrayList<IntentFilter>)intents; 
+							ArrayList<String> actions = new ArrayList<String>();
+							ArrayList<String> dataTypes = new ArrayList<String>();
+							ArrayList<String> schemes = new ArrayList<String>();
+							int totalActions = 0;
+							int size = filters.size();
+							if (size == 0) {
+								// we don't want such activities
+								param.setResult(null);
+								return;
+							}
+							IntentFilter idealFilter = null;
+							for (int i=0; i<size; i++) {
+								IntentFilter f = filters.get(i);
+								int actionSize = f.countActions();
+								int dataTypeSize = f.countDataTypes();
+								int dataSchemeSize = f.countDataSchemes();
+								totalActions += dataTypeSize + dataSchemeSize;
+								
+								// build lists
+								if (actionSize > 0) {
+									for (int a=0; a<actionSize; a++) {
+										actions.add(f.getAction(a));
+									}
+								}
+								if (dataTypeSize > 0) {
+									for (int d=0; d<dataTypeSize; d++) {
+										dataTypes.add(f.getDataType(d));
+									}
+								}
+								if (dataSchemeSize > 0) {
+									for (int d=0; d<dataSchemeSize; d++) {
+										schemes.add(f.getDataScheme(d));
+									}
+								}
+								if ((dataTypeSize > 0 || dataSchemeSize > 0) && idealFilter == null) {
+									idealFilter = f;
+								}
+							}
+							
+							// any data types?
+							if (totalActions == 0 || idealFilter == null) {
+								// we don't want such activities
+								param.setResult(null);
+								return;
+							}
+									
+							// store lists in bundle
+							ActivityInfo result = (ActivityInfo)param.getResult();
+							result.metaData = new Bundle();
+							result.metaData.putStringArrayList("actions", actions);
+							result.metaData.putStringArrayList("dataTypes", dataTypes);
+							result.metaData.putStringArrayList("schemes", schemes);
+							result.metaData.putParcelable("filter", idealFilter);
+//							result.metaData.putParcelableArrayList("filters", filters);
+							param.setResult(result);
+							return;
+						}
+					}
+				}
+			});			
+		}
 	}
 
 	@SuppressLint("DefaultLocale")
@@ -341,9 +582,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				return null;
 			}
 		});
-		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onCreate", Bundle.class, Intent.class, CharSequence.class, 
-				Intent[].class, List.class, boolean.class, new XC_MethodHook() {
-			
+		XC_MethodHook onCreate = new XC_MethodHook() {			
 			Unhook hookResolveAttribute = null;
 			
 			class FirstChoiceTimer extends CountDownTimer {
@@ -698,7 +937,14 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 				}
 			}
-		});
+		};
+		if (Build.VERSION.SDK_INT > 19) {
+			XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onCreate", Bundle.class, Intent.class, 
+					CharSequence.class, int.class, Intent[].class, List.class, boolean.class, onCreate);
+		} else {
+			XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity", null, "onCreate", Bundle.class, Intent.class, 
+					CharSequence.class, Intent[].class, List.class, boolean.class, onCreate);
+		}
 		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity.ResolveListAdapter", null, "rebuildList", new XC_MethodHook() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -719,7 +965,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), scheme);
 //				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 				boolean debugOn = pref.getBoolean("DebugLog", false);
-				int removed = myIntent.getIntExtra("CAP-Removed", 0);
 				int favorited = 0;
 //				if (oldWayHide) {
 //					String cHidden = pref.getString(intentId, null);
@@ -852,165 +1097,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 				
 				// debug on for toast?
-				if (debugOn && (removed > 0 || favorited > 0)) {
+				if (debugOn && favorited > 0) {
 					LayoutInflater mInflater = (LayoutInflater)XposedHelpers.getObjectField(param.thisObject, "mInflater");
-					Toast.makeText(mInflater.getContext(), String.format("CAP: Call captured, hidden %d and favorited %d",  removed, favorited), Toast.LENGTH_SHORT).show();
+					Toast.makeText(mInflater.getContext(), String.format("CAP: Call captured, favorited %d",  favorited), Toast.LENGTH_SHORT).show();
 				}
-			}
-		});
-		XposedHelpers.findAndHookMethod("com.android.server.pm.PackageManagerService", null, "queryIntentActivities", 
-				Intent.class, String.class, int.class, int.class, new XC_MethodHook() {
-			@SuppressWarnings("unchecked")
-			@Override
-			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-				// let's get intent
-				Intent myIntent = (Intent)param.args[0];
-				if (myIntent == null) return;
-				
-				// any items back?
-				List<ResolveInfo> list = (List<ResolveInfo>)param.getResult();
-				if (list == null || list.size() == 0) return;
-				int size = list.size();
-
-				// get current configuration
-				XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
-				boolean manageList = pref.getBoolean("ManageList", false);
-				boolean debugOn = pref.getBoolean("DebugLog", false);
-				if (!manageList) return;							
-				
-				String scheme = myIntent.getScheme();
-				if (pref.getBoolean("RulePerWebDomain", false) && scheme != null && (scheme.equals("http") || scheme.equals("https"))) {
-					// add domain
-					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
-				} 
-				String type = myIntent.getType();
-				if (scheme == null && type == null) return;
-				String action = myIntent.getAction();
-				String intentId = String.format("%s;%s;%s", action, type, scheme);
-				
-				// do it old way?
-//				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-//				if (oldWayHide) {
-//					// one of ours?
-//					if (!intentId.equals("android.intent.action.SEND;image/jpeg;null") &&
-//						!intentId.equals("android.intent.action.SEND;image/*;null") &&
-//						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/*;null") &&
-//						!intentId.equals("android.intent.action.SEND_MULTIPLE;image/jpeg;null")) {
-//						if (debugOn) {
-//							XposedBridge.log("CAP: Hiding app old way.");
-//						}
-//						return;
-//					}
-//				}	
-//				
-//				// add custom
-//				int flags = (Integer)param.args[2];
-//				String cAdd = pref.getString(intentId + "_add", null);
-//				if ((flags&PackageManager.MATCH_DEFAULT_ONLY) != 0 && cAdd != null && cAdd.length() > 0) {
-//					String[] aI = cAdd.split(";");
-//					for (String a : aI) {
-//						
-//						ResolveInfo info = new ResolveInfo();
-//						info.activityInfo = (ActivityInfo)XposedHelpers.callMethod(param.thisObject, "getActivityInfo", 
-//								ComponentName.unflattenFromString(a), 0x00002000, param.args[3]);
-//						XposedBridge.log(String.format("CAP: Added %s", info.activityInfo.name));
-//						info.filter = info.activityInfo.metaData.getParcelable("filter");
-//						info.match = IntentFilter.MATCH_ADJUSTMENT_NORMAL;												
-//						list.add(info);
-//					}
-//				}
-											
-				// get hidden
-				String cHidden = pref.getString(intentId, null);
-				if (cHidden == null || cHidden.length() == 0) {
-					// found
-					if (debugOn) {
-						XposedBridge.log(String.format("CAP: Found no match: %s", intentId));
-					}
-										
-					// intent recording?
-					if (pref.getBoolean("IntentRecord", false) &&
-						!action.equals("android.intent.action.MAIN") &&
-						(size > 1 || size == 0)) {
-						// collect all packages
-						StringBuilder builder = new StringBuilder();
-						builder.append(intentId);
-						for (int i=0; i<size; i++) {
-							ResolveInfo info = list.get(i);
-							builder.append(";");
-							builder.append(info.activityInfo.packageName + "/" + info.activityInfo.name);							
-						}
-						
-						// broadcast it
-						Intent intent = new Intent();
-						intent.setAction("hk.valenta.completeactionplus.INTENT");
-						intent.putExtra("Intent", builder.toString());					
-						Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
-						mContext.sendBroadcast(intent);
-					}						
-					return;
-				}
-				
-				// found
-				if (debugOn) {
-					XposedBridge.log(String.format("CAP: Found match: %s", intentId));
-				}
-				
-				// split by ;
-				String[] hI = cHidden.split(";");
-				ArrayList<String> hiddenItems = new ArrayList<String>();
-				for (String h : hI) {
-					if (!hiddenItems.contains(h)) {							
-						hiddenItems.add(h);
-					}
-				}
-				
-				// loop & remove
-				int removed = 0;
-				if (debugOn) {
-					XposedBridge.log(String.format("CAP: Before removal: %d", size));
-				}
-				for (int i=0; i<size; i++) {
-					ResolveInfo info = list.get(i);
-					if (hiddenItems.contains(info.activityInfo.packageName) ||
-						hiddenItems.contains(info.activityInfo.packageName + "/" + info.activityInfo.name)) {
-						// remove it
-						list.remove(i);
-						i-=1;
-						size-=1;
-						removed+=1;
-					}
-				}
-				if (debugOn) {
-					XposedBridge.log(String.format("CAP: After removal: %d, removed: %d", size, removed));
-					if (removed > 0) {
-						myIntent.putExtra("CAP-Removed", removed);						
-					}
-				}
-				
-				// intent recording?
-				if (pref.getBoolean("IntentRecord", false) &&
-					!action.equals("android.intent.action.MAIN") &&
-					(size > 1 || size == 0)) {
-					// collect all packages
-					StringBuilder builder = new StringBuilder();
-					builder.append(intentId);
-					for (int i=0; i<size; i++) {
-						ResolveInfo info = list.get(i);
-						builder.append(";");
-						builder.append(info.activityInfo.packageName + "/" + info.activityInfo.name);							
-					}
-					
-					// broadcast it
-					Intent intent = new Intent();
-					intent.setAction("hk.valenta.completeactionplus.INTENT");
-					intent.putExtra("Intent", builder.toString());					
-					Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
-					mContext.sendBroadcast(intent);
-				}					
-				
-				// set it back
-				param.setResult(list);
 			}
 		});
 		try {
@@ -1080,92 +1170,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			// not found
 			XposedBridge.log("CAP: ItemLongClickListener not found.");
 		}
-		XposedHelpers.findAndHookMethod("com.android.server.pm.PackageManagerService", null, "getActivityInfo",
-				ComponentName.class, int.class, int.class, new XC_MethodHook() {
-			@SuppressWarnings("unchecked")
-			@Override
-			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-				// our custom flag?
-				int flags = (Integer)param.args[1];
-				if ((flags&0x00002000) != 0 && param.getResult() != null) {
-					// 1) let's get it again 
-					// PackageParser.Activity a = mActivities.mActivities.get(component);
-					Object mActivities = XposedHelpers.getObjectField(param.thisObject, "mActivities");
-					if (mActivities == null) return; 
-					Object mmActivities = XposedHelpers.getObjectField(mActivities, "mActivities");
-					if (mmActivities == null) return; 
-					Object activity = XposedHelpers.callMethod(mmActivities, "get", param.args[0]);
-					if (activity == null) return; 
-					
-					// 2) check if any intent filters
-					Object intents = XposedHelpers.getObjectField(activity, "intents");
-					if (intents == null) {
-						// no filter, let's return null
-						param.setResult(null);
-						return;
-					} else {
-						// a.intents is ArrayList<II> intents
-						ArrayList<IntentFilter> filters = (ArrayList<IntentFilter>)intents; 
-						ArrayList<String> actions = new ArrayList<String>();
-						ArrayList<String> dataTypes = new ArrayList<String>();
-						ArrayList<String> schemes = new ArrayList<String>();
-						int totalActions = 0;
-						int size = filters.size();
-						if (size == 0) {
-							// we don't want such activities
-							param.setResult(null);
-							return;
-						}
-						IntentFilter idealFilter = null;
-						for (int i=0; i<size; i++) {
-							IntentFilter f = filters.get(i);
-							int actionSize = f.countActions();
-							int dataTypeSize = f.countDataTypes();
-							int dataSchemeSize = f.countDataSchemes();
-							totalActions += dataTypeSize + dataSchemeSize;
-							
-							// build lists
-							if (actionSize > 0) {
-								for (int a=0; a<actionSize; a++) {
-									actions.add(f.getAction(a));
-								}
-							}
-							if (dataTypeSize > 0) {
-								for (int d=0; d<dataTypeSize; d++) {
-									dataTypes.add(f.getDataType(d));
-								}
-							}
-							if (dataSchemeSize > 0) {
-								for (int d=0; d<dataSchemeSize; d++) {
-									schemes.add(f.getDataScheme(d));
-								}
-							}
-							if ((dataTypeSize > 0 || dataSchemeSize > 0) && idealFilter == null) {
-								idealFilter = f;
-							}
-						}
-						
-						// any data types?
-						if (totalActions == 0 || idealFilter == null) {
-							// we don't want such activities
-							param.setResult(null);
-							return;
-						}
-								
-						// store lists in bundle
-						ActivityInfo result = (ActivityInfo)param.getResult();
-						result.metaData = new Bundle();
-						result.metaData.putStringArrayList("actions", actions);
-						result.metaData.putStringArrayList("dataTypes", dataTypes);
-						result.metaData.putStringArrayList("schemes", schemes);
-						result.metaData.putParcelable("filter", idealFilter);
-//						result.metaData.putParcelableArrayList("filters", filters);
-						param.setResult(result);
-						return;
-					}
-				}
-			}
-		});
 	}
 
 	@Override
@@ -2127,8 +2131,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	@SuppressLint("DefaultLocale")
 	private void startSelected(Object thisObject, int position, boolean always) {
 		try {
+			if (Build.VERSION.SDK_INT > 19) {
+				XposedHelpers.callMethod(thisObject, "startSelected", position, always, false);				
+			} else {
+				XposedHelpers.callMethod(thisObject, "startSelected", position, always);
+			}
 			// call selected value
-			XposedHelpers.callMethod(thisObject, "startSelected", position, always);
 			//XposedBridge.log(String.format("CAP: StartSelect position %d with %b", position, always));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
