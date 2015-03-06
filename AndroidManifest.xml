@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.valenta.completeactionplus"
     android:versionCode="79"
-    android:versionName="2.6.3" >
+    android:versionName="2.7.0" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -76,9 +76,14 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".IntentRecorderReceiver" >
+        <receiver android:name=".IntentRecorderReceiver">
             <intent-filter>
                 <action android:name="hk.valenta.completeactionplus.INTENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".StartSelectedReceiver">
+            <intent-filter>
+                <action android:name="hk.valenta.completeactionplus.START" />
             </intent-filter>
         </receiver>
 

@@ -182,6 +182,18 @@ public class AdvancedFragment extends Fragment {
 			}
 		});
 		
+		// add custom app
+		CheckBox lastFirst = (CheckBox)layout.findViewById(R.id.fragment_advanced_last_first);
+		lastFirst.setChecked(pref.getBoolean("LastFirst", false));
+		lastFirst.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("LastFirst", buttonView.isChecked()).apply();
+			}
+		});		
+		
 		// indent recorder
 		Button indentRecorder = (Button)layout.findViewById(R.id.fragment_advanced_indent_recorder);
 		indentRecorder.setOnClickListener(new OnClickListener() {			

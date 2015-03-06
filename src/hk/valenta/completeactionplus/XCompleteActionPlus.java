@@ -91,8 +91,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				@Override
 				protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
 					// return version number
-					param.setResult("2.6.0");
-					return "2.6.0";
+					// param.setResult("2.7.0");
+					return "2.7.0";
 				}
 			});
 		}
@@ -410,7 +410,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						}
 					} else {
 						// start it
-						startSelected(param.thisObject, position, false);						
+						startSelected(param.thisObject, position, false, pref.getBoolean("LastFirst", false));						
 					}
 					return null;
 				}
@@ -427,10 +427,10 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					if (always && debugOn) {
 						XposedBridge.log("CAP: Application set as default.");
 					}
-					startSelected(param.thisObject, position, always);
+					startSelected(param.thisObject, position, always, pref.getBoolean("LastFirst", false));
 				} else {
 					// call it
-					startSelected(param.thisObject, position, false);
+					startSelected(param.thisObject, position, false, pref.getBoolean("LastFirst", false));
 				}
 				
 				return null;
@@ -577,7 +577,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 				
 				// call it
-				startSelected(param.thisObject, selectedIndex, always);
+				startSelected(param.thisObject, selectedIndex, always, pref.getBoolean("LastFirst", false));
 				
 				return null;
 			}
@@ -622,7 +622,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						return;
 					}
 					// start it
-					startSelected(resolver, 0, false);
+					XSharedPreferences pref = new XSharedPreferences("hk.valenta.completeactionplus", "config");
+					startSelected(resolver, 0, false, pref.getBoolean("LastFirst", false));
 				}
 			}
 					
@@ -660,6 +661,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 			}
 
+			@SuppressLint("RtlHardcoded")
 			@Override
 			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 				// do we hook theme?
@@ -1087,6 +1089,34 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					}
 				}
 				
+				// last used?
+				if (pref.getBoolean("LastFirst", false)) {
+					intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), myIntent.getScheme());
+					pref = new XSharedPreferences("hk.valenta.completeactionplus", "started");
+					String lastApp = pref.getString(intentId, null);
+					if (lastApp != null) {
+						// get list
+						List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
+						int itemSize = items.size();
+						for (int i=0; i<itemSize; i++) {
+							// get resolve info
+							Object o = items.get(i);
+							ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(o, "ri");
+							
+							// match package or activity?
+							if (lastApp.equals(info.activityInfo.packageName + "/" + info.activityInfo.name)) {
+								// take out
+								items.remove(o);
+								items.add(0, o);
+								if (debugOn) {
+									XposedBridge.log(String.format("CAP: Last App %s put to top", lastApp));
+								}
+								break;
+							}
+						}
+					}
+				}
+				
 				// reverse order?
 				if (flipBottom) {
 					// get list
@@ -1102,6 +1132,17 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					Toast.makeText(mInflater.getContext(), String.format("CAP: Call captured, favorited %d",  favorited), Toast.LENGTH_SHORT).show();
 				}
 			}
+		});
+		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity.ResolveListAdapter", null, "getItem", int.class, new XC_MethodHook() {
+			@Override
+			protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+				// let's hack if position is -99
+				int position = (Integer)param.args[0];
+				if (position == -99) {
+					// then return original intent
+					param.setResult(XposedHelpers.getObjectField(param.thisObject, "mIntent"));
+				}
+			}			
 		});
 		try {
 		XposedHelpers.findAndHookMethod("com.android.internal.app.ResolverActivity.ItemLongClickListener", null, "onItemLongClick",
@@ -2129,7 +2170,28 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 	}
 	
 	@SuppressLint("DefaultLocale")
-	private void startSelected(Object thisObject, int position, boolean always) {
+	private void startSelected(Object thisObject, int position, boolean always, boolean lastFirst) {
+		
+		if (lastFirst) {
+			// get current intent as id
+			Object resolverAdapter = XposedHelpers.getObjectField(thisObject, "mAdapter");
+			Intent mIntent = (Intent)XposedHelpers.callMethod(resolverAdapter, "getItem", -99);
+			ResolveInfo selection = (ResolveInfo)XposedHelpers.callMethod(resolverAdapter, "resolveInfoForPosition", position);
+			
+			// prepare values
+			String intentId = String.format("%s;%s;%s", mIntent.getAction(), mIntent.getType(), mIntent.getScheme());
+			//Long timeStamp = new Date().getTime();
+			String activity = selection.activityInfo.packageName + "/" + selection.activityInfo.name;
+			
+			// broadcast it
+			Intent intent = new Intent();
+			intent.setAction("hk.valenta.completeactionplus.START");
+			intent.putExtra("intentId", intentId);					
+			//intent.putExtra("timeStamp", timeStamp);					
+			intent.putExtra("activity", activity);
+			((Activity)thisObject).sendBroadcast(intent);
+		}
+		
 		try {
 			if (Build.VERSION.SDK_INT > 19) {
 				XposedHelpers.callMethod(thisObject, "startSelected", position, always, false);				
@@ -2290,6 +2352,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		}
 	}
 	
+	@SuppressLint("RtlHardcoded")
 	private void setDialogGravity(Context context, Window mWindow, XSharedPreferences pref) {
 		// get orientation
 		int orientation = context.getResources().getConfiguration().orientation;
