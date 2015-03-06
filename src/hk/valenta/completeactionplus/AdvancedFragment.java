@@ -1,9 +1,11 @@
 package hk.valenta.completeactionplus;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -150,7 +152,7 @@ public class AdvancedFragment extends Fragment {
 		TextView positionLandscapeLabel = (TextView)layout.findViewById(R.id.fragment_advanced_position_landscape_label);
 		positionLandscapeLabel.setText(String.format(getString(R.string.dialog_gravity), getString(R.string.landscape)));
 		
-		// web domain
+		// add custom app
 		CheckBox addFeature = (CheckBox)layout.findViewById(R.id.fragment_advanced_add_feature);
 		addFeature.setChecked(pref.getBoolean("AddFeature", false));
 		addFeature.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -159,6 +161,24 @@ public class AdvancedFragment extends Fragment {
 				// set it in preferences
 				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
 				pref.edit().putBoolean("AddFeature", buttonView.isChecked()).apply();
+			}
+		});
+		
+		// launcher icon
+		CheckBox launcherIcon = (CheckBox)layout.findViewById(R.id.fragment_advanced_launcher_icon);
+		launcherIcon.setChecked(pref.getBoolean("LauncherIcon", true));
+		launcherIcon.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// set it in preferences
+				SharedPreferences pref = getActivity().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putBoolean("LauncherIcon", buttonView.isChecked()).apply();
+				
+				// proceed
+				int state = buttonView.isChecked() ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+				final ComponentName alias = new ComponentName(getActivity(), "hk.valenta.completeactionplus.MainPagerActivity-Alias");
+				getActivity().getPackageManager().setComponentEnabledSetting(alias, state, PackageManager.DONT_KILL_APP);
 			}
 		});
 		

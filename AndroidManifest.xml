@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.valenta.completeactionplus"
-    android:versionCode="78"
-    android:versionName="2.6.2" >
+    android:versionCode="79"
+    android:versionName="2.6.3" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -20,26 +20,31 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
             </intent-filter>
         </activity>
+        <activity-alias
+            android:name=".MainPagerActivity-Alias"
+            android:targetActivity=".MainPagerActivity"
+            android:enabled="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />                
+            </intent-filter>
+        </activity-alias>
         <activity
             android:name=".ManageListActivity"
             android:label="@string/activity_main_manage_list" >
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
-
                 <data android:mimeType="complete/action" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
-
                 <data android:mimeType="complete/action" />
-
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
@@ -48,10 +53,8 @@
             android:label="@string/activity_manager_title" >
             <intent-filter android:label="@string/manager_restore_rules" >
                 <action android:name="android.intent.action.VIEW" />
-
                 <data android:mimeType="text/xml" />
                 <data android:mimeType="application/xml" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -68,9 +71,7 @@
             android:label="@string/test_intent" >
             <intent-filter>
                 <action android:name="hk.valenta.completeactionplus.TEST" />
-                
                 <data android:mimeType="complete/action" />
-                
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

@@ -90,4 +90,5 @@
     <string name="button_theme">Buttons theme</string>
     <string name="grid_flip_left_right">Flip items from left to right</string>
     <string name="flip_top_bottom">Flip items from top to bottom</string>
+    <string name="show_launcher_icon">Show icon in launcher</string>
 </resources>
