@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -565,13 +566,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					//XposedBridge.log("CAP: No LG G3");					
 				}
 				
-				// restore items?
-//				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-//				boolean manageList = pref.getBoolean("ManageList", false);
-//				if (always && manageList && oldWayHide) {
-//					// restore items
-//					restoreListItems(param.thisObject, pref);
-//				}
 				if (always && debugOn) {
 					XposedBridge.log("CAP: Application set as default.");
 				}
@@ -716,6 +710,41 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				boolean showAlways = pref.getBoolean("ShowAlways", false);
 				boolean debugOn = pref.getBoolean("DebugLog", false);
 				
+				// temporary default?
+				String longPressAction = pref.getString("LongPress", "Nothing");
+				if (longPressAction.equals("TempDefault")) {
+					XSharedPreferences prefTemp = new XSharedPreferences("hk.valenta.completeactionplus", "temp");
+					String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), myIntent.getScheme());
+					String tempAppPref = prefTemp.getString(intentId, null);
+					if (tempAppPref != null) {
+						// exist record
+						String[] tempKeys = tempAppPref.split("_");
+						Long timeStamp = Long.parseLong(tempKeys[0]);
+						if (new Date().getTime() - timeStamp < pref.getInt("TemporaryTimeout", 5) * 60000) {
+							// within temporary time limit
+							if (debugOn) {
+								XposedBridge.log("CAP: Launch temporary app " + tempKeys[1]);
+							}							
+							
+							// find app in list
+							Object resolverAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
+							int count = (Integer)XposedHelpers.callMethod(resolverAdapter, "getCount");
+							for (int i=0; i<count; i++) {
+								ResolveInfo info = (ResolveInfo)XposedHelpers.callMethod(resolverAdapter, "resolveInfoForPosition", i);
+								if (tempKeys[1].equals(info.activityInfo.packageName + "/" + info.activityInfo.name)) {
+									// we found it
+									startSelected(param.thisObject, i, false, pref.getBoolean("LastFirst", false));
+									break;
+								}
+							}
+							
+							if (debugOn) {
+								XposedBridge.log("CAP: Temporary app " + tempKeys[1] + " not found.");
+							}							
+						}
+					}
+				}
+				
 				// make sure we got buttons hidden
 				FrameLayout frame = (FrameLayout)rControl.getParent();
 				LinearLayout root = (LinearLayout)frame.getParent();
@@ -826,7 +855,6 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				}
 				
 				// default layout for long press
-				String longPressAction = pref.getString("LongPress", "Nothing");
 				String doubleTapAction = pref.getString("DoubleTap", "Nothing");
 				boolean keepButtons = pref.getBoolean("KeepButtons", false);
 				boolean flipBottom = pref.getBoolean("FlipBottom", false);
@@ -965,60 +993,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					scheme = String.format("%s_%s", scheme ,myIntent.getData().getAuthority());
 				} 
 				String intentId = String.format("%s;%s;%s", myIntent.getAction(), myIntent.getType(), scheme);
-//				boolean oldWayHide = pref.getBoolean("OldWayHide", false);
 				boolean debugOn = pref.getBoolean("DebugLog", false);
 				int favorited = 0;
-//				if (oldWayHide) {
-//					String cHidden = pref.getString(intentId, null);
-//					if (cHidden != null && cHidden.length() > 0) {
-//						// split by ;
-//						String[] hI = cHidden.split(";");
-//						ArrayList<String> hiddenItems = new ArrayList<String>();
-//						for (String h : hI) {
-//							if (!hiddenItems.contains(h)) {							
-//								hiddenItems.add(h);
-//							}
-//						}
-//						
-//						// get list
-//						List<Object> items = (List<Object>)XposedHelpers.getObjectField(param.thisObject, "mList");
-//						
-//						// get original list to solve 4.3 issue
-//						List<ResolveInfo> baseList = null;
-//						try {
-//							baseList = (List<ResolveInfo>)XposedHelpers.getObjectField(param.thisObject, "mBaseResolveList");
-//							if (baseList == null) {
-//								baseList = new ArrayList<ResolveInfo>();
-//							}
-//						} catch (Exception ex) { }
-//						
-//						// let's try to find
-//						for (String h : hiddenItems) {
-//							int count = items.size();
-//							for (int i=0; i<count; i++) {
-//								// get resolve info
-//								ResolveInfo info = (ResolveInfo)XposedHelpers.getObjectField(items.get(i), "ri");
-//								
-//								// match?
-//								if (info.activityInfo.packageName.equals(h)) {
-//									// store in original list for KitKat
-//									if (baseList != null) {
-//										baseList.add(info);
-//									}
-//									
-//									// remove it
-//									items.remove(i);
-//									i -= 1;
-//									count -= 1;
-//									removed += 1;
-//								}
-//							}
-//						}
-//						if (debugOn && removed > 0) {
-//							XposedBridge.log(String.format("CAP: Removed %d from %s", removed, intentId));
-//						}
-//					}					
-//				}
 								
 				// add custom
 				String cAdd = pref.getString(intentId + "_add", null);
@@ -1191,17 +1167,32 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 						XposedBridge.log(e.getMessage());
 					}
 				} else if (action.equals("Default") && XposedHelpers.getBooleanField(param.thisObject, "mAlwaysUseOption")) {
-//					boolean manageList = pref.getBoolean("ManageList", false);
-//					boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-//					if (manageList && oldWayHide) {
-//						// restore items
-//						restoreListItems(param.thisObject, pref);
-//					}
 					// call activity directly
-					XposedHelpers.callMethod(param.thisObject, "startSelected", position, true);
+					startSelected(param.thisObject, position, true, pref.getBoolean("LastFirst", false));
 				} else if (action.equals("Launch")) {
 					// call activity directly
-					XposedHelpers.callMethod(param.thisObject, "startSelected", position, false);
+					startSelected(param.thisObject, position, false, pref.getBoolean("LastFirst", false));
+				} else if (action.equals("TempDefault")) {
+					// get current intent as id
+					Object resolverAdapter = XposedHelpers.getObjectField(param.thisObject, "mAdapter");
+					Intent mIntent = (Intent)XposedHelpers.callMethod(resolverAdapter, "getItem", -99);
+					ResolveInfo selection = (ResolveInfo)XposedHelpers.callMethod(resolverAdapter, "resolveInfoForPosition", position);
+					
+					// prepare values
+					String intentId = String.format("%s;%s;%s", mIntent.getAction(), mIntent.getType(), mIntent.getScheme());
+					Long timeStamp = new Date().getTime();
+					String activity = selection.activityInfo.packageName + "/" + selection.activityInfo.name;
+					
+					// broadcast it
+					Intent intent = new Intent();
+					intent.setAction("hk.valenta.completeactionplus.TEMPSET");
+					intent.putExtra("intentId", intentId);					
+					intent.putExtra("timeStamp", timeStamp);					
+					intent.putExtra("activity", activity);
+					((Activity)param.thisObject).sendBroadcast(intent);
+					
+					// start
+					startSelected(param.thisObject, position, false, pref.getBoolean("LastFirst", false));
 				}
 				
 				return true;
@@ -2180,14 +2171,12 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 			
 			// prepare values
 			String intentId = String.format("%s;%s;%s", mIntent.getAction(), mIntent.getType(), mIntent.getScheme());
-			//Long timeStamp = new Date().getTime();
 			String activity = selection.activityInfo.packageName + "/" + selection.activityInfo.name;
 			
 			// broadcast it
 			Intent intent = new Intent();
 			intent.setAction("hk.valenta.completeactionplus.START");
 			intent.putExtra("intentId", intentId);					
-			//intent.putExtra("timeStamp", timeStamp);					
 			intent.putExtra("activity", activity);
 			((Activity)thisObject).sendBroadcast(intent);
 		}
@@ -2206,16 +2195,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		}		
 	}
 	
-	private void setLongPress(ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+	private void setLongPress(ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, final XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-//		if (action.equals("Default") && mAlwaysUseOption) {
-//			boolean manageList = pref.getBoolean("ManageList", false);
-//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-//			if (manageList && oldWayHide) {
-//				// restore items
-//				restoreListItems(thisObject, pref);
-//			}
-//		}
 		list.setTag(thisObject);		
 		
 		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -2245,7 +2226,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} else if (longPress.equals("Default") && mAlwaysUseOption) {
 					// call activity directly
 					Object thisObject = parent.getTag();
-					XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+					startSelected(thisObject, position, true, pref.getBoolean("LastFirst", false));
 				} else if (longPress.equals("XHalo")) {
 					// call activity directly
 					Object adapter = parent.getAdapter();
@@ -2265,7 +2246,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} else if (longPress.equals("Launch")) {
 					// call activity directly
 					Object thisObject = parent.getTag();
-					XposedHelpers.callMethod(thisObject, "startSelected", position, false);
+					startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));
+				} else if (longPress.equals("TempDefault")) {
+					// start app
+					Object thisObject = parent.getTag();
+					
+					// get current intent as id
+					Object resolverAdapter = XposedHelpers.getObjectField(thisObject, "mAdapter");
+					Intent mIntent = (Intent)XposedHelpers.callMethod(resolverAdapter, "getItem", -99);
+					ResolveInfo selection = (ResolveInfo)XposedHelpers.callMethod(resolverAdapter, "resolveInfoForPosition", position);
+					
+					// prepare values
+					String intentId = String.format("%s;%s;%s", mIntent.getAction(), mIntent.getType(), mIntent.getScheme());
+					Long timeStamp = new Date().getTime();
+					String activity = selection.activityInfo.packageName + "/" + selection.activityInfo.name;
+					
+					// broadcast it
+					Intent intent = new Intent();
+					intent.setAction("hk.valenta.completeactionplus.TEMPSET");
+					intent.putExtra("intentId", intentId);					
+					intent.putExtra("timeStamp", timeStamp);					
+					intent.putExtra("activity", activity);
+					((Activity)thisObject).sendBroadcast(intent);
+					
+					// start
+					startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));
 				}
 				
 				return true;
@@ -2273,16 +2278,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		});				
 	}
 		
-	private void setLongPress(GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+	private void setLongPress(GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, final XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-//		if (action.equals("Default") && mAlwaysUseOption) {
-//			boolean manageList = pref.getBoolean("ManageList", false);
-//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-//			if (manageList && oldWayHide) {
-//				// restore items
-//				restoreListItems(thisObject, pref);
-//			}
-//		}
 		grid.setTag(thisObject);
 		
 		grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -2312,7 +2309,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} else if (longPress.equals("Default") && mAlwaysUseOption) {
 					// call activity directly
 					Object thisObject = parent.getTag();
-					XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+					startSelected(thisObject, position, true, pref.getBoolean("LastFirst", false));					
 				} else if (longPress.equals("XHalo")) {
 					// call activity directly
 					Object adapter = parent.getAdapter();
@@ -2332,7 +2329,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 				} else if (longPress.equals("Launch")) {
 					// call activity directly
 					Object thisObject = parent.getTag();
-					XposedHelpers.callMethod(thisObject, "startSelected", position, false);
+					startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));					
+				} else if (longPress.equals("TempDefault")) {
+					// start app
+					Object thisObject = parent.getTag();
+					
+					// get current intent as id
+					Object resolverAdapter = XposedHelpers.getObjectField(thisObject, "mAdapter");
+					Intent mIntent = (Intent)XposedHelpers.callMethod(resolverAdapter, "getItem", -99);
+					ResolveInfo selection = (ResolveInfo)XposedHelpers.callMethod(resolverAdapter, "resolveInfoForPosition", position);
+					
+					// prepare values
+					String intentId = String.format("%s;%s;%s", mIntent.getAction(), mIntent.getType(), mIntent.getScheme());
+					Long timeStamp = new Date().getTime();
+					String activity = selection.activityInfo.packageName + "/" + selection.activityInfo.name;
+					
+					// broadcast it
+					Intent intent = new Intent();
+					intent.setAction("hk.valenta.completeactionplus.TEMPSET");
+					intent.putExtra("intentId", intentId);					
+					intent.putExtra("timeStamp", timeStamp);					
+					intent.putExtra("activity", activity);
+					((Activity)thisObject).sendBroadcast(intent);
+					
+					// start
+					startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));
 				}
 				
 				return true;

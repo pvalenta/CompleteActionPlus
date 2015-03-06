@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-public class StartSelectedReceiver extends BroadcastReceiver {
+public class TemporaryDefaultReceiver extends BroadcastReceiver {
 
 	@SuppressLint("WorldReadableFiles")
 	@SuppressWarnings("deprecation")
@@ -14,10 +14,11 @@ public class StartSelectedReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		// get information about last started selected application
 		String intentId = intent.getStringExtra("intentId");
+		Long timeStamp = intent.getLongExtra("timeStamp", 0);
 		String activity = intent.getStringExtra("activity");
 		
 		// save it configuration
-		SharedPreferences pref = context.getSharedPreferences("started", Context.MODE_WORLD_READABLE);
-		pref.edit().putString(intentId, activity).apply();
+		SharedPreferences pref = context.getSharedPreferences("temp", Context.MODE_WORLD_READABLE);
+		pref.edit().putString(intentId, timeStamp + "_" + activity).apply();
 	}
 }

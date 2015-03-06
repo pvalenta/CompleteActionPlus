@@ -141,6 +141,8 @@ public class EnumConvert {
 			return "XHalo";
 		case 4:
 			return "Launch";
+		case 5:
+			return "TempDefault";
 		default:
 			return "Nothing";
 		}
@@ -151,6 +153,7 @@ public class EnumConvert {
 		else if (name.equals("Default")) return 2;
 		else if (name.equals("XHalo")) return 3;
 		else if (name.equals("Launch")) return 4;
+		else if (name.equals("TempDefault")) return 5;
 		else return 0;
 	}
 	

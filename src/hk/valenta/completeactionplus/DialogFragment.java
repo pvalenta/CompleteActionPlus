@@ -38,6 +38,8 @@ public class DialogFragment extends Fragment {
 	private TextView transparencyValue;
 	private TextView roundCornerValue;
 	private RelativeLayout doubletapBlock;
+	private RelativeLayout temporaryDefault;
+	private TextView temporaryValue;
 	
 	@SuppressWarnings("deprecation")
 	@SuppressLint("WorldReadableFiles")
@@ -325,6 +327,7 @@ public class DialogFragment extends Fragment {
 		doubleTapSpinner.setSelection(doubleTapIndex);			
 		
 		// populate long press
+		temporaryDefault = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_temporary_default);
 		Spinner longPressSpinner = (Spinner)layout.findViewById(R.id.fragment_dialog_long_press_spinner);
 		longPressSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -332,7 +335,12 @@ public class DialogFragment extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// set it in preferences
 				SharedPreferences pref = parent.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
-				pref.edit().putString("LongPress", EnumConvert.longPressName(pos)).apply();				
+				pref.edit().putString("LongPress", EnumConvert.longPressName(pos)).apply();	
+				if (pos == 5) {
+					temporaryDefault.setVisibility(View.VISIBLE);
+				} else {
+					temporaryDefault.setVisibility(View.GONE);
+				}
 			}
 
 			@Override
@@ -347,7 +355,38 @@ public class DialogFragment extends Fragment {
 		
 		// preselect
 		int longPressIndex = EnumConvert.longPressIndex(pref.getString("LongPress", "Nothing"));
-		longPressSpinner.setSelection(longPressIndex);			
+		longPressSpinner.setSelection(longPressIndex);		
+		if (longPressIndex == 5) {
+			temporaryDefault.setVisibility(View.VISIBLE);
+		} else {
+			temporaryDefault.setVisibility(View.GONE);
+		}
+		
+		// temporary default
+		temporaryValue = (TextView)layout.findViewById(R.id.fragment_dialog_temporary_value);
+		SeekBar temporaryTimeout = (SeekBar)layout.findViewById(R.id.fragment_dialog_temporary_timeout);
+		t = pref.getInt("TemporaryTimeout", 5);
+		temporaryTimeout.setProgress(t - 1);
+		temporaryValue.setText(String.format(getString(R.string.temporary_default_timeout), t));
+		temporaryTimeout.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// set it in preferences
+				SharedPreferences pref = seekBar.getContext().getSharedPreferences("config", Context.MODE_WORLD_READABLE);
+				pref.edit().putInt("TemporaryTimeout", seekBar.getProgress() + 1).apply();
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				// let's display it
+				temporaryValue.setText(String.format(getString(R.string.temporary_default_timeout), progress + 1));
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// nothing				
+			}
+		});		
 		
 		// manage list		
 		manageTriggerBlock = (RelativeLayout)layout.findViewById(R.id.fragment_dialog_manage_block);
