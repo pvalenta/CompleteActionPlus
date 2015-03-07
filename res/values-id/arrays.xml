@@ -60,6 +60,7 @@
 	    <item>Setel sebagai bawaan</item>
 	    <item>Halo Window</item>
 	    <item>Luncurkan</item>
+	    <item>Temporary Default</item>
 	</string-array>
 	<string-array name="button_theme">
 	    <item>Default</item>

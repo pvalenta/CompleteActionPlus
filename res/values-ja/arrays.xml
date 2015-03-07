@@ -60,6 +60,7 @@
 	    <item>デフォルトにセット</item>
 	    <item>Haloウインドウ</item>
 	    <item>起動する</item>
+	    <item>Temporary Default</item>
 	</string-array>
 	<string-array name="button_theme">
 	    <item>デフォルト</item>

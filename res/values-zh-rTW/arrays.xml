@@ -60,6 +60,7 @@
 	    <item>定為預設</item>
 	    <item>Halo 應用框</item>
 	    <item>Launch It</item>
+	    <item>Temporary Default</item>
 	</string-array>
 	<string-array name="button_theme">
 	    <item>Default</item>

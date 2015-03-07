@@ -60,6 +60,7 @@
 	    <item>Nastavit \'Vždy\'</item>
 	    <item>Halo okno</item>
 	    <item>Spustit</item>
+	    <item>Temporary Default</item>
 	</string-array>
 	<string-array name="button_theme">
 	    <item>Výchozí</item>

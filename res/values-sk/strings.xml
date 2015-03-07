@@ -90,4 +90,8 @@
     <string name="button_theme">Téma tlačidiel</string>
     <string name="grid_flip_left_right">Prevrátiť položky zľava doprava</string>
     <string name="flip_top_bottom">Prevrátiť položky zhora nadol</string>
+    <string name="show_launcher_icon">Show icon in launcher</string>
+    <string name="last_used_app_first">Last used app goes first</string>
+    <string name="temporary_default_timeout">Temporary default for %d minutes</string>
+    <string name="set_temporary_default" formatted="false">%s is set default for %d minutes</string>
 </resources>

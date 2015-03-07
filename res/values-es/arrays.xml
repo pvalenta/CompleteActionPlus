@@ -60,6 +60,7 @@
 	    <item>Set as default</item>
 	    <item>Halo Window</item>
 	    <item>Launch It</item>
+	    <item>Temporary Default</item>
 	</string-array>
 	<string-array name="button_theme">
 	    <item>Default</item>
