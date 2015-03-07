@@ -304,6 +304,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int not_yet_restarted=0x7f060027;
         public static final int portrait=0x7f060019;
         public static final int round_corners=0x7f060043;
+        public static final int set_temporary_default=0x7f06005e;
         public static final int show_launcher_icon=0x7f06005b;
         public static final int show_rule_manager=0x7f060028;
         public static final int temporary_default_timeout=0x7f06005d;

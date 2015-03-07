@@ -2675,16 +2675,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		}
 	}
 
-	private void setGesture(final ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+	private void setGesture(final ListView list, String action, final boolean mAlwaysUseOption, Object thisObject, final XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-//		if (action.equals("Default") && mAlwaysUseOption) {
-//			boolean manageList = pref.getBoolean("ManageList", false);
-//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-//			if (manageList && oldWayHide) {
-//				// restore items
-//				restoreListItems(thisObject, pref);
-//			}
-//		}
 		list.setTag(thisObject);	
 		
 		list.setOnTouchListener(new OnTouchListener() {
@@ -2729,7 +2721,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					} else if (doubleTapAction.equals("Default") && mAlwaysUseOption) {
 						// call activity directly
 						Object thisObject = list.getTag();
-						XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+						startSelected(thisObject, position, true, pref.getBoolean("LastFirst", false));
 					} else if (doubleTapAction.equals("XHalo")) {
 						// xhalo
 						Object adapter = list.getAdapter();
@@ -2748,7 +2740,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					} else if (doubleTapAction.equals("Launch")) {
 						// call activity directly
 						Object thisObject = list.getTag();
-						XposedHelpers.callMethod(thisObject, "startSelected", position, false);
+						startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));
+					} else if (doubleTapAction.equals("TempDefault")) {
+						// start app
+						Object thisObject = list.getTag();
+						
+						// get current intent as id
+						Object resolverAdapter = XposedHelpers.getObjectField(thisObject, "mAdapter");
+						Intent mIntent = (Intent)XposedHelpers.callMethod(resolverAdapter, "getItem", -99);
+						ResolveInfo selection = (ResolveInfo)XposedHelpers.callMethod(resolverAdapter, "resolveInfoForPosition", position);
+						
+						// prepare values
+						String intentId = String.format("%s;%s;%s", mIntent.getAction(), mIntent.getType(), mIntent.getScheme());
+						Long timeStamp = new Date().getTime();
+						String activity = selection.activityInfo.packageName + "/" + selection.activityInfo.name;
+						
+						// broadcast it
+						Intent intent = new Intent();
+						intent.setAction("hk.valenta.completeactionplus.TEMPSET");
+						intent.putExtra("intentId", intentId);					
+						intent.putExtra("timeStamp", timeStamp);					
+						intent.putExtra("activity", activity);
+						((Activity)thisObject).sendBroadcast(intent);
+						
+						// start
+						startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));
 					}
 					return true;
 				}
@@ -2757,16 +2773,8 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 		});
 	}
 	
-	private void setGesture(final GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, XSharedPreferences pref) {
+	private void setGesture(final GridView grid, String action, final boolean mAlwaysUseOption, Object thisObject, final XSharedPreferences pref) {
 		if (action.equals("Nothing")) return;
-//		if (action.equals("Default") && mAlwaysUseOption) {
-//			boolean manageList = pref.getBoolean("ManageList", false);
-//			boolean oldWayHide = pref.getBoolean("OldWayHide", false);
-//			if (manageList && oldWayHide) {
-//				// restore items
-//				restoreListItems(thisObject, pref);
-//			}
-//		}
 		grid.setTag(thisObject);
 		
 		grid.setOnTouchListener(new OnTouchListener() {
@@ -2810,7 +2818,7 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					} else if (doubleTapAction.equals("Default") && mAlwaysUseOption) {
 						// call activity directly
 						Object thisObject = grid.getTag();
-						XposedHelpers.callMethod(thisObject, "startSelected", position, true);
+						startSelected(thisObject, position, true, pref.getBoolean("LastFirst", false));
 					} else if (doubleTapAction.equals("XHalo")) {
 						// xhalo
 						Object adapter = grid.getAdapter();
@@ -2829,7 +2837,31 @@ public class XCompleteActionPlus implements IXposedHookLoadPackage, IXposedHookI
 					} else if (doubleTapAction.equals("Launch")) {
 						// call activity directly
 						Object thisObject = grid.getTag();
-						XposedHelpers.callMethod(thisObject, "startSelected", position, false);
+						startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));
+					} else if (doubleTapAction.equals("TempDefault")) {
+						// start app
+						Object thisObject = grid.getTag();
+						
+						// get current intent as id
+						Object resolverAdapter = XposedHelpers.getObjectField(thisObject, "mAdapter");
+						Intent mIntent = (Intent)XposedHelpers.callMethod(resolverAdapter, "getItem", -99);
+						ResolveInfo selection = (ResolveInfo)XposedHelpers.callMethod(resolverAdapter, "resolveInfoForPosition", position);
+						
+						// prepare values
+						String intentId = String.format("%s;%s;%s", mIntent.getAction(), mIntent.getType(), mIntent.getScheme());
+						Long timeStamp = new Date().getTime();
+						String activity = selection.activityInfo.packageName + "/" + selection.activityInfo.name;
+						
+						// broadcast it
+						Intent intent = new Intent();
+						intent.setAction("hk.valenta.completeactionplus.TEMPSET");
+						intent.putExtra("intentId", intentId);					
+						intent.putExtra("timeStamp", timeStamp);					
+						intent.putExtra("activity", activity);
+						((Activity)thisObject).sendBroadcast(intent);
+						
+						// start
+						startSelected(thisObject, position, false, pref.getBoolean("LastFirst", false));
 					}
 					return true;
 				}
